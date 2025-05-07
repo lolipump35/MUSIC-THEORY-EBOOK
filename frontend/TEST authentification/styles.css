@@ -1,0 +1,229 @@
+/* HOME PAGE */
+.homepage{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+button{
+    height: 50px;
+    width: 100px;
+}
+
+/* REGISTER PAGE */
+html{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+
+    gap: 30px;
+}
+
+#name,
+#firstName,
+#email,
+#phoneNumber,
+#password,
+#confirmPassword,
+.CGU{
+    width: 300px;
+    height: 35px;
+    border-radius: 5px;
+}
+
+#phoneNumber{
+  width: 310px;
+  height: 42px;
+}
+
+#password,
+#confirmPassword{
+  position: relative;
+  right: 5px;
+  width: 310px;
+  height: 40px;
+}
+
+.ToS.input-error {
+  border: solid red 2px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.input-error {
+    border: 2px solid red;
+    color: red;
+  }
+  .input-error::placeholder {
+    color: red;
+    opacity: 0.5; /* Assure que le texte est bien visible sur tous les navigateurs */
+  }
+
+  input.error {
+    border: 2px solid red;
+    color: red;
+  }
+  
+  input.error::placeholder {
+    color: red;
+  }
+  
+/*password */
+/* oeil */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px; /* ou ce que tu veux */
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* laisse de la place pour l'œil */
+  box-sizing: border-box;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  user-select: none;
+}
+
+/* Cacher l'icône d'affichage du mot de passe sur Chrome, Edge (Chromium) */
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-inner-spin-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none;
+  -webkit-appearance: none;
+}
+
+/* Cacher l'icône sur Internet Explorer / Edge legacy */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+  visibility: hidden;
+}
+
+/* criteres */
+#passwordCriteria {
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 0; /* Pour éviter l'indentation des listes */
+  margin: 0;
+  position: relative;
+  transform: translate(-100px, -30px);
+  
+}
+
+#passwordCriteria li {
+  color: #b6b6b6;
+  list-style: none;
+  margin-bottom: 5px;
+  position: relative;
+  padding-left: 25px;
+}
+
+/* Icône dynamique avec pseudo-élément */
+#passwordCriteria li.valid::before {
+  content: "✅";
+  position: absolute;
+  right: -50px;
+  color: green;
+}
+
+#passwordCriteria li.invalid {
+  color: #8d8b8b;
+}
+
+#passwordCriteria li.invalid.show-error {
+  color: red;
+}
+
+
+/* Styles de la barre de progression */
+/* Conteneur de la barre de progression */
+.password-strength-bar {
+  width: 62%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barre intérieure qui progresse */
+.password-strength-bar .bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  background-color: red;
+  border-radius: 5px;
+}
+
+.password-strength-bar.weak {
+  background-color: red;
+}
+
+.password-strength-bar.fair {
+  background-color: orange;
+}
+
+.password-strength-bar.good {
+  background-color: yellowgreen;
+}
+
+.password-strength-bar.strong {
+  background-color: green;
+}
+
+/* SIGNIN PAGE  */
+
+.signInContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  border: solid black 1px;
+  border-radius: 5px;
+  padding: 40px;
+}
+
+#mailSignIn,
+#passwordSignIn{
+  width: 310px;
+  height: 40px;
+}
+
+.message {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.message.success {
+  color: green;
+}
+
+.message.error {
+  color: red;
+}
+
