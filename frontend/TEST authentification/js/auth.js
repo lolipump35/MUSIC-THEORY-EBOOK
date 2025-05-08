@@ -256,6 +256,11 @@ termsCheckbox.addEventListener("change", () => {
 
 // #region SEND TO BACKEND
 
+// ✅ Base URL dynamique
+const BASE_URL = window.location.hostname === "localhost"
+  ? "http://localhost:5000"
+  : "https://music-theory-ebook.onrender.com";
+
 // UTILITY FUNCTION
 function showMessage(text, type = "error") {
   const messageEl = document.getElementById("message");
@@ -278,7 +283,7 @@ if (signInBtn) {
     signInBtn.disabled = true;
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -290,9 +295,9 @@ if (signInBtn) {
 
       if (response.ok) {
         showMessage("Connexion réussie !", "success");
-        localStorage.setItem("token", data.token); // facultatif
+        localStorage.setItem("token", data.token);
         setTimeout(() => {
-          window.location.href = "dashboard.html"; // page après connexion
+          window.location.href = "dashboard.html";
         }, 1000);
       } else {
         showMessage(data.message || "Erreur de connexion.");
@@ -347,7 +352,7 @@ if (registerBtn) {
     registerBtn.disabled = true;
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -359,16 +364,15 @@ if (registerBtn) {
           email,
           password,
         })
-        
       });
 
       const data = await response.json();
 
       if (response.ok) {
         showMessage("Inscription réussie !", "success");
-        localStorage.setItem("token", data.token); // facultatif
+        localStorage.setItem("token", data.token);
         setTimeout(() => {
-          window.location.href = "dashboard.html"; // page après inscription
+          window.location.href = "dashboard.html";
         }, 1000);
       } else {
         showMessage(data.message || "Erreur lors de l'inscription.");
@@ -381,4 +385,5 @@ if (registerBtn) {
     }
   });
 }
+
 // #endregion SEND TO BACKEND
