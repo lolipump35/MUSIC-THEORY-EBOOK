@@ -372,7 +372,7 @@ if (registerBtn) {
         showMessage("Inscription réussie !", "success");
         localStorage.setItem("token", data.token);
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          window.location.href = "signin.html";
         }, 1000);
       } else {
         showMessage(data.message || "Erreur lors de l'inscription.");
