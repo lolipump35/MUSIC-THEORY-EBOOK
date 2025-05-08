@@ -31,6 +31,11 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 // Routes
 app.use('/api/auth', authRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Server is up and running!');
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
