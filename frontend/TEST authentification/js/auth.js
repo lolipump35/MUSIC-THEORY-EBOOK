@@ -289,15 +289,15 @@ if (signInBtn) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // Important pour inclure le cookie
       });
 
       const data = await response.json();
 
       if (response.ok) {
         showMessage("Connexion réussie !", "success");
-        localStorage.setItem("token", data.token);
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          window.location.href = "dashboard.html"; // Redirige après connexion
         }, 1000);
       } else {
         showMessage(data.message || "Erreur de connexion.");
@@ -310,6 +310,7 @@ if (signInBtn) {
     }
   });
 }
+
 
 // REGISTER PAGE
 const registerBtn = document.getElementById("registerMe");
