@@ -2,7 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// ✅ Déclaration de la fonction
+// ✅ Inscription
 const registerUser = async (req, res) => {
   const { name, firstName, phone, email, password } = req.body;
 
@@ -30,36 +30,26 @@ const registerUser = async (req, res) => {
   res.status(201).json({ message: "Utilisateur créé avec succès !" });
 };
 
-// Tu peux plus tard définir loginUser ici aussi
-// const loginUser = ...
-
-// ✅ Export des fonctions
-module.exports = { registerUser /* , loginUser */ };
-
-
-
-// Connexion d'un utilisateur
+// ✅ Connexion
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    if (!user) return res.status(400).json({ message: 'Utilisateur introuvable.' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ message: 'Mot de passe incorrect.' });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     res.json({ token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-module.exports = { registerUser, loginUser };
-
-
-
+// ✅ Liste des utilisateurs
 const getUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password'); // On exclut le mot de passe
@@ -69,4 +59,9 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsers };
+// ✅ Exporter les fonctions
+module.exports = {
+  registerUser,
+  loginUser,
+  getUsers,
+};
