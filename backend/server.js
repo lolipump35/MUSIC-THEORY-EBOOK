@@ -9,19 +9,12 @@ dotenv.config(); // Charger les variables d'environnement
 const app = express();
 const port = 5000;
 
+const corsOptions = {
+  origin: 'http://127.0.0.1:5500', // Permet uniquement cette origine
+  credentials: true, // Permet les cookies et les credentials
+};
 
-// Middleware pour activer CORS
-app.use(cors());  // Permet toutes les connexions CORS
-
-// Si tu veux restreindre les origines autorisées :
-/*
-app.use(cors({
-  origin: 'http://localhost:3000', // Permet uniquement les requêtes depuis ce domaine
-}));
-// */
-
-// Middleware pour traiter les requêtes JSON
-app.use(express.json());
+app.use(cors(corsOptions));
 
 // Connexion à MongoDB avec Mongoose
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -34,7 +27,6 @@ app.use('/api/auth', authRoutes);
 app.get('/', (req, res) => {
   res.send('Server is up and running!');
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
