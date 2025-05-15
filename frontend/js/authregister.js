@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Validation des critères de mot de passe
   const validatePasswordCriteria = () => {
-    const password = passwordInput.value;
+    const password = passwordInput.value.trim();
 
     const isMinLength = password.length >= 8;
     const hasLowercase = /[a-z]/.test(password);
@@ -268,10 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // #region SEND TO BACKEND
 
   // ✅ Base URL dynamique
-  const BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://music-theory-ebook.onrender.com";
+ const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? "http://localhost:5000"
+    : "https://music-theory-ebook.onrender.com";
+
+  console.log("BASE_URL =", BASE_URL);
 
   // UTILITY FUNCTION
   function showMessage(text, type = "error") {
@@ -320,19 +321,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       registerBtn.disabled = true;
 
+       const requestBody = { name,
+            firstName,
+            phone,
+            email,
+            password };
+
+      console.log("Request body register:", requestBody);
+
       try {
         const response = await fetch(`${BASE_URL}/api/auth/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            name,
-            firstName,
-            phone,
-            email,
-            password,
-          }),
+          body: JSON.stringify(requestBody),
+          credentials: "include",
+          
         });
 
         const data = await response.json();
