@@ -16,10 +16,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use(express.json());
+
 // Connexion à MongoDB avec Mongoose
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Database connected'))
-  .catch(err => console.log('Database connection error: ', err));
+.then(() => console.log('✅ Database connected'))
+.catch((err) => console.error('❌ Database connection error:', err));
 
 // Routes
 app.use('/api/auth', authRoutes);
