@@ -37,39 +37,43 @@ console.log("Mot de passe hashé :", hashedPassword);
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  // Log de ce qui est reçu
-  console.log("Received data:", req.body);
-  console.log("Tentative de connexion pour :", email);
+  console.log("🔐 Email reçu:", email);
+  console.log("🔐 Password reçu:", password);
 
   try {
     const user = await User.findOne({ email });
+
     if (!user) {
-      console.log("Utilisateur introuvable"); // Ajoute un log ici
-      return res.status(400).json({ message: 'Utilisateur introuvable.' });
+      console.log("❌ Utilisateur introuvable");
+      return res.status(400).json({ message: "Utilisateur introuvable." });
     }
 
-    console.log("Utilisateur trouvé :", user.email);
-    console.log("Mot de passe entré :", password);
-    console.log("Mot de passe hashé dans la DB :", user.password);
+    console.log("✅ Utilisateur trouvé:", user.email);
+    console.log("🔒 Mot de passe hashé en DB:", user.password);
 
+    console.log("Longueur du mot de passe reçu:", password.length);
+
+    // Comparaison
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log("Mot de passe incorrect"); // Log pour mot de passe incorrect
-      return res.status(400).json({ message: 'Mot de passe incorrect.' });
+      console.log("❌ Mot de passe incorrect !");
+      return res.status(400).json({ message: "Mot de passe incorrect." });
     }
 
-    console.log("Connexion réussie !");
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Générer le token JWT
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    console.log("Token généré:", token); // Log du token généré
-
+    console.log("✅ Connexion réussie !");
     res.json({ token });
   } catch (err) {
-    console.error("Erreur serveur :", err.message);
+    console.error("Erreur serveur :", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 // ✅ Liste des utilisateurs
