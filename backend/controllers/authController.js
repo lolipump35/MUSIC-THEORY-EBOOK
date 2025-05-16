@@ -15,10 +15,10 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ message: "Cet email est déjà utilisé." });
   }
 
-const salt = await bcrypt.genSalt(10);
-const hashedPassword = await bcrypt.hash(password.trim(), salt);
-console.log("Mot de passe reçu :", password);
-console.log("Mot de passe hashé :", hashedPassword);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password.trim(), salt);
+  console.log("Mot de passe reçu :", password);
+  console.log("Mot de passe hashé :", hashedPassword);
 
   const newUser = new User({
     name,
@@ -36,6 +36,7 @@ console.log("Mot de passe hashé :", hashedPassword);
 // ✅ Connexion
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  const cleanPassword = password.trim();
 
   console.log("🔐 Email reçu:", email);
   console.log("🔐 Password reçu:", password);
@@ -54,7 +55,7 @@ const loginUser = async (req, res) => {
     console.log("Longueur du mot de passe reçu:", password.length);
 
     // Comparaison
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(cleanPassword, user.password);
 
     if (!isMatch) {
       console.log("❌ Mot de passe incorrect !");
@@ -73,8 +74,6 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-
 
 // ✅ Liste des utilisateurs
 const getUsers = async (req, res) => {
