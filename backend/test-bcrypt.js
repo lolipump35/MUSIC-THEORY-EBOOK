@@ -1,8 +1,11 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
-const motDePasseSaisi = "Diabolo&cie091102"; // Le mot de passe en clair que tu entres
-const hashDepuisMongo = "$2b$10$jZozv4s88RERqBrtR39Ac.TormReOhjLPIRwFQwiQ2PhULzjjyyDS"; // Copie exactement ce que tu as dans la DB
+async function test() {
+  const pass = 'Diabolo&cie091102';
+  const hash = await bcrypt.hash(pass, 10);
+  console.log('Hash:', hash);
+  const match = await bcrypt.compare(pass, hash);
+  console.log('Compare:', match);
+}
 
-bcrypt.compare(motDePasseSaisi, hashDepuisMongo).then((isMatch) => {
-  console.log("✅ Résultat de bcrypt.compare =", isMatch);
-});
+test();
