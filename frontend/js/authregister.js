@@ -289,8 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const firstName = document.getElementById("firstName").value.trim();
       const phone = document.getElementById("phoneNumber").value.trim();
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+      const password = document.getElementById("password").value.trim();
+      const confirmPassword = document.getElementById("confirmPassword").value.trim();
       const termsAccepted = document.getElementById("termsCheckbox").checked;
 
       if (
