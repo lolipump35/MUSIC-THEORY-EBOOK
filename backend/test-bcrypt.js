@@ -1,11 +1,11 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 async function test() {
-  const pass = 'Diabolo&cie091102';
-  const hash = await bcrypt.hash(pass, 10);
-  console.log('Hash:', hash);
-  const match = await bcrypt.compare(pass, hash);
-  console.log('Compare:', match);
+  const password = "Diabolo091102";
+  const hash = "$2b$10$Ly6FhK/tcxqyDUg75qRfXeZ4WJlpLB1dyCnL1r5Ckhw0pNfFYBmMi";
+  
+  const match = await bcrypt.compare(password, hash);
+  console.log("Résultat compare() :", match);
 }
 
 test();
