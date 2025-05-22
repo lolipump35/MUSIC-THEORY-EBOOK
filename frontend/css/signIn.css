@@ -1,0 +1,66 @@
+/* #region SIGNIN PAGE  */
+html {
+  height: 100%;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+.signInContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  border: solid #f0f0f0 2px;
+  border-radius: 5px;
+  height: 350px;
+  width: 500px;
+  margin: 20px;
+}
+
+#signInPageButton {
+  font-size: 1rem;
+  border: solid #f0f0f0 2px;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  position: relative;
+  left: 0;
+  border: none;
+}
+
+.registerContainer > button {
+  font-size: 1rem;
+  border: solid black 1px;
+  width: 200px;
+  height: 60px;
+  border-radius: 10px;
+  border: none; 
+}
+
+#mailSignIn,
+#passwordSignIn {
+  width: 310px;
+  height: 40px;
+  border-radius: 10px;
+  border: solid #f0f0f0 2px;
+}
+
+.message {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.message.success {
+  color: green;
+}
+
+.message.error {
+  color: red;
+}
+/* #endregion SIGNIN PAGE  */

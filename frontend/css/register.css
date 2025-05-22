@@ -1,31 +1,22 @@
-/* HOME PAGE */
-.homepage{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-button{
-    height: 50px;
-    width: 100px;
-}
-
-/* REGISTER PAGE */
+/* #region REGISTER PAGE */
 html{
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
-
-.registerContainer{
+body{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 500px;
+    flex-direction: column;
+    height: 100%;
+}
+.registerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
 
-    gap: 30px;
+  gap: 30px;
 }
 
 #name,
@@ -34,25 +25,37 @@ html{
 #phoneNumber,
 #password,
 #confirmPassword,
-.CGU{
-    width: 300px;
-    height: 35px;
-    border-radius: 5px;
+.CGU {
+  width: 300px;
+  height: 35px;
+  border-radius: 5px;
+    border: solid #f0f0f0 2px;
 }
 
-#phoneNumber{
+#phoneNumber {
   width: 310px;
   height: 42px;
 }
 
 #password,
-#confirmPassword{
+#confirmPassword {
   position: relative;
   right: 5px;
   width: 310px;
   height: 40px;
 }
 
+.CGU{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  color: #666;
+}
+.CGU a{
+    color: black;
+}
 .ToS.input-error {
   border: solid red 2px;
   padding: 5px;
@@ -60,23 +63,23 @@ html{
 }
 
 .input-error {
-    border: 2px solid red;
-    color: red;
-  }
-  .input-error::placeholder {
-    color: red;
-    opacity: 0.5; /* Assure que le texte est bien visible sur tous les navigateurs */
-  }
+  border: 2px solid red;
+  color: red;
+}
+.input-error::placeholder {
+  color: red;
+  opacity: 0.5; /* Assure que le texte est bien visible sur tous les navigateurs */
+}
 
-  input.error {
-    border: 2px solid red;
-    color: red;
-  }
-  
-  input.error::placeholder {
-    color: red;
-  }
-  
+input.error {
+  border: 2px solid red;
+  color: red;
+}
+
+input.error::placeholder {
+  color: red;
+}
+
 /*password */
 /* oeil */
 .input-wrapper {
@@ -129,7 +132,6 @@ input[type="password"]::-ms-clear {
   margin: 0;
   position: relative;
   transform: translate(-100px, -30px);
-  
 }
 
 #passwordCriteria li {
@@ -155,7 +157,6 @@ input[type="password"]::-ms-clear {
 #passwordCriteria li.invalid.show-error {
   color: red;
 }
-
 
 /* Styles de la barre de progression */
 /* Conteneur de la barre de progression */
@@ -194,35 +195,10 @@ input[type="password"]::-ms-clear {
   background-color: green;
 }
 
-/* SIGNIN PAGE  */
-
-.signInContainer{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  border: solid black 1px;
-  border-radius: 5px;
-  padding: 40px;
+#registerMe{
+    height: 50px;
+    width: 130px;
+    border-radius: 10px;
+    border: none;
 }
-
-#mailSignIn,
-#passwordSignIn{
-  width: 310px;
-  height: 40px;
-}
-
-.message {
-  margin-top: 10px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.message.success {
-  color: green;
-}
-
-.message.error {
-  color: red;
-}
+/* #endregion REGISTER PAGE */
