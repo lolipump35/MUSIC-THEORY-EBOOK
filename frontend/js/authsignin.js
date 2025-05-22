@@ -1,15 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Récupère les éléments, PAS leurs valeurs tout de suite
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const signInButton = document.getElementById("signInButton");
+  const emailInput = document.getElementById("mailSignIn");
+  const passwordInput = document.getElementById("passwordSignIn");
+  const signInButton = document.getElementById("signInPageButton");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-   const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-    ? "http://localhost:5000"
-    : "https://music-theory-ebook.onrender.com";
+  //  const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+  //   ? "http://localhost:5000"
+  //   : "https://music-theory-ebook.onrender.com";
 
+   const BASE_URL = "https://music-theory-ebook.onrender.com";
+   
   console.log("BASE_URL =", BASE_URL);
 
   // Fonction pour afficher les messages
@@ -83,3 +85,11 @@ document.addEventListener("DOMContentLoaded", () => {
     passwordInput.placeholder = "Password";
   });
 });
+
+ const creeUnCompte = document.getElementById("créeUnCompte");
+
+  creeUnCompte.addEventListener("click", () => {
+    window.location.href = "/frontend/pages/register.html";
+  });
+
+  console.log("button cliquer",creeUnCompte);

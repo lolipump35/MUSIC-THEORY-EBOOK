@@ -3,16 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../css/signIn.css" />
     <title>test signInPage</title>
   </head>
   <body>
     <section class="signInContainer">
-      <input type="mail" placeholder="Email" id="email" />
-      <input type="password" placeholder="Password" id="password" />
+      <h1>Connexion</h1>
+      <input type="mail" placeholder="Email" id="mailSignIn" />
+      <input type="password" placeholder="Password" id="passwordSignIn" />
       <div id="message"></div>
 
-      <button id="signInButton">Se connecter</button>
+      <button id="signInPageButton">Se Connecter</button>
+    </section>
+
+    <section class="registerContainer">
+      <button id="créeUnCompte">Crée un compte</button>
     </section>
 
     <script src="../js/authsignin.js"></script>

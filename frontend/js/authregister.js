@@ -268,9 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // #region SEND TO BACKEND
 
   // ✅ Base URL dynamique
- const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-    ? "http://localhost:5000"
-    : "https://music-theory-ebook.onrender.com";
+ //  const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+  //   ? "http://localhost:5000"
+  //   : "https://music-theory-ebook.onrender.com";
+
+   const BASE_URL = "https://music-theory-ebook.onrender.com";
 
   console.log("BASE_URL =", BASE_URL);
 
