@@ -48,7 +48,7 @@ body {
   z-index: 100;
 }
 
-button {
+.navbarButton {
   height: 50px;
   width: 100px;
 }
@@ -167,43 +167,115 @@ button {
 /* #endregion LANDING PAGE */
 
 /* #region OFFER */
-.offer {
+.offerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: solid black 1px;
   height: 100vh;
   width: 80%;
-  border: solid black 1px;
+}
+.presentation {
+  width: 100%;
+  height: 400px;
   display: flex;
-justify-content: space-between;
-align-items: center;
+  justify-content: center;
+  align-items: center;
+}
+.presentation > h1 {
+  font-size: 3rem;
+}
+.presentation > h1 > span {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.offer {
+  border: solid black 1px;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 /* OFFER1 */
 .offer1 {
-  height: 80%;
+  height: 95%;
   width: 25%;
   border-radius: 10px;
   border: solid black 1px;
-  background-color: aquamarine;
-
+  position: relative;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
+
+.offer1 > h1 {
+  color: white;
+  font-size: 3rem;
+  position: absolute;
+  top: 20px;
+}
+
+.offer1 > .text {
+  color: white;
+  position: absolute;
+  bottom: 100px;
+  padding: 10px;
+  font-size: 1.7rem;
+}
+/* OFFER2 */
 .offer2 {
-  height: 80%;
+  height: 95%;
   width: 25%;
   border-radius: 10px;
   border: solid black 1px;
-  background-color: bisque;
-
+  position: relative;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
 
+.offer2 > h1 {
+  color: white;
+  font-size: 3rem;
+  position: absolute;
+  top: 20px;
+}
+
+.offer2 > .text {
+  color: white;
+  position: absolute;
+  bottom: 100px;
+  padding: 10px;
+  font-size: 1.7rem;
+}
+/* OFFER3 */
 .offer3 {
-  height: 80%;
+  height: 95%;
   width: 25%;
   border-radius: 10px;
   border: solid black 1px;
-  background-color: blue;
- 
+  position: relative;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
 
+.offer3 > h1 {
+  color: white;
+  font-size: 3rem;
+  position: absolute;
+  top: 20px;
+}
 
-
+.offer3 > .text {
+  color: white;
+  position: absolute;
+  bottom: 100px;
+  padding: 10px;
+  font-size: 1.7rem;
+}
 
 /* #endregion OFFER */
