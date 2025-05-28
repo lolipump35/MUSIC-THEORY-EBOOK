@@ -15,7 +15,7 @@ body{
   justify-content: center;
   align-items: center;
   width: 500px;
-
+  height: 95vh;
   gap: 30px;
 }
 
@@ -27,14 +27,13 @@ body{
 #confirmPassword,
 .CGU {
   width: 300px;
-  height: 35px;
+  height: 5vh;
   border-radius: 5px;
     border: solid #f0f0f0 2px;
 }
 
 #phoneNumber {
   width: 310px;
-  height: 42px;
 }
 
 #password,
@@ -42,11 +41,10 @@ body{
   position: relative;
   right: 5px;
   width: 310px;
-  height: 40px;
 }
 
 .CGU{
-    height: 60px;
+    height: 8vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,7 +194,7 @@ input[type="password"]::-ms-clear {
 }
 
 #registerMe{
-    height: 50px;
+    height: 10vh;
     width: 130px;
     border-radius: 10px;
     border: none;

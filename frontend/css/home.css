@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   width: 100%;
   height: 100%;
@@ -12,6 +13,9 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: white;
+  font-family: "nunito";
+  font-weight: 100;
 }
 
 /* #region NAVBAR */
@@ -57,10 +61,12 @@ body {
   grid-area: 1 / 1 / 2 / 2;
   transform: scale(0.44);
 }
+
 #signInButton {
   grid-area: -1 / -2 / -2 / -3;
   transform: scale(0.4);
 }
+
 #menuButton {
   grid-area: -1 / -1 / -2 / -2;
   transform: scale(0.6);
@@ -92,31 +98,37 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 99;
 }
+
 .menuNavbar.visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.menuNavbar > button {
+.menuNavbar>button {
   width: 100%;
   border: none;
 }
 
 .menu-item {
   transition: color 0.3s ease, transform 0.3s ease;
-  color: #474747; /* Couleur normale */
-  cursor: pointer; /* Curseur pointeur pour indiquer que c’est cliquable */
-  display: inline-block; /* ou block selon ta structure */
+  color: #474747;
+  /* Couleur normale */
+  cursor: pointer;
+  /* Curseur pointeur pour indiquer que c’est cliquable */
+  display: inline-block;
+  /* ou block selon ta structure */
 }
 
 .menu-item:hover {
-  color: #000000; /* Couleur plus foncée au survol */
+  color: #000000;
+  /* Couleur plus foncée au survol */
   transform: scale(1.2);
   transform-origin: center center;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; /* Agrandit légèrement le texte */
+  -moz-osx-font-smoothing: grayscale;
+  /* Agrandit légèrement le texte */
 }
 
 /* #endregion NAVBAR */
@@ -125,23 +137,21 @@ body {
 .landingPage {
   width: 100vw;
   height: 100vh;
-
-  border: solid black 1px;
 }
 
-.landingPage > .videoContainer {
+.landingPage>.videoContainer {
   overflow: hidden;
   width: 100%;
   height: 100%;
 }
 
-.landingPage > .videoContainer > video {
+.landingPage>.videoContainer>video {
   height: 100%;
   width: 100%;
   transform: scale(2);
 }
 
-.landingPage > .titre {
+.landingPage>.titre {
   display: flex;
   justify-content: center;
   color: white;
@@ -149,11 +159,22 @@ body {
   bottom: 400px;
   left: 30px;
   font-size: 45px;
-  border: solid white 1px;
   width: 800px;
 }
 
-.landingPage > #offerButton {
+.landingPage>.titre>h1 {
+   font-family: "Outfit";
+  font-weight: 500;
+}
+.Liberté{
+   font-family: "Boogaloo";
+  font-style: italic;
+  font-size: 110%;
+  font-weight: 900;
+
+}
+
+.landingPage>#offerButton {
   color: black;
   position: relative;
   bottom: 350px;
@@ -162,120 +183,146 @@ body {
   border: none;
   height: 80px;
   width: 200px;
+  transition: ease-in-out 0.3s;
+ cursor: pointer;: ;}
+.offerButtonHover{
+  transform: scale(1.05);
+  
 }
+.landingPage>#offerButton> h1{
+  font-family: "nunito" ;
+  font-weight: 500;
 
+}
 /* #endregion LANDING PAGE */
 
 /* #region OFFER */
-.offerContainer {
+.offer {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: solid black 1px;
   height: 100vh;
   width: 80%;
 }
+
+/* PRESENTATION */
 .presentation {
   width: 100%;
-  height: 400px;
+  height: 30%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.presentation > h1 {
+
+.presentation>h1 {
   font-size: 3rem;
-}
-.presentation > h1 > span {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+  font-family: "outfit";
+  font-weight: 200;
 }
 
-.offer {
-  border: solid black 1px;
+.presentation>h1>span {
+  font-family: "boogaloo";
+  font-size: 120%;
+}
+
+/* OFFER */
+.offerContainer {
+  height: 70%;
+  display: flex;
+  justify-content: space-around;
+
+}
+
+.allOffer {
+  border-radius: 15px;
+  width: 25%;
+  height: 95%;
+  overflow: hidden;
+  display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.allTitle {
+  position: absolute;
+  top: 25px;
+  font-size: 1.5rem;
+  color: white;
+  z-index: 2;
+}
+
+.allText {
+  position: absolute;
+  bottom: 25px;
+  font-size: 1.5rem;
+  margin: 15px;
+  color: white;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  font-family: "outfit";
+  font-weight: 300;
+}
+.title1{
+  font-size: 2.5rem;}
+.title2{
+  font-size: 2.3rem;
+}
+.title3{
+  font-size: 2.3rem;
+}
+
+.offer1,
+.offer2,
+.offer3 {
+  transition: ease-in-out 0.5s;
+}
+
+.overlay1 {
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 1;
   height: 100%;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
 }
 
-/* OFFER1 */
-.offer1 {
-  height: 95%;
-  width: 25%;
-  border-radius: 10px;
-  border: solid black 1px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
+.overlay2 {
+  background-color: rgba(0, 0, 0, 0.308);
+  z-index: 1;
+  height: 100%;
+  width: 100%;
 }
 
-.offer1 > h1 {
-  color: white;
-  font-size: 3rem;
+.overlay3 {
+  background-color: rgba(0, 0, 0, 0.219);
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+
+.imgBack1,
+.imgBack2,
+.imgBack3 {
   position: absolute;
-  top: 20px;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.8s ease, filter 0.5s ease;
 }
 
-.offer1 > .text {
-  color: white;
-  position: absolute;
-  bottom: 100px;
-  padding: 10px;
-  font-size: 1.7rem;
-}
-/* OFFER2 */
-.offer2 {
-  height: 95%;
-  width: 25%;
-  border-radius: 10px;
-  border: solid black 1px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
+/* HOVER */
+.offerHover {
+  transform: scale(1.05);
 }
 
-.offer2 > h1 {
-  color: white;
-  font-size: 3rem;
-  position: absolute;
-  top: 20px;
+.imgBackOfferHover {
+  filter: blur(5px);
 }
 
-.offer2 > .text {
-  color: white;
-  position: absolute;
-  bottom: 100px;
-  padding: 10px;
-  font-size: 1.7rem;
-}
-/* OFFER3 */
-.offer3 {
-  height: 95%;
-  width: 25%;
-  border-radius: 10px;
-  border: solid black 1px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.offer3 > h1 {
-  color: white;
-  font-size: 3rem;
-  position: absolute;
-  top: 20px;
-}
-
-.offer3 > .text {
-  color: white;
-  position: absolute;
-  bottom: 100px;
-  padding: 10px;
-  font-size: 1.7rem;
+.textOfferHover {
+  opacity: 1;
 }
 
 /* #endregion OFFER */
