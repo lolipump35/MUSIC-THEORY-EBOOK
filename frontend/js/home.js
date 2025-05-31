@@ -121,6 +121,11 @@ offer2.addEventListener("mouseleave", () => {
   imgBackOffer2.classList.remove("imgBackOfferHover");
   textOffer2.classList.remove("textOfferHover");
 });
+offer2.addEventListener("click", () => {
+  console.log("offer cliquer")
+  sessionStorage.setItem("videoPlayAllowed", "true");
+  window.location.href =  "offer2.html";
+})
 
 const offer3 = document.querySelector(".offer3");
 const imgBackOffer3 = document.querySelector(".imgBack3");
@@ -138,6 +143,7 @@ offer3.addEventListener("mouseleave", () => {
   imgBackOffer3.classList.remove("imgBackOfferHover");
   textOffer3.classList.remove("textOfferHover");
 });
+
 
 // #endregion OFFER
 

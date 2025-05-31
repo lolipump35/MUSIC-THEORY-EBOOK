@@ -1,0 +1,130 @@
+body {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.presentation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  top: 80px;
+  margin-bottom: 100px;
+}
+
+/* #region video */
+.videoContainer {
+  width: 60vw;
+  height: 70vh;
+  overflow: hidden;
+}
+
+/* buttonVideo */
+.video-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  background-color: transparent;
+  color: white;
+  border: none;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  z-index: 2;
+  transition: 0.3s ease;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showButton {
+  opacity: 1;
+}
+
+/* #endregion video */
+
+/* #region interstDesireContainer */
+
+.interstDesireContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60vw;
+  height: 70vh;
+  position: relative;
+  margin-bottom: 20px;
+
+}
+
+.interstContainer {
+  width: 45%;
+  height: 95%;
+  background-color: greenyellow;
+  border-radius: 20px;
+}
+
+.desireContainer {
+  width: 45%;
+  height: 95%;
+  background-color: rgb(255, 200, 47);
+  border-radius: 20px;
+}
+
+/* #endregion interstDesireContainer */
+
+/* #region teaserContainer */
+
+.teaserContainer {
+  width: 60vw;
+  height: 70vh;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+}
+
+.allTeaser {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.allImg {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+  position: absolute;
+}
+
+.allTitle {
+  z-index: 1;
+  color: white;
+  position: relative;
+  padding: 20px;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.alltext {
+  z-index: 1;
+  color: white;
+  position: relative;
+  padding: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* #endregion teaserContainer */
+
+/*#endregion OFFER */
+
+#buyButtonFormation {
+  width: 20vw;
+  height: 15vh;
+  background-color: blue;
+  margin-bottom: 20px;
+}

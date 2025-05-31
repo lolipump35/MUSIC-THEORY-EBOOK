@@ -225,104 +225,104 @@ body {
   font-size: 120%;
 }
 
-/* OFFER */
-.offerContainer {
-  height: 70%;
-  display: flex;
-  justify-content: space-around;
+  /* OFFER */
+  .offerContainer {
+    height: 70%;
+    display: flex;
+    justify-content: space-around;
 
-}
+  }
 
-.allOffer {
-  border-radius: 15px;
-  width: 25%;
-  height: 95%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
+  .allOffer {
+    border-radius: 15px;
+    width: 25%;
+    height: 95%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
 
-.allTitle {
-  position: absolute;
-  top: 25px;
-  font-size: 1.5rem;
-  color: white;
-  z-index: 2;
-}
+  .allTitle {
+    position: absolute;
+    top: 25px;
+    font-size: 1.5rem;
+    color: white;
+    z-index: 2;
+  }
 
-.allText {
-  position: absolute;
-  bottom: 25px;
-  font-size: 1.5rem;
-  margin: 15px;
-  color: white;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.8s ease, transform 0.8s ease;
-  font-family: "outfit";
-  font-weight: 300;
-}
-.title1{
-  font-size: 2.5rem;}
-.title2{
-  font-size: 2.3rem;
-}
-.title3{
-  font-size: 2.3rem;
-}
+  .allText {
+    position: absolute;
+    bottom: 25px;
+    font-size: 1.5rem;
+    margin: 15px;
+    color: white;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    font-family: "outfit";
+    font-weight: 300;
+  }
+  .title1{
+    font-size: 2.5rem;}
+  .title2{
+    font-size: 2.3rem;
+  }
+  .title3{
+    font-size: 2.3rem;
+  }
 
-.offer1,
-.offer2,
-.offer3 {
-  transition: ease-in-out 0.5s;
-}
+  .offer1,
+  .offer2,
+  .offer3 {
+    transition: ease-in-out 0.5s;
+  }
 
-.overlay1 {
-  background-color: rgba(0, 0, 0, 0);
-  z-index: 1;
-  height: 100%;
-  width: 100%;
-}
+  .overlay1 {
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+  }
 
-.overlay2 {
-  background-color: rgba(0, 0, 0, 0.308);
-  z-index: 1;
-  height: 100%;
-  width: 100%;
-}
+  .overlay2 {
+    background-color: rgba(0, 0, 0, 0.308);
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+  }
 
-.overlay3 {
-  background-color: rgba(0, 0, 0, 0.219);
-  z-index: 1;
-  height: 100%;
-  width: 100%;
-}
+  .overlay3 {
+    background-color: rgba(0, 0, 0, 0.219);
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+  }
 
-.imgBack1,
-.imgBack2,
-.imgBack3 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  z-index: 0;
-  transition: transform 0.8s ease, filter 0.5s ease;
-}
+  .imgBack1,
+  .imgBack2,
+  .imgBack3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.8s ease, filter 0.5s ease;
+  }
 
-/* HOVER */
-.offerHover {
-  transform: scale(1.05);
-}
+  /* HOVER */
+  .offerHover {
+    transform: scale(1.05);
+  }
 
-.imgBackOfferHover {
-  filter: blur(5px);
-}
+  .imgBackOfferHover {
+    filter: blur(5px);
+  }
 
-.textOfferHover {
-  opacity: 1;
-}
+  .textOfferHover {
+    opacity: 1;
+  }
 
 /* #endregion OFFER */
