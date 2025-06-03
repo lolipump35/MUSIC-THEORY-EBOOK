@@ -57,37 +57,80 @@ body {
   height: 70vh;
   position: relative;
   margin-bottom: 20px;
-
 }
 
-.interstContainer {
+.together {
   width: 45%;
   height: 95%;
-  background-color: greenyellow;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.together .title {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-top: 50px;
+}
+.together ul {
+  margin: 30px;
+}
+.together li p {
+  font-size: 1.5rem;
+}
+.bold {
+  font-size: 110%;
+  font-weight: 600;
+}
+.interstContainer {
+  background-color: #93e9b7;
+  color: #2f4f4f;
+}
+.interstContainer .title {
+  color: #2f4f4f;
+}
+#découvrir {
+  font-weight: 900;
+  font-size: 2.2rem;
 }
 
 .desireContainer {
-  width: 45%;
-  height: 95%;
-  background-color: rgb(255, 200, 47);
-  border-radius: 20px;
+  background-color: #f8cb61;
+  color: #7a4e0d;
+}
+
+#gagnez {
+  font-weight: 900;
+  font-size: 2.2rem;
 }
 
 /* #endregion interstDesireContainer */
 
+/* #region teaser */
+
+.teaser{
+  height: 15vh;
+  display: flex;
+  align-items: center;
+}
+.teaser h1{
+  font-size: 2.5rem;
+}
+
+/* #endregion teaser */
+
 /* #region slider1 */
-.splide{
+.splide {
   width: 60vw;
   height: 50vh;
   overflow: hidden;
 }
 
-.splide__slide{
-position: relative;
+.splide__slide {
+  position: relative;
 }
 
-.splide__slide h1{
+.splide__slide h1 {
   color: white;
   position: absolute;
   top: 20px;
@@ -96,33 +139,28 @@ position: relative;
   font-weight: 900;
 }
 
-.splide__slide > .text{
+.splide__slide > .text {
   width: 50%;
   height: 40%;
   position: absolute;
   top: 100px;
   left: 60px;
-
 }
 
-.splide__slide   p{ 
+.splide__slide p {
   color: white;
   position: absolute;
   font-size: 1.2rem;
   font-weight: 300;
 }
 
-
-.splide__slide img{
+.splide__slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-
-
 /* #endregion slider1 */
-
 
 /*#endregion OFFER */
 

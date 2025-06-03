@@ -40,7 +40,16 @@ container.addEventListener("mouseleave", () => {
 // #endregion controlVideo
 
 // splide
+// JavaScript
 document.addEventListener('DOMContentLoaded', function () {
-var splide = new Splide( '.splide' );
-splide.mount();
+  var splide = new Splide('.splide', {
+    type       : 'loop',        // Pour un slider infini
+    autoplay   : true,          // Active l'autoplay
+    interval   : 5000,          // Slide toutes les 5 secondes
+    pauseOnHover: true,        // Ne pas mettre en pause au survol
+    arrows     : true,          // Flèches de navigation visibles
+    pagination : false          // Pas de points de pagination
   });
+
+  splide.mount();
+});
