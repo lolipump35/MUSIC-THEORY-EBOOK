@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/offer2.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.3/dist/css/splide.min.css">
+
     <title>Document</title>
 </head>
 
@@ -21,39 +23,37 @@
         <div class="desireContainer"></div>
     </section>
 
-    <section class="teaserContainer">
-        <div class="tease1 allTeaser">
-            <img class="img1 allImg" src="../img/landingPage/morceau2.jpg" alt="">
-            <h1 class="titl1 allTitle">Lorem ipsum dolor sit amet.</h1>
-            <p class="text1 alltext">Lorem, ipsum dolor sit amet consectetur adipisicing
-                elit. Veniam vel dolore harum minima, repellat consequuntur perspiciatis
-            </p>
+    <section id="image-carousel" class="splide" aria-label="Beautiful Images">
+        <div class="splide__track">
+            <ul class="splide__list">
+                <li class="splide__slide">
+                    <h1>Lorem ipsum dolor sit amet.</h1>
+                    <div class="text">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa ipsum blanditiis repellat,
+                            veniam
+                            doloribus deleniti dolor saepe ipsa earum. Eum eveniet hic inventore fuga dolore?</p>
+                    </div>
+                    <img src="../img/landingPage/morceau2.jpg" alt="">
+                </li>
+                <li class="splide__slide">
+                    <img src="../img/landingPage/morceau2.jpg" alt="">
+                </li>
+                <li class="splide__slide">
+                    <img src="../img/landingPage/morceau2.jpg" alt="">
+                </li>
+            </ul>
         </div>
-
-        <div class="tease2 allTeaser">
-            <img class="img2 allImg" src="../img/landingPage/morceau3.jpg" alt="">
-            <h1 class="titl2 allTitle">Lorem ipsum dolor sit amet.</h1>
-            <p class="text2 alltext">Lorem, ipsum dolor sit amet consectetur adipisicing
-                elit. Veniam vel dolore harum minima, repellat consequuntur perspiciatis
-            </p>
-        </div>
-
-        <div class="tease3 allTeaser">
-            <img class="img3 allImg" src="../img/landingPage/morceux.png" alt="">
-            <h1 class="titl3 allTitle">Lorem ipsum dolor sit amet.</h1>
-            <p class="text3 alltext">Lorem, ipsum dolor sit amet consectetur adipisicing
-                elit. Veniam vel dolore harum minima, repellat consequuntur perspiciatis
-            </p>
-        </div>
-
     </section>
+
+
 
     <!-- <button id="buyButtonFormation"></button> -->
 
     </section>
 
     <script src="../js/offer2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.3/dist/js/splide.min.js"></script>
+
 </body>
 
 </html>
-
