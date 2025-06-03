@@ -76,49 +76,53 @@ body {
 
 /* #endregion interstDesireContainer */
 
-/* #region teaserContainer */
-
-.teaserContainer {
+/* #region slider1 */
+.splide{
   width: 60vw;
-  height: 70vh;
-  border-radius: 20px;
-  display: flex;
+  height: 50vh;
   overflow: hidden;
 }
 
-.allTeaser {
-  height: 100%;
-  width: 100%;
-  position: relative;
+.splide__slide{
+position: relative;
 }
 
-.allImg {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  z-index: 0;
-  position: absolute;
-}
-
-.allTitle {
-  z-index: 1;
+.splide__slide h1{
   color: white;
-  position: relative;
-  padding: 20px;
-  font-size: 2rem;
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  font-size: 2.2rem;
   font-weight: 900;
 }
 
-.alltext {
-  z-index: 1;
-  color: white;
-  position: relative;
-  padding: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
+.splide__slide > .text{
+  width: 50%;
+  height: 40%;
+  position: absolute;
+  top: 100px;
+  left: 60px;
+
 }
 
-/* #endregion teaserContainer */
+.splide__slide   p{ 
+  color: white;
+  position: absolute;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+
+.splide__slide img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+/* #endregion slider1 */
+
 
 /*#endregion OFFER */
 
