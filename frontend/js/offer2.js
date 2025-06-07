@@ -1,55 +1,97 @@
-// permet de lire la video a l ouverture de la page 
+// permet de lire la video a l ouverture de la page
 const video = document.getElementById("videoPresentation");
 const playAllowed = sessionStorage.getItem("videoPlayAllowed");
 
 if (playAllowed === "true") {
-    video.muted = false;
-    video.play();
+  video.muted = false;
+  video.play();
 }
 
 // #region controlVideo
 const container = document.querySelector(".videoContainer");
 const controlButton = document.getElementById("videoControl");
-console.log("buttonControl cliquer")
+console.log("buttonControl cliquer");
 
 // État initial : masquer le bouton une fois que la vidéo joue automatiquement
 video.addEventListener("play", () => {
-    controlButton.innerHTML = "⏸";
+  controlButton.innerHTML = "⏸";
 });
 
 video.addEventListener("pause", () => {
-    controlButton.innerHTML = "▶";
+  controlButton.innerHTML = "▶";
 });
 
 container.addEventListener("click", () => {
-    if (video.paused) {
-        video.play();
-    } else {
-        video.pause();
-    }
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
 });
 
 container.addEventListener("mouseenter", () => {
-    controlButton.classList.add("showButton");
-})
+  controlButton.classList.add("showButton");
+});
 container.addEventListener("mouseleave", () => {
-    controlButton.classList.remove("showButton");
-})
-
+  controlButton.classList.remove("showButton");
+});
 
 // #endregion controlVideo
 
 // splide
 // JavaScript
-document.addEventListener('DOMContentLoaded', function () {
-  var splide = new Splide('.splide', {
-    type       : 'loop',        // Pour un slider infini
-    autoplay   : true,          // Active l'autoplay
-    interval   : 5000,          // Slide toutes les 5 secondes
-    pauseOnHover: true,        // Ne pas mettre en pause au survol
-    arrows     : true,          // Flèches de navigation visibles
-    pagination : false          // Pas de points de pagination
+document.addEventListener("DOMContentLoaded", function () {
+  var splide = new Splide(".splide", {
+    type: "loop", // Pour un slider infini
+    autoplay: true, // Active l'autoplay
+    interval: 5000, // Slide toutes les 5 secondes
+    pauseOnHover: true, // Ne pas mettre en pause au survol
+    arrows: true, // Flèches de navigation visibles
+    pagination: false, // Pas de points de pagination
   });
 
   splide.mount();
 });
+
+// #region style css
+
+const interstContainer = document.querySelector(".interstContainer");
+const toBoldinterst = document.querySelectorAll(".toBoldinterst");
+console.log(toBoldinterst);
+
+interstContainer.addEventListener("mouseenter", () => {
+  console.log("interstContainer cliquer");
+
+  toBoldinterst.forEach((elementToBold) => {
+    elementToBold.classList.add("bold");
+  });
+});
+interstContainer.addEventListener("mouseleave", () => {
+  console.log("interstContainer cliquer");
+
+  toBoldinterst.forEach((elementToBold) => {
+    elementToBold.classList.remove("bold");
+  });
+});
+
+const desireContainer = document.querySelector(".desireContainer");
+const toBolddesir = document.querySelectorAll(".toBolddesire");
+console.log(toBolddesir);
+
+desireContainer.addEventListener("mouseenter", () => {
+  console.log("desireContainer cliquer");
+
+  toBolddesir.forEach((elementToBold) => {
+    elementToBold.classList.add("bold");
+  });
+});
+desireContainer.addEventListener("mouseleave", () => {
+  console.log("desireContainer cliquer");
+
+  toBolddesir.forEach((elementToBold) => {
+    elementToBold.classList.remove("bold");
+  });
+});
+
+
+// #endregion style css
