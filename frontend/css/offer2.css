@@ -4,6 +4,7 @@ body {
   flex-direction: column;
   background-color: #f0f0f0;
   font-family: "nunito";
+  font-size: 1.2rem;
 }
 
 .presentation {
@@ -13,6 +14,11 @@ body {
   position: relative;
   top: 80px;
   margin-bottom: 100px;
+}
+
+.zoomGlobal {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  will-change: transform;
 }
 
 /* #region video */
@@ -72,6 +78,10 @@ body {
   background-color: white;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
+.together:hover {
+  transform: scale(1.01);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
 .together .title {
   font-size: 2rem;
   font-weight: 700;
@@ -79,40 +89,87 @@ body {
 }
 .together ul {
   height: 100%;
+  margin-right: 40px;
 }
 .together li p {
   font-size: 1.5rem;
 }
+/* Styles de base (sans .bold) */
+.toBoldinterst,
+.toBolddesire{
+  font-size: 100%;
+  font-weight: 400;
+  text-shadow: none;
+  opacity: 1;
+  transition: font-size 0.1s ease-in-out, font-weight 0.1s ease-in-out;
+  will-change: font-size, font-weight;
+}
+
+/* Styles quand la classe .bold est ajoutée */
 .bold {
-  font-size: 115%;
+  font-size: 110%;
   font-weight: 800;
   text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
+  opacity: 1;
 }
 
 #découvrir {
   font-weight: 900;
   font-size: 2.2rem;
-  color: rgb(92, 143, 104);
+  color: #6abf69;
 }
 
 #gagnez {
   font-weight: 900;
   font-size: 2.2rem;
-  color: rgb(224, 183, 1);
+  color: #f5a623;
 }
 
 /* #endregion interstDesireContainer */
 
+/* #region strongPoint */
+
+.strongPoint {
+  width: 60vw;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.strongPoint .title {
+  position: absolute;
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+}
+.goodPoint,
+.badPoint {
+  display: flex;
+  flex-direction: column;
+  width: 35vw;
+  position: relative;
+  top: 100px;
+  padding: 40px;
+}
+.allPoint{
+  transform: scale(1);
+  height: 110%;
+}
+.allPoint:hover{
+   transform: scale(1.05);
+
+}
+
+/* #endregion strongPoint */
+
 /* #region teaser */
 
 .teaser {
-  height: 15vh;
   display: flex;
   align-items: center;
   margin: 30px;
 }
 .teaser h1 {
-  font-size: 4rem;
+  font-size: 3rem;
   color: BLACK;
   text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
 }
@@ -158,14 +215,14 @@ body {
   font-weight: 500;
 }
 
-.image-container{
-    width: 60vw;
+.image-container {
+  width: 60vw;
   height: 50vh;
   position: relative;
   overflow: hidden;
 }
 
-.image-container img{
+.image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -181,9 +238,7 @@ body {
   filter: blur(80px);
   /* masque dégradé de gauche (opaque) à droite (transparent) */
   mask-image: linear-gradient(to right, black 30%, transparent 100%);
-
-} 
-
+}
 
 /* #endregion slider1 */
 
