@@ -5,6 +5,7 @@ body {
   background-color: #f0f0f0;
   font-family: "nunito";
   font-size: 1.2rem;
+  transition: ease-in-out 0.5s;
 }
 
 .presentation {
@@ -86,6 +87,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
   margin-top: 40px;
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 .together ul {
   height: 100%;
@@ -123,6 +125,7 @@ body {
   font-weight: 900;
   font-size: 2.2rem;
   color: #f5a623;
+  color: #f5a523a2;
 }
 
 /* #endregion interstDesireContainer */
@@ -130,7 +133,7 @@ body {
 /* #region strongPoint */
 
 .strongPoint {
-  width: 60vw;
+  width: 70vw;
   display: flex;
   justify-content: center;
   position: relative;
@@ -140,25 +143,54 @@ body {
   font-size: 3rem;
   display: flex;
   justify-content: center;
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+
 }
 .goodPoint,
 .badPoint {
   display: flex;
   flex-direction: column;
-  width: 35vw;
+  width: 30vw;
   position: relative;
   top: 100px;
   padding: 40px;
 }
 .allPoint{
-  transform: scale(1);
-  height: 110%;
+  display: flex;
+flex-direction: row;
+height: 10vh;
+  border-radius: 25px;
+  transition: ease-in-out 0.3s ;
+}
+.allPoint H1{
+  width: 40vw;
+}
+.allPoint IMG{
+height: 100px;
+width: 20%;
+
+}
+.allPoint p{
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.strongPoint img{
+  transform: scale(0.5);
 }
 .allPoint:hover{
    transform: scale(1.05);
-
+}
+.allPointTitle:hover{
+   transform: scale(1.05);
 }
 
+.greenLight{
+  background-color: #6abf693a;
+}
+.redLight{
+  background-color: #bf69692f;
+}
 /* #endregion strongPoint */
 
 /* #region teaser */
@@ -167,11 +199,12 @@ body {
   display: flex;
   align-items: center;
   margin: 30px;
+  margin-top: 70px;
 }
 .teaser h1 {
   font-size: 3rem;
   color: BLACK;
-  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* #endregion teaser */
