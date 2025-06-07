@@ -55,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // #region style css
 
+// #region interstDesireContainer
+
 const interstContainer = document.querySelector(".interstContainer");
 const toBoldinterst = document.querySelectorAll(".toBoldinterst");
 console.log(toBoldinterst);
@@ -65,6 +67,7 @@ interstContainer.addEventListener("mouseenter", () => {
   toBoldinterst.forEach((elementToBold) => {
     elementToBold.classList.add("bold");
   });
+  document.body.style.backgroundColor = "#6abf6994";
 });
 interstContainer.addEventListener("mouseleave", () => {
   console.log("interstContainer cliquer");
@@ -72,6 +75,7 @@ interstContainer.addEventListener("mouseleave", () => {
   toBoldinterst.forEach((elementToBold) => {
     elementToBold.classList.remove("bold");
   });
+    document.body.style.backgroundColor = "";
 });
 
 const desireContainer = document.querySelector(".desireContainer");
@@ -84,6 +88,7 @@ desireContainer.addEventListener("mouseenter", () => {
   toBolddesir.forEach((elementToBold) => {
     elementToBold.classList.add("bold");
   });
+    document.body.style.backgroundColor = "#f5a523a2";
 });
 desireContainer.addEventListener("mouseleave", () => {
   console.log("desireContainer cliquer");
@@ -91,7 +96,35 @@ desireContainer.addEventListener("mouseleave", () => {
   toBolddesir.forEach((elementToBold) => {
     elementToBold.classList.remove("bold");
   });
+    document.body.style.backgroundColor = "";
+
+});
+// #endregion interstDesireContainer
+
+//#region strongPoint
+
+const allGoodPoint = document.querySelectorAll(".goodPoint .allPoint");
+
+allGoodPoint.forEach((el) => {
+  el.addEventListener("mouseenter", () => {
+    el.classList.add("greenLight");
+  });
+  el.addEventListener("mouseleave", () => {
+    el.classList.remove("greenLight");
+  });
 });
 
+const allBadPoint = document.querySelectorAll(".badPoint .allPoint");
+
+allBadPoint.forEach((el) => {
+  el.addEventListener("mouseenter", () => {
+    el.classList.add("redLight");
+  });
+  el.addEventListener("mouseleave", () => {
+    el.classList.remove("redLight");
+  });
+});
+
+//#endregion strongPoint
 
 // #endregion style css
