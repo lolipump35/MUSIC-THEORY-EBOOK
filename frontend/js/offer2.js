@@ -39,7 +39,6 @@ container.addEventListener("mouseleave", () => {
 // #endregion controlVideo
 
 // splide
-// JavaScript
 document.addEventListener("DOMContentLoaded", function () {
   var splide = new Splide(".splide", {
     type: "loop", // Pour un slider infini
@@ -75,7 +74,7 @@ interstContainer.addEventListener("mouseleave", () => {
   toBoldinterst.forEach((elementToBold) => {
     elementToBold.classList.remove("bold");
   });
-    document.body.style.backgroundColor = "";
+  document.body.style.backgroundColor = "";
 });
 
 const desireContainer = document.querySelector(".desireContainer");
@@ -88,7 +87,7 @@ desireContainer.addEventListener("mouseenter", () => {
   toBolddesir.forEach((elementToBold) => {
     elementToBold.classList.add("bold");
   });
-    document.body.style.backgroundColor = "#f5a523a2";
+  document.body.style.backgroundColor = "#f5a523a2";
 });
 desireContainer.addEventListener("mouseleave", () => {
   console.log("desireContainer cliquer");
@@ -96,8 +95,7 @@ desireContainer.addEventListener("mouseleave", () => {
   toBolddesir.forEach((elementToBold) => {
     elementToBold.classList.remove("bold");
   });
-    document.body.style.backgroundColor = "";
-
+  document.body.style.backgroundColor = "";
 });
 // #endregion interstDesireContainer
 
@@ -126,5 +124,18 @@ allBadPoint.forEach((el) => {
 });
 
 //#endregion strongPoint
+
+//#region buyButton
+
+const buyButton = document.getElementById("buyButtonFormation");
+
+buyButton.addEventListener("mouseenter", () => {
+  buyButton.style.backgroundColor = "green";
+});
+buyButton.addEventListener("mouseleave", () => {
+  buyButton.style.backgroundColor = "";
+});
+
+//#endregion buyButton
 
 // #endregion style css
