@@ -1,4 +1,14 @@
 /* #region goblal */
+body {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  font-family: "nunito";
+  font-size: 1.2rem;
+  transition: ease-in-out 0.5s;
+}
+
 .bookCourse {
   display: flex;
   align-items: center;
@@ -7,6 +17,11 @@
   font-size: 2rem;
   border: none;
   border-radius: 15px;
+}
+
+.bold {
+  font-weight: 700;
+  font-size: 1.7rem;
 }
 
 /* #endregion goblal */
@@ -37,14 +52,229 @@
   left: 100px;
   top: 10%;
   z-index: 1;
+  color: white;
 }
 .bannière .bookCourse {
   width: 20%;
   height: 10%;
   position: absolute;
-  top: 60%;
+  top: 65%;
   left: 100px;
   z-index: 1;
+  transition: ease-in-out 0.2s;
+}
+
+.bannière .bookCourse:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
 }
 
 /* #endregion banniere */
+
+/* #region presentation */
+
+.presentation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 80vh;
+  width: 100vw;
+}
+.presentation .title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20%;
+  font-size: 3.5rem;
+  margin: 40px;
+}
+.presentation .title h1 {
+}
+
+.presentation .moduleContainer {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  width: 80%;
+}
+.presentation .allModules {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  width: 28%;
+  transition: ease-in-out 0.5s;
+}
+
+.zoom {
+  transform: scale(1.05);
+  will-change: transform, fontSize;
+}
+
+.presentation .allModules .imgContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  overflow: hidden;
+  border-radius: 15px;
+  z-index: 0;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.1);
+}
+.presentation .allModules .imgContainer img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.overlayWhite {
+  background-color: white;
+  height: 10%;
+  width: 100%;
+  border-radius: 15px;
+  position: relative;
+  bottom: 4%;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+.presentation .allModules ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 60%;
+  background-color: white;
+  margin: 0;
+  position: relative;
+  bottom: 2%;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.1);
+}
+.presentation .allModules li {
+}
+/* #endregion presentation */
+
+/* #region testimony */
+.testimony {
+  width: 100vw;
+  height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 60px;
+}
+.testimony .title {
+  font-size: 3.5rem;
+}
+.videoContainer {
+  width: auto;
+  aspect-ratio: 16 / 9; /* ✅ garde le bon ratio */
+  overflow: hidden;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  z-index: 1;
+  position: relative;
+}
+s
+.video-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  background-color: transparent;
+  color: white;
+  border: none;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  z-index: 2;
+  transition: 0.3s ease;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.showButton {
+  opacity: 1;
+}
+
+/* #endregion testimony */
+
+/* #region howWork */
+
+.howWork {
+  height: 55vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.howWork .title {
+  font-size: 2rem;
+  font-weight: 900;
+  height: 5%;
+}
+
+.howWork .moduleContainer {
+  height: 70%;
+  width: 60%;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+}
+.howWork .allModules {
+  height: 100%;
+  width: 28%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+    transition: ease-in-out 0.5s;
+}
+.howWork .imgContainer {
+  height: 30%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.howWork img {
+  transform: scale(0.3);
+}
+.howWork p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* #endregion howWork */
+
+/* #region calendly */
+.calendly {
+  width: 100vw;
+  margin: 0 auto; /* centrer horizontalement */
+  height: 120vh; /* hauteur fixe ou ajustable */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  bottom: 200px;
+}
+.calendly .title {
+  font-size: 3rem;
+}
+.calendly iframe {
+  width: 100%;
+  height: 58%;
+  border-radius: 15px;
+}
+
+/* #endregion calendly */
