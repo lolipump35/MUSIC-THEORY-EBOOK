@@ -136,6 +136,9 @@ buyButton.addEventListener("mouseleave", () => {
   buyButton.style.backgroundColor = "";
 });
 
+
+
 //#endregion buyButton
 
 // #endregion style css
+
