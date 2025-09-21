@@ -16,6 +16,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
 
 const corsOptions = {
   origin: (origin, callback) => {
+    console.log("CORS check, origin:", origin);
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -49,6 +51,7 @@ app.get("/", (req, res) => {
 
 // ✅ Route Stripe
 app.post("/create-checkout-session", async (req, res) => {
+  console.log("🚀 /create-checkout-session called");
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -57,24 +60,23 @@ app.post("/create-checkout-session", async (req, res) => {
         {
           price_data: {
             currency: "eur",
-            product_data: {
-              name: "Formation Guitare Débutant",
-            },
-            unit_amount: 1500, // 15€ en centimes
+            product_data: { name: "Formation Guitare Débutant" },
+            unit_amount: 1500,
           },
           quantity: 1,
         },
       ],
-      success_url: "http://localhost:5500/success.html",
-      cancel_url: "http://localhost:5500/cancel.html",
+      success_url: `http://127.0.0.1:5501/success.html`,
+      cancel_url: `http://127.0.0.1:5501/cancel.html`,
     });
-
+    console.log("Session created:", session.url);
     res.json({ url: session.url });
   } catch (error) {
     console.error("Stripe error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Démarrage du serveur
 app.listen(port, () => {
