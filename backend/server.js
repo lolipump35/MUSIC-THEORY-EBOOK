@@ -8,8 +8,6 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const authRoutes = require("./routes/authRoutes");
 
-dotenv.config();
-
 const app = express();
 const port = 5000;
 
