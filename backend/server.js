@@ -2,9 +2,10 @@ require('dotenv').config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+console.log("Stripe Secret Key:", process.env.STRIPE_SECRET_KEY);
+
 
 const authRoutes = require("./routes/authRoutes");
 
