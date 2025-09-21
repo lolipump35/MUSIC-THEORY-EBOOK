@@ -12,10 +12,9 @@ document.getElementById("buyButtonFormation").addEventListener("click", () => {
   })
   .then(res => res.json())
   .then(data => {
-    console.log(data);
-    // redirection via la sessionId reçue
-    return stripe.redirectToCheckout({ sessionId: data.id });
-  })
+  console.log("Session data:", data);
+  window.location.href = data.url; // redirection vers Stripe
+})
   .then(result => {
     if (result.error) {
       console.error(result.error.message);

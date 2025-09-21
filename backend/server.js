@@ -1,11 +1,10 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 console.log("Stripe Secret Key:", process.env.STRIPE_SECRET_KEY);
-
 
 const authRoutes = require("./routes/authRoutes");
 
@@ -70,7 +69,7 @@ app.post("/create-checkout-session", async (req, res) => {
       cancel_url: "http://localhost:5500/cancel.html",
     });
 
-    res.json({ id: session.id });
+    res.json({ url: session.url });
   } catch (error) {
     console.error("Stripe error:", error.message);
     res.status(500).json({ error: error.message });
