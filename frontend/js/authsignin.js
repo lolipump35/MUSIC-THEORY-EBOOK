@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //   ? "http://localhost:5000"
   //   : "https://music-theory-ebook.onrender.com";
 
-   const BASE_URL = "https://music-theory-ebook.onrender.com";
+const BASE_URL = "http://localhost:5000";
+
    
   console.log("BASE_URL =", BASE_URL);
 
@@ -48,30 +49,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const requestBody = { email: emailValue, password: passwordValue };
 
-    try {
-      const response = await fetch(`${BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-        credentials: "include",
-      });
+   try {
+  const response = await fetch(`${BASE_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(requestBody),
+    credentials: "include",
+  });
 
-      const data = await response.json();
+  const data = await response.json();
 
-      if (response.ok) {
-        showMessage("Connexion réussie !", "success");
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1000);
-      } else {
-        showMessage(data.message || "Erreur de connexion.");
-      }
-    } catch (err) {
-      console.error("Erreur réseau : ", err);
-      showMessage("Erreur de connexion au serveur.");
-    } finally {
-      signInButton.disabled = false;
+  if (response.ok) {
+    // ✅ Stockage du token dans localStorage
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      console.log("✅ Token enregistré :", data.token);
+      console.log("✅ userId enregistré :", data.userId);
     }
+
+    showMessage("Connexion réussie !", "success");
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1000);
+  } else {
+    showMessage(data.message || "Erreur de connexion.");
+  }
+} catch (err) {
+  console.error("Erreur réseau : ", err);
+  showMessage("Erreur de connexion au serveur.");
+} finally {
+  signInButton.disabled = false;
+}
+
   });
 
   // Réinitialise styles & placeholder au focus

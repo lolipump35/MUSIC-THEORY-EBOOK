@@ -74,7 +74,6 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(cleanPassword, user.password);
     console.log("Résultat de bcrypt.compare:", isMatch);
 
-
     if (!isMatch) {
       console.log("❌ Mot de passe incorrect !");
       return res.status(400).json({ message: "Mot de passe incorrect." });
@@ -86,7 +85,12 @@ const loginUser = async (req, res) => {
     });
 
     console.log("✅ Connexion réussie !");
-    res.json({ token });
+
+    res.json({
+      token,
+      userId: user._id, // <-- ça permettra au front de le stocker
+    });
+    
   } catch (err) {
     console.error("Erreur serveur :", err);
     res.status(500).json({ message: err.message });
@@ -109,6 +113,5 @@ module.exports = {
   loginUser,
   getUsers,
 };
-
 
 // #endregion Connexion

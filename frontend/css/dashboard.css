@@ -1,0 +1,274 @@
+/* #region NAVBAR */
+
+.navbar {
+  background-color: rgb(241, 241, 241);
+  display: grid;
+  position: fixed;
+  top: 0;
+  grid-template: 1fr / 60px 1fr 60px 60px;
+  height: 60px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  transform: translateY(0);
+  z-index: 100;
+}
+
+#homeButton,
+#menuButton,
+#signInButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  right: 20px;
+  bottom: 20px;
+  height: 100%;
+  z-index: 100;
+}
+
+.navbarButton {
+  height: 50px;
+  width: 100px;
+}
+
+#homeButton {
+  grid-area: 1 / 1 / 2 / 2;
+  transform: scale(0.44);
+}
+
+#signInButton {
+  grid-area: -1 / -2 / -2 / -3;
+  transform: scale(0.4);
+}
+
+#menuButton {
+  grid-area: -1 / -1 / -2 / -2;
+  transform: scale(0.6);
+}
+
+#homeButton img,
+#signInButton img,
+#menuButton img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* MENUNAVBAR */
+.menuNavbar {
+  background-color: rgb(241, 241, 241);
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  width: 200px;
+  height: 300px;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 99;
+}
+
+.menuNavbar.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.menuNavbar > button {
+  width: 100%;
+  border: none;
+}
+
+.menu-item {
+  transition: color 0.3s ease, transform 0.3s ease;
+  color: #474747;
+  /* Couleur normale */
+  cursor: pointer;
+  /* Curseur pointeur pour indiquer que c’est cliquable */
+  display: inline-block;
+  /* ou block selon ta structure */
+}
+
+.menu-item:hover {
+  color: #000000;
+  /* Couleur plus foncée au survol */
+  transform: scale(1.2);
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Agrandit légèrement le texte */
+}
+
+/* #endregion NAVBAR */
+body {
+  display: flex;
+  justify-content: center;
+}
+.modulescontainer {
+  position: relative;
+  top: 60px;
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  height: auto;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+#breaknavbarzone {
+  height: 60px;
+  margin: 0;
+  padding: 0;
+}
+
+/* #region modules  */
+
+.modules {
+  height: 200px;
+  width: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.modules:hover {
+  transform: scale(1.1);
+  transition: ease-in-out 0.3s;
+}
+
+.modules > img {
+  scale: 0.5;
+  transform: translate(-40px, 20px);
+  z-index: 1;
+}
+
+.modules > .titleModule {
+  z-index: 2;
+  position: absolute;
+  color: white;
+  font-weight: 800;
+}
+
+/* #endregion modules  */
+
+/* #region teaser  */
+
+#teaser1 {
+  display: none;
+}
+
+#teaser1.visible {
+  display: grid;
+}
+
+.allContainer {
+  height: 60%;
+  width: 60%;
+  /* border: solid black 1px; */
+  position: fixed;
+  top: 20%;
+  border-radius: 20px;
+  background-color: rgb(241, 240, 232);
+  overflow: hidden;
+  z-index: 2;
+  display: grid;
+  grid-template: 30% 50% 20% / 1fr 1fr;
+}
+
+.allContainer .cover {
+  grid-area: 1/1/4/2;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: orange; */
+}
+
+.allContainer .cover > img {
+  transform: scale(1.2);
+}
+
+.rightTeaser {
+  grid-area: 1/2/4/3;
+}
+.allContainer .tittle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+  /* background-color: rgb(229, 255, 0); */
+}
+
+.allContainer .text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 45px;
+  margin-right: 20px;
+  font-size: 20px;
+  /* background-color: rgb(0, 255, 115); */
+}
+
+.allContainer .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+  /* background-color: rgb(47, 0, 255); */
+}
+
+.allContainer .button button {
+  height: 50px;
+  width: 40%;
+  border-radius: 10px;
+  border: none;
+  background-color: green;
+  color: white;
+  font-size: 20px;
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.allContainer .button button:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* overlay léger : assombrissement + flou discret */
+/* --- Arrière-plan sombre plus fluide --- */
+/* --- Fond assombri/flou par-dessus le body quand overlay-active est ajouté --- */
+#overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0); /* transparent par défaut */
+  backdrop-filter: blur(0px);
+  z-index: 2; /* juste en dessous du allContainer */
+  transition: background 0.5s ease, backdrop-filter 0.5s ease;
+  pointer-events: none; /* laisse passer les clics au teaser */
+}
+
+/* quand l’overlay doit apparaître */
+#overlay.active {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+/* #endregion teaser  */
