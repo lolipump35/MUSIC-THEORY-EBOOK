@@ -2,6 +2,8 @@
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
+  console.log(localStorage.getItem("token"));
+
   if (!token) {
     // Si pas de token → redirige vers la page de connexion
     window.location.href = "signin.html";
@@ -12,14 +14,14 @@ window.addEventListener("DOMContentLoaded", () => {
   fetch("http://localhost:5000/dashboard", {
     method: "GET",
     headers: {
-      "Authorization": "Bearer " + token
-    }
+      Authorization: "Bearer " + token,
+    },
   })
-    .then(res => {
+    .then((res) => {
       if (!res.ok) throw new Error("Erreur serveur");
       return res.json();
     })
-    .then(data => {
+    .then((data) => {
       console.log("✅ Dashboard :", data);
 
       // Exemple d'affichage simple dans l'UI
@@ -38,19 +40,18 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.error("❌ Erreur :", err);
       alert("Impossible de charger le dashboard");
     });
 });
-
 
 // #region NAVBARE
 // navbar dynamique
 const navbar = document.querySelector(".navbar");
 const menuNavbar = document.querySelector(".menuNavbar");
 
-let lastScroll = window.scrollY;
+// let lastScroll = window.scrollY;
 
 window.addEventListener("scroll", () => {
   let currentScroll = window.scrollY;
@@ -116,10 +117,112 @@ signInButton.addEventListener("click", () => {
 
 // #endregion NAVBARE
 
-// #region button 
+//#region CONTROLBAR
+
+// SETTING 
 
 
-// #endregion button 
+
+// TEMPORAIRE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+  const frameworkButton = document.getElementById('framework');
+  frameworkButton.addEventListener('click', () => {
+    window.location.href = '/frontend/pages/modules/frameworkModules.html'; 
+  });
+// TEMPORAIRE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+
+
+
+
+
+// button settings 
+  const settingsPanel = document.querySelector('.settings');
+  const openButton = document.getElementById('setting');
+  const closeButton = document.getElementById('closeSeting');
+
+  // Quand on clique sur le bouton "Setting"
+  openButton.addEventListener('click', () => {
+    settingsPanel.style.display = 'flex'; // affiche le panneau
+  });
+
+  // Quand on clique sur le bouton de fermeture "x"
+  closeButton.addEventListener('click', () => {
+    settingsPanel.style.display = 'none'; // cache le panneau
+  });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const platformButtons = document.querySelectorAll(".platform-btn");
+
+  // --- Fonction pour enregistrer la plateforme choisie ---
+  async function setPlatform(platform) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Utilisateur non connecté");
+
+      const res = await fetch("http://localhost:5000/api/user/platform", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ platform }),
+      });
+
+      if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+      const data = await res.json();
+      console.log("Préférence enregistrée :", data.platform);
+
+      // Mettre à jour les boutons visuellement
+      platformButtons.forEach((b) => b.classList.remove("selected"));
+      const btn = document.querySelector(`.platform-btn[data-platform="${platform}"]`);
+      if (btn) btn.classList.add("selected");
+
+    } catch (err) {
+      console.error("❌ Erreur :", err);
+    }
+  }
+
+  // --- Fonction pour récupérer la préférence existante ---
+  async function loadPreference() {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch("http://localhost:5000/api/user/platform", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+      const data = await res.json();
+      console.log("Préférence actuelle :", data.platform);
+
+      if (data.platform) {
+        const btn = document.querySelector(`.platform-btn[data-platform="${data.platform}"]`);
+        if (btn) btn.classList.add("selected");
+      }
+    } catch (err) {
+      console.error("❌ Erreur :", err);
+    }
+  }
+
+  // --- Ajout des écouteurs sur les boutons ---
+  platformButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setPlatform(btn.dataset.platform));
+  });
+
+  // --- Charger la préférence au démarrage ---
+  loadPreference();
+});
+
+
+//#endregion CONTROLBAR
+
+// #region button
+
+// #endregion button
 
 //#region teaser
 
@@ -134,26 +237,126 @@ const overlay = document.getElementById("overlay");
 
 // --- Données de chaque module (1 à 20) ---
 const modulesData = {
-  module1: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module1.html" },
-  module2: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module2.html" },
-  module3: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module3.html" },
-  module4: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module4.html" },
-  module5: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module5.html" },
-  module6: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module6.html" },
-  module7: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module7.html" },
-  module8: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module8.html" },
-  module9: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module9.html" },
-  module10: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module10.html" },
-  module11: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module11.html" },
-  module12: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module12.html" },
-  module13: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module13.html" },
-  module14: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module14.html" },
-  module15: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module15.html" },
-  module16: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module16.html" },
-  module17: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module17.html" },
-  module18: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module18.html" },
-  module19: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module19.html" },
-  module20: { title: "Les bases du rythme", text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.", image: "/frontend/img/dashboard/cours.png", link: "/frontend/pages/modules/module20.html" }
+  module1: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module1.html",
+  },
+  module2: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module2.html",
+  },
+  module3: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module3.html",
+  },
+  module4: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module4.html",
+  },
+  module5: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module5.html",
+  },
+  module6: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module6.html",
+  },
+  module7: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module7.html",
+  },
+  module8: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module8.html",
+  },
+  module9: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module9.html",
+  },
+  module10: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module10.html",
+  },
+  module11: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module11.html",
+  },
+  module12: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module12.html",
+  },
+  module13: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module13.html",
+  },
+  module14: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module14.html",
+  },
+  module15: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module15.html",
+  },
+  module16: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module16.html",
+  },
+  module17: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module17.html",
+  },
+  module18: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module18.html",
+  },
+  module19: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module19.html",
+  },
+  module20: {
+    title: "Les bases du rythme",
+    text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/module20.html",
+  },
 };
 
 // --- Variable pour savoir quel module est actif ---
@@ -216,18 +419,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//#endregion teaser

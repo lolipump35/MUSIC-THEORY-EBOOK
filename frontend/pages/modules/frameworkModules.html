@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/frontend/css/modules/frameworkModules.css" />
+    <title>frameworkModulesHtml</title>
+  </head>
+  <body>
+    <!-- TITTLE CONTAINER -->
+    <div class="tittleContainer">
+      <h1 class="tittle">"TITTLE"</h1>
+    </div>
+
+    <!-- VIDEO CONTAINER  -->
+    <div class="videoContainer">
+      <mux-player
+        id="muxPlayer1"
+        class="video"
+        style="
+          width: 100%;
+          max-width: 800px;
+          aspect-ratio: 16/9;
+          border-radius: 12px;
+        "
+        playback-id="RFX1M02tqXPH9AQWdPWalJQ2sP001U22XnrkrL8XBdFwk
+        stream-type="on-demand"
+        controls
+        autoplay
+      ></mux-player>
+    </div>
+
+    <!-- UNDERVIDEO CONTAINER  -->
+    <div class="undervideoContainer" id="undervideoContainer1">
+      <div class="timeCodeContainer">
+        <button class="tittletimecode">TimeCode</button>
+        <div class="chapters">
+          <button data-time="0">Introduction</button>
+          <button data-time="10">Chapitre 1 : Les bases</button>
+          <button data-time="20">Chapitre 2 : Exercices</button>
+          <button data-time="30">Conclusion</button>
+        </div>
+      </div>
+      <div class="musicPlatformContainer">
+        <button id="musicPlatformContainerButton">
+          <img src="/frontend/img/logo/musicPlatformLogo.png" alt="">
+        </button>
+        <div id="musicContainer"></div>
+      </div>
+      
+    </div>
+
+    <!-- IMG CONTAINER  -->
+    <div class="imageZone">
+      <div class="imageContainer">
+        <img class="image" src="/frontend/img/landingPage/morceux.png" alt="" />
+      </div>
+    </div>
+
+
+<!-- MUSIC WIDJET CONTAINER  -->
+<div id="musicContainer"></div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script src="/frontend/js/modules/frameworkModules.js"></script>
+  </body>
+</html>

@@ -13,6 +13,7 @@ const authRoutes = require("./routes/authRoutes");
 const stripeWebhook = require("./routes/stripeWebhook");
 const authMiddleware = require("./middleware/authMiddleware");
 const routes = require("./routes/index"); // index.js global (inclura les routes vidéo)
+const userPreferenceRoutes = require("./routes/userPreferenceRoutes"); // <-- notre nouvelle route
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,22 +31,9 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   : [];
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    console.log("CORS check, origin:", origin);
-
-    if (process.env.NODE_ENV === "development") {
-      callback(null, true);
-      return;
-    }
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
+  origin: true,        // accepte toutes les origines
+  credentials: true,   // autorise les cookies
+  methods: ["GET", "POST", "PUT", "DELETE"]
 };
 
 app.use(cors(corsOptions));
@@ -64,20 +52,14 @@ mongoose
   .catch((err) => console.error("❌ Database connection error:", err));
 
 // ----------------------------
-// Routes Auth
+// Routes
 // ----------------------------
 app.use("/api/auth", authRoutes);
+app.use("/api", routes); // index.js global pour /videos et autres routes existantes
+app.use("/api/user", userPreferenceRoutes); // <-- route pour la préférence de plateforme
 
 // ----------------------------
-// Routes globales (dont MUX)
-// ----------------------------
-app.use("/api", routes);
-// Cela inclut maintenant :
-// - /api/auth/...   → routes d’authentification
-// - /api/videos/... → routes MUX (via videoRoutes.js)
-
-// ----------------------------
-// Route test
+// Route par défaut
 // ----------------------------
 app.get("/", (req, res) => {
   res.send("Server is up and running!");
@@ -87,17 +69,13 @@ app.get("/", (req, res) => {
 // Route Stripe
 // ----------------------------
 app.post("/create-checkout-session", authMiddleware, async (req, res) => {
-  console.log("🔹 req.user :", req.user);
-
   if (!req.user || !req.user.userId) {
     return res.status(401).json({ error: "Utilisateur non authentifié" });
   }
 
   const userId = req.user.userId;
-  console.log("🔹 userId pour Stripe :", userId);
 
   try {
-    const { userId } = req.body; // récupère l'utilisateur connecté
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",

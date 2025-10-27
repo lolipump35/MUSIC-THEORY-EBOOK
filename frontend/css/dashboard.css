@@ -1,3 +1,8 @@
+body {
+  display: flex;
+  background-color: #fafaf9;
+}
+
 /* #region NAVBAR */
 
 .navbar {
@@ -6,7 +11,7 @@
   position: fixed;
   top: 0;
   grid-template: 1fr / 60px 1fr 60px 60px;
-  height: 60px;
+  height: 70px;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -112,28 +117,162 @@
 }
 
 /* #endregion NAVBAR */
-body {
+
+/* #region controlleBar  */
+
+.controllBarContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #d7d9d2;
+  width: 60px;
+  height: 100%;
+  position: fixed;
+  top: 70px;
+  z-index: 3;
+  transition: ease-in-out 0.8s;
+}
+
+.controllBarContainer:hover {
+  width: 220px;
+  transition: ease-in-out 0.3s;
+}
+
+.controllBarContainerText {
+  opacity: 0;
+  display: flex;
+  transition: opacity 0.7s ease;
+}
+
+.controllBarContainer:hover .controllBarContainerText {
+  opacity: 1;
+}
+
+/* SETTING  */
+.itemContainer {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: ease-in-out 0.1s;
+}
+.itemContainer:hover {
+  background-color: #c4c5c0;
+  transition: ease-in-out 0.1s;
+}
+
+.itemContainer img {
+  scale: 0.08;
+  position: fixed;
+  left: -220px;
+}
+
+.itemContainer p {
+  display: flex;
+}
+
+/* #endregion controlleBar  */
+
+/* #region SETTING  */
+
+.settings {
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  border: solid black 1px;
+  border-radius: 10px;
+  height: 70%;
+  width: 800px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  background-color: #bdbdbd;
+}
+
+#closeSeting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 5px;
+  top: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: rgb(253, 132, 132);
+  border: none;
+}
+#closeSeting p {
+  color: white;
+}
+
+/* userPreference */
+#userPreference {
+  height: auto;
+  width: 85%;
+  background: #dcdcdc;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+}
+#userPreference h2{
+  width: 40%;
+}
+
+.platformContainer{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 60%;
+}
+
+.platform-btn {
+  background-color: #f3f3f3;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.platform-btn:hover {
+  background-color: #bdbdbd;
+}
+
+#tracksList .trackItem {
+  cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+#tracksList .trackItem:hover {
+  background-color: #f3f3f3;
+}
+
+/* #endregion SETTING  */
+
+/* #region modules  */
+.modulesZone {
+  position: relative;
+  left: 30px;
   display: flex;
   justify-content: center;
 }
+
 .modulescontainer {
   position: relative;
   top: 60px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   width: 80%;
   height: auto;
   margin: 0;
   flex-wrap: wrap;
+  background-color: white;
 }
-
-#breaknavbarzone {
-  height: 60px;
-  margin: 0;
-  padding: 0;
-}
-
-/* #region modules  */
 
 .modules {
   height: 200px;
@@ -143,7 +282,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5%;
+  margin: 3%;
   transition: transform 0.3s ease-in-out;
 }
 

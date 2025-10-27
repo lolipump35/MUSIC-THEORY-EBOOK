@@ -1,0 +1,223 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* #region TITTLE CONTAINER  */
+
+.tittleContainer {
+  border: solid black 1px;
+  height: 150px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tittle {
+  border: solid rgb(0, 195, 255) 1px;
+  font-size: 50px;
+}
+
+/* #endregion TITTLE CONTAINER  */
+
+/* #region VIDEO CONTAINER  */
+
+.videoContainer {
+  border: solid black 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.video {
+  border: solid rgb(0, 195, 255) 1px;
+  overflow: hidden;
+  margin: 20px;
+}
+
+/* #endregion VIDEO CONTAINER  */
+
+/* #region UNDERVIDEO CONTAINER  */
+.undervideoContainer {
+  border: solid black 1px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  position: relative;
+  left: 31%;
+ 
+}
+
+/* #region TIMECODE  */
+
+.timeCodeContainer {
+  /* border: solid rgb(0, 0, 0) 1px; */
+  display: flex;
+  flex-direction: row; /* alignement horizontal */
+  align-items: center;
+  position: relative;
+  left: 0PX;
+  border-radius: 12px;
+  background-color: #f2f2f2;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  height: 50px;
+  margin-right: 20px;       
+}
+
+/* Bouton principal */
+.tittletimecode {
+  border: none;
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+.tittletimecode:hover {
+  color: white;
+  transition: ease-in-out 0.15s;
+}
+
+/* Conteneur des chapitres : caché horizontalement */
+.chapters {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  max-width: 0; /* caché par défaut */
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+/* Quand le tiroir est ouvert */
+.timeCodeContainer.open .chapters {
+  max-width: 600px; /* largeur visible des boutons */
+  opacity: 1;
+}
+
+/* Boutons de chapitres */
+.chapters button {
+  margin-inline: 10px;
+  border: none;
+  background-color: ;
+  cursor: pointer;
+  transition: transform 0.3s;
+  white-space: nowrap; /* évite les retours à la ligne */
+}
+
+.chapters button:hover {
+  background-color: rgb(226, 226, 226);
+  transition: ease-in-out 0.15s;
+  border-radius: 30px;
+}
+/* #endregion TIMECODE  */
+
+/* #region MUSICPLATFORM */
+.musicPlatformContainer {
+  display: flex;
+  flex-direction:  row; /* pour l’ouverture verticale */
+  align-items: flex-start;
+  position: relative;
+  border-radius: 12px;
+  background-color: #f2f2f2;
+  width: 50px;      /* largeur initiale (bouton) */
+  transition: width 0.3s ease; /* première étape : horizontal */
+  margin-bottom: 10px;
+}
+
+/* Bouton principal */
+#musicPlatformContainerButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+#musicPlatformContainerButton img {
+  scale: 0.05;
+}
+
+/* Conteneur du widget : caché au départ */
+#musicContainer {
+  width: 100%;
+  max-height: 0;          /* fermé verticalement */
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #f2f2f2;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: max-height 0.4s ease, padding 0.4s ease;
+ margin: 10px;
+}
+
+#musicContainer iframe {
+  width: 100% !important;
+  height: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* État ouvert horizontalement (largeur) */
+.musicPlatformContainer.expand-horizontal {
+  width: 500px; /* largeur finale souhaitée */
+}
+
+/* État ouvert verticalement (hauteur) */
+.musicPlatformContainer.open #musicContainer {
+  max-height: 80px; /* hauteur finale souhaitée */
+  padding: 0px;
+}
+
+
+
+
+/* #endregion MUSICPLATFORM  */
+
+
+
+/* #endregion UNDERVIDEO CONTAINER   */
+
+/* #region IMG CONTAINER  */
+.imageZone {
+  border: solid black 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 10px;
+}
+
+.imageContainer {
+  border: solid rgb(0, 195, 255) 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+}
+
+.image {
+  transform: scale(1);
+  transform: translate(0px , 0px);
+}
+
+/* #endregion IMG CONTAINER  */
+
+
