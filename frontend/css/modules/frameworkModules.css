@@ -48,7 +48,7 @@ body {
   width: 100%;
   height: auto;
   position: relative;
-  left: 31%;
+  left: 29%;
   gap: 20px;
   flex-wrap: wrap; /* permet au contenu de se replacer quand le bloc musique s’agrandit */
 }
@@ -67,20 +67,31 @@ body {
 }
 
 .tittletimecode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   background-color: transparent;
-  font-weight: bold;
-  font-size: 16px;
   cursor: pointer;
-  padding: 20px 10px;
-  border-radius: 20px;
-  transition: color 0.3s ease;
+  width: 50px; /* largeur fixe */
+  height: 50px; /* hauteur fixe */
+  border-radius: 12px;
+  padding: 0;
+  flex-shrink: 0; /* ⚡ empêche le bouton de se réduire */
+  transition: all 0.3s ease;
 }
 
 .tittletimecode:hover {
-  color: white;
+  background-color: #dddddd;
+  transition: ease-in-out 0.2s;
 }
 
+.tittletimecode img {
+  scale: 0.12;
+  transition: transform 0.3s ease;
+}
+
+/* Chapitres cachés par défaut */
 .chapters {
   display: flex;
   align-items: center;
@@ -89,7 +100,8 @@ body {
   max-width: 0;
   pointer-events: none;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition: max-width 0.4s ease, opacity 0.4s ease;
+  flex: 1; /* ⚡ occupe l’espace restant sans pousser le bouton */
 }
 
 .timeCodeContainer.open .chapters {
@@ -117,14 +129,18 @@ body {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.leftBtn { left: 90px; }
-.rightBtn { right: 5px; }
+.leftBtn {
+  left: 50px;
+}
+.rightBtn {
+  right: 5px;
+}
 
 /* ---------- ZONE DE CHAPITRES VISIBLE ---------- */
 .visiblechapters {
   display: flex;
   gap: 8px;
-  overflow-x: hidden; 
+  overflow-x: hidden;
   scroll-behavior: smooth;
   white-space: nowrap;
   flex-grow: 1;
@@ -145,13 +161,13 @@ body {
 }
 
 .visiblechapters button:hover {
-  background-color: rgb(226,226,226);
+  background-color: rgb(226, 226, 226);
 }
 
 /* ---------- MUSIC PLATFORM ---------- */
 .musicPlatformContainer {
   display: flex;
- /* 👈 permet à l’iframe de pousser le reste vers le bas */
+  /* 👈 permet à l’iframe de pousser le reste vers le bas */
   align-items: flex-start;
   border-radius: 12px;
   background-color: #f2f2f2;
@@ -171,10 +187,16 @@ body {
   border: none;
   background: none;
   border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
 #musicPlatformContainerButton img {
-  scale: 0.05;
+  scale: 0.07;
+}
+
+#musicPlatformContainerButton:hover {
+  background-color: #dddddd;
+  transition: ease-in-out 0.2s;
 }
 
 /* le conteneur s’ouvre verticalement, donc pousse le reste du contenu */
@@ -200,11 +222,75 @@ body {
   padding: 5px;
 }
 
+/* LINK CONTAINER  */
+.linkContainer {
+  display: flex;
+  align-items: flex-start;
+  border-radius: 12px;
+  background-color: #f2f2f2;
+  width: 50px; /* bouton visible */
+  transition: width 0.3s ease, max-height 0.4s ease;
+  overflow: hidden;
+}
 
+#linkButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 
-/* #endregion MUSICPLATFORM  */
+}
 
+#linkButton img {
+  scale: 0.12;
+  transition: transform 0.3s ease;
+}
 
+#linkButton:hover {
+  background-color: #dddddd;
+  transition: ease-in-out 0.2s;
+}
+
+/* Conteneur des liens initialement vide / caché */
+#linkList {
+  display: flex; /* reste flex pour aligner les liens quand injectés */
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  overflow: hidden;
+  max-height: 0; /* complètement caché au départ */
+  padding: 0 5px;
+  transition: max-height 0.4s ease, padding 0.2s ease;
+}
+
+#linkList a {
+  text-decoration: none;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+#linkList a:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Étirement horizontal */
+.linkContainer.expand-horizontal {
+  width: 200px; /* largeur finale après le clic */
+}
+
+/* Déroulé vertical */
+.linkContainer.open #linkList {
+  max-height: 200px; /* hauteur nécessaire pour les liens */
+  padding: 5px;
+}
 
 /* #endregion UNDERVIDEO CONTAINER   */
 
@@ -232,9 +318,7 @@ body {
 
 .image {
   transform: scale(1);
-  transform: translate(0px , 0px);
+  transform: translate(0px, 0px);
 }
 
 /* #endregion IMG CONTAINER  */
-
-

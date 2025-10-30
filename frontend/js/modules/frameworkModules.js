@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const muxPlayer = document.getElementById("muxPlayer1");
   const underContainer = document.getElementById("undervideoContainer1");
 
+  // ----- TIME CODE -----
   const timeCodeContainer = underContainer.querySelector(".timeCodeContainer");
   const timeCodeButton = underContainer.querySelector(".tittletimecode");
   const visibleChapters = underContainer.querySelector(".visiblechapters");
@@ -9,23 +10,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   const rightBtn = underContainer.querySelector(".rightBtn");
   const chapterButtons = visibleChapters.querySelectorAll("button");
 
+  // ----- MUSIC PLATFORM -----
   const musicWrapper = underContainer.querySelector(".musicPlatformContainer");
   const musicButton = underContainer.querySelector("#musicPlatformContainerButton");
   const musicContainer = underContainer.querySelector("#musicContainer");
 
+  // ----- LINK CONTAINER -----
+  const linkContainer = underContainer.querySelector(".linkContainer");
+  const linkButton = underContainer.querySelector("#linkButton");
+  const linkList = underContainer.querySelector("#linkList");
+
   const scrollAmount = 150;
 
-  // --- Précharge du widget MusicPlatform ---
+  // -------------------- Précharge MusicPlatform --------------------
   try {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Utilisateur non connecté");
 
     const res = await fetch("http://localhost:5000/api/user/platform", {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      }
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token }
     });
 
     if (!res.ok) throw new Error(`Erreur backend : ${res.status}`);
@@ -46,14 +50,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     musicContainer.innerHTML = "<p>Impossible de charger le widget.</p>";
   }
 
-  // --- Gestion TimeCode ---
+  // -------------------- TIME CODE --------------------
   chapterButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       muxPlayer.currentTime = parseFloat(btn.dataset.time);
       muxPlayer.play();
-
-      chapterButtons.forEach((b) => b.classList.remove("active"));
+      chapterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     });
   });
@@ -61,29 +64,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   muxPlayer.addEventListener("timeupdate", () => {
     const current = muxPlayer.currentTime;
     let activeIndex = 0;
-
     chapterButtons.forEach((btn, index) => {
       const nextBtn = chapterButtons[index + 1];
       const start = parseFloat(btn.dataset.time);
       const end = nextBtn ? parseFloat(nextBtn.dataset.time) : muxPlayer.duration;
       if (current >= start && current < end) activeIndex = index;
     });
-
     chapterButtons.forEach((b, i) => b.classList.toggle("active", i === activeIndex));
   });
 
-  // --- Fonctions pratiques ---
+  // -------------------- LINK CONTAINER --------------------
+  const links = [
+    { label: "YouTube", url: "https://www.youtube.com/" },
+    { label: "Site web", url: "https://www.example.com/" },
+    { label: "Spotify", url: "https://www.spotify.com/" }
+  ];
+
+  links.forEach(link => {
+    const a = document.createElement("a");
+    a.href = link.url;
+    a.target = "_blank";
+    a.textContent = link.label;
+    linkList.appendChild(a);
+  });
+
+  // -------------------- FONCTIONS COMMUNES --------------------
   const closeAll = () => {
-    // Si le timecode est ouvert, on le referme et on reset le scroll
     if (timeCodeContainer.classList.contains("open")) {
       timeCodeContainer.classList.remove("open");
-      visibleChapters.scrollTo({ left: 0, behavior: "smooth" }); // ✅ retour à l’origine
+      visibleChapters.scrollTo({ left: 0, behavior: "smooth" });
     }
-    musicWrapper.classList.remove("open");
-    musicWrapper.classList.remove("expand-horizontal");
+    if (musicWrapper.classList.contains("open")) {
+      musicWrapper.classList.remove("open");
+      setTimeout(() => musicWrapper.classList.remove("expand-horizontal"), 400);
+    }
+    if (linkContainer.classList.contains("open")) {
+      linkContainer.classList.remove("open");
+      setTimeout(() => linkContainer.classList.remove("expand-horizontal"), 400);
+    }
   };
 
-  // --- Bouton TimeCode ---
+  // -------------------- GESTION DES CLICS --------------------
   timeCodeButton.addEventListener("click", (e) => {
     e.stopPropagation();
     const isOpen = timeCodeContainer.classList.contains("open");
@@ -101,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     visibleChapters.scrollBy({ left: scrollAmount, behavior: "smooth" });
   });
 
-  // --- Bouton MusicPlatform ---
   musicButton.addEventListener("click", (e) => {
     e.stopPropagation();
     const isOpen = musicWrapper.classList.contains("open");
@@ -112,12 +132,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // --- Clic hors des containers ---
+  linkButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = linkContainer.classList.contains("open");
+    closeAll();
+    if (!isOpen) {
+      linkContainer.classList.add("expand-horizontal");
+      setTimeout(() => linkContainer.classList.add("open"), 300);
+    }
+  });
+
+  // -------------------- CLIC HORS CONTAINERS --------------------
   document.addEventListener("click", (e) => {
-    if (
-      !timeCodeContainer.contains(e.target) &&
-      !musicWrapper.contains(e.target)
-    ) {
+    if (!timeCodeContainer.contains(e.target) &&
+        !musicWrapper.contains(e.target) &&
+        !linkContainer.contains(e.target)) {
       closeAll();
     }
   });
