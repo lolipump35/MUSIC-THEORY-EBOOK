@@ -42,100 +42,125 @@ body {
 
 /* #region UNDERVIDEO CONTAINER  */
 .undervideoContainer {
-  border: solid black 1px;
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
   width: 100%;
   height: auto;
   position: relative;
   left: 31%;
- 
+  gap: 20px;
+  flex-wrap: wrap; /* permet au contenu de se replacer quand le bloc musique s’agrandit */
 }
 
-/* #region TIMECODE  */
-
+/* ---------- TIMECODE ---------- */
 .timeCodeContainer {
-  /* border: solid rgb(0, 0, 0) 1px; */
   display: flex;
-  flex-direction: row; /* alignement horizontal */
   align-items: center;
   position: relative;
-  left: 0PX;
   border-radius: 12px;
   background-color: #f2f2f2;
-  transition: all 0.3s ease;
   overflow: hidden;
   height: 50px;
-  margin-right: 20px;       
+  max-width: 31%;
+  transition: all 0.3s ease;
 }
 
-/* Bouton principal */
 .tittletimecode {
   border: none;
   background-color: transparent;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 20px 10px;
   border-radius: 20px;
-  transition: background-color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .tittletimecode:hover {
   color: white;
-  transition: ease-in-out 0.15s;
 }
 
-/* Conteneur des chapitres : caché horizontalement */
 .chapters {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
   gap: 10px;
-  max-width: 0; /* caché par défaut */
   opacity: 0;
+  max-width: 0;
+  pointer-events: none;
   overflow: hidden;
   transition: all 0.4s ease;
 }
 
-/* Quand le tiroir est ouvert */
 .timeCodeContainer.open .chapters {
-  max-width: 600px; /* largeur visible des boutons */
   opacity: 1;
+  max-width: 600px;
+  pointer-events: auto;
 }
 
-/* Boutons de chapitres */
-.chapters button {
-  margin-inline: 10px;
+/* ---------- FLECHES ---------- */
+.scrollBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.1);
   border: none;
-  background-color: ;
   cursor: pointer;
-  transition: transform 0.3s;
-  white-space: nowrap; /* évite les retours à la ligne */
+  font-size: 18px;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+  z-index: 2;
 }
 
-.chapters button:hover {
-  background-color: rgb(226, 226, 226);
-  transition: ease-in-out 0.15s;
-  border-radius: 30px;
+.scrollBtn:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }
-/* #endregion TIMECODE  */
 
-/* #region MUSICPLATFORM */
+.leftBtn { left: 90px; }
+.rightBtn { right: 5px; }
+
+/* ---------- ZONE DE CHAPITRES VISIBLE ---------- */
+.visiblechapters {
+  display: flex;
+  gap: 8px;
+  overflow-x: hidden; 
+  scroll-behavior: smooth;
+  white-space: nowrap;
+  flex-grow: 1;
+  padding: 5px 5px;
+  align-items: center;
+  max-width: 88%;
+  position: relative;
+  left: 20px;
+}
+
+.visiblechapters button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 4px 8px;
+  transition: background-color 0.3s;
+}
+
+.visiblechapters button:hover {
+  background-color: rgb(226,226,226);
+}
+
+/* ---------- MUSIC PLATFORM ---------- */
 .musicPlatformContainer {
   display: flex;
-  flex-direction:  row; /* pour l’ouverture verticale */
+ /* 👈 permet à l’iframe de pousser le reste vers le bas */
   align-items: flex-start;
-  position: relative;
   border-radius: 12px;
   background-color: #f2f2f2;
-  width: 50px;      /* largeur initiale (bouton) */
-  transition: width 0.3s ease; /* première étape : horizontal */
+  width: 50px;
+  transition: width 0.3s ease, max-height 0.4s ease;
+  overflow: hidden;
   margin-bottom: 10px;
 }
 
-/* Bouton principal */
 #musicPlatformContainerButton {
   display: flex;
   justify-content: center;
@@ -143,45 +168,37 @@ body {
   width: 50px;
   height: 50px;
   cursor: pointer;
-  border-radius: 12px;
-  transition: all 0.3s ease;
   border: none;
+  background: none;
+  border-radius: 12px;
 }
 
 #musicPlatformContainerButton img {
   scale: 0.05;
 }
 
-/* Conteneur du widget : caché au départ */
+/* le conteneur s’ouvre verticalement, donc pousse le reste du contenu */
 #musicContainer {
   width: 100%;
-  max-height: 0;          /* fermé verticalement */
   overflow: hidden;
-  border-radius: 12px;
-  background-color: #f2f2f2;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-height: 0;
   transition: max-height 0.4s ease, padding 0.4s ease;
- margin: 10px;
 }
 
 #musicContainer iframe {
-  width: 100% !important;
-  height: 100%;
-  border-radius: 12px;
-  display: block;
+  width: 100%;
+  height: 80px;
+  border: none;
 }
 
-/* État ouvert horizontalement (largeur) */
-.musicPlatformContainer.expand-horizontal {
-  width: 500px; /* largeur finale souhaitée */
+.musicPlatformContainer.open {
+  width: 500px; /* s’élargit mais garde son flux normal */
 }
 
-/* État ouvert verticalement (hauteur) */
 .musicPlatformContainer.open #musicContainer {
-  max-height: 80px; /* hauteur finale souhaitée */
-  padding: 0px;
+  max-height: 100px; /* prend la place dont il a besoin */
+  padding: 5px;
 }
-
 
 
 

@@ -1,97 +1,21 @@
-// #region UNDERVIDEO CONTAINER 
-
-   const muxPlayer = document.getElementById("muxPlayer1");
-
-  // Sélection du conteneur sous la vidéo
-  const underContainer = document.getElementById("undervideoContainer1");
-  const buttons = underContainer.querySelectorAll(".chapters button");
-
-  // Quand on clique sur un chapitre
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const time = parseFloat(btn.dataset.time);
-      muxPlayer.currentTime = time;
-      muxPlayer.play();
-
-      // Mise à jour visuelle du chapitre actif
-      buttons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
-  });
-
-  // Suivi automatique du chapitre actif pendant la lecture
-  muxPlayer.addEventListener("timeupdate", () => {
-    const current = muxPlayer.currentTime;
-    let activeIndex = 0;
-
-    buttons.forEach((btn, index) => {
-      const nextBtn = buttons[index + 1];
-      const start = parseFloat(btn.dataset.time);
-      const end = nextBtn ? parseFloat(nextBtn.dataset.time) : muxPlayer.duration;
-      if (current >= start && current < end) activeIndex = index;
-    });
-
-    buttons.forEach((b, i) => b.classList.toggle("active", i === activeIndex));
-  });
-
-
-// ANIMATION YIMECODE 
-
-const timeCodeContainer = document.querySelector(".timeCodeContainer");
-const titleButton = timeCodeContainer.querySelector(".tittletimecode");
-
-// ✅ Toggle ouverture/fermeture du tiroir
-titleButton.addEventListener("click", (event) => {
-  event.stopPropagation(); // empêche le clic d'être capté par le document
-  timeCodeContainer.classList.toggle("open");
-});
-
-// ✅ Ferme le tiroir quand on clique ailleurs
-document.addEventListener("click", (event) => {
-  // si le clic n'est PAS à l'intérieur du timeCodeContainer → on ferme
-  if (!timeCodeContainer.contains(event.target)) {
-    timeCodeContainer.classList.remove("open");
-  }
-});
-
-// ANIMATION MUSICPLATFORM 
-
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.querySelector(".musicPlatformContainer");
-  const button = document.getElementById("musicPlatformContainerButton");
-
-  button.addEventListener("click", () => {
-    if (!container.classList.contains("expand-horizontal")) {
-      // Étape 1 : étirement horizontal
-      container.classList.add("expand-horizontal");
-
-      // Étape 2 : ouverture verticale après un petit délai
-      setTimeout(() => {
-        container.classList.add("open");
-      }, 300); // correspond à la transition width
-    } else {
-      // Fermer verticalement puis horizontalement
-      container.classList.remove("open");
-      setTimeout(() => {
-        container.classList.remove("expand-horizontal");
-      }, 400); // correspond à la transition max-height
-    }
-  });
-});
-
-
-
-
-
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", async () => {
-  const musicContainer = document.getElementById("musicContainer");
+  const muxPlayer = document.getElementById("muxPlayer1");
+  const underContainer = document.getElementById("undervideoContainer1");
 
-  // On récupère la plateforme choisie depuis la DB
+  const timeCodeContainer = underContainer.querySelector(".timeCodeContainer");
+  const timeCodeButton = underContainer.querySelector(".tittletimecode");
+  const visibleChapters = underContainer.querySelector(".visiblechapters");
+  const leftBtn = underContainer.querySelector(".leftBtn");
+  const rightBtn = underContainer.querySelector(".rightBtn");
+  const chapterButtons = visibleChapters.querySelectorAll("button");
+
+  const musicWrapper = underContainer.querySelector(".musicPlatformContainer");
+  const musicButton = underContainer.querySelector("#musicPlatformContainerButton");
+  const musicContainer = underContainer.querySelector("#musicContainer");
+
+  const scrollAmount = 150;
+
+  // --- Précharge du widget MusicPlatform ---
   try {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Utilisateur non connecté");
@@ -100,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+        Authorization: "Bearer " + token
       }
     });
 
@@ -108,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await res.json();
     const platform = data.platform;
 
-    // Injecte le widget correspondant
     if (platform === "spotify") {
       musicContainer.innerHTML = `<iframe src="https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
     } else if (platform === "deezer") {
@@ -118,12 +41,84 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       musicContainer.innerHTML = "<p>Aucune plateforme choisie.</p>";
     }
-
   } catch (err) {
     console.error(err);
     musicContainer.innerHTML = "<p>Impossible de charger le widget.</p>";
   }
+
+  // --- Gestion TimeCode ---
+  chapterButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      muxPlayer.currentTime = parseFloat(btn.dataset.time);
+      muxPlayer.play();
+
+      chapterButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  muxPlayer.addEventListener("timeupdate", () => {
+    const current = muxPlayer.currentTime;
+    let activeIndex = 0;
+
+    chapterButtons.forEach((btn, index) => {
+      const nextBtn = chapterButtons[index + 1];
+      const start = parseFloat(btn.dataset.time);
+      const end = nextBtn ? parseFloat(nextBtn.dataset.time) : muxPlayer.duration;
+      if (current >= start && current < end) activeIndex = index;
+    });
+
+    chapterButtons.forEach((b, i) => b.classList.toggle("active", i === activeIndex));
+  });
+
+  // --- Fonctions pratiques ---
+  const closeAll = () => {
+    // Si le timecode est ouvert, on le referme et on reset le scroll
+    if (timeCodeContainer.classList.contains("open")) {
+      timeCodeContainer.classList.remove("open");
+      visibleChapters.scrollTo({ left: 0, behavior: "smooth" }); // ✅ retour à l’origine
+    }
+    musicWrapper.classList.remove("open");
+    musicWrapper.classList.remove("expand-horizontal");
+  };
+
+  // --- Bouton TimeCode ---
+  timeCodeButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = timeCodeContainer.classList.contains("open");
+    closeAll();
+    if (!isOpen) timeCodeContainer.classList.add("open");
+  });
+
+  leftBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    visibleChapters.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+  });
+
+  rightBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    visibleChapters.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  });
+
+  // --- Bouton MusicPlatform ---
+  musicButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = musicWrapper.classList.contains("open");
+    closeAll();
+    if (!isOpen) {
+      musicWrapper.classList.add("expand-horizontal");
+      setTimeout(() => musicWrapper.classList.add("open"), 300);
+    }
+  });
+
+  // --- Clic hors des containers ---
+  document.addEventListener("click", (e) => {
+    if (
+      !timeCodeContainer.contains(e.target) &&
+      !musicWrapper.contains(e.target)
+    ) {
+      closeAll();
+    }
+  });
 });
-
-
-// #endregion UNDERVIDEO CONTAINER  
