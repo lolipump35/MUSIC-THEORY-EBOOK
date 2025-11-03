@@ -151,3 +151,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+
+
+// IMPORTANT POINT CONTANER 
+
+const allGoodPoint = document.querySelectorAll(".doIt .allpoints");
+
+allGoodPoint.forEach((el) => {
+  el.addEventListener("mouseenter", () => {
+    el.classList.add("greenLight");
+  });
+  el.addEventListener("mouseleave", () => {
+    el.classList.remove("greenLight");
+  });
+});
+
+const allBadPoint = document.querySelectorAll(".dontDoIt .allpoints");
+
+allBadPoint.forEach((el) => {
+  el.addEventListener("mouseenter", () => {
+    el.classList.add("redLight");
+  });
+  el.addEventListener("mouseleave", () => {
+    el.classList.remove("redLight");
+  });
+});

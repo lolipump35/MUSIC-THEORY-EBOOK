@@ -2,6 +2,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100vw;
 }
 
 /* #region TITTLE CONTAINER  */
@@ -15,7 +16,8 @@ body {
   align-items: center;
 }
 
-.tittle {
+.tittleContainer .tittle {
+  border: solid black 1px;
   border: solid rgb(0, 195, 255) 1px;
   font-size: 50px;
 }
@@ -53,7 +55,7 @@ body {
   flex-wrap: wrap; /* permet au contenu de se replacer quand le bloc musique s’agrandit */
 }
 
-/* ---------- TIMECODE ---------- */
+/* #region TIMECODE  */
 .timeCodeContainer {
   display: flex;
   align-items: center;
@@ -163,8 +165,9 @@ body {
 .visiblechapters button:hover {
   background-color: rgb(226, 226, 226);
 }
+/* #endregion TIMECODE  */
 
-/* ---------- MUSIC PLATFORM ---------- */
+/* #region MUSICPLATFORM  */
 .musicPlatformContainer {
   display: flex;
   /* 👈 permet à l’iframe de pousser le reste vers le bas */
@@ -221,8 +224,9 @@ body {
   max-height: 100px; /* prend la place dont il a besoin */
   padding: 5px;
 }
+/* #endregion MUSICPLATFORM  */
 
-/* LINK CONTAINER  */
+/* #region LINK  */
 .linkContainer {
   display: flex;
   align-items: flex-start;
@@ -244,7 +248,6 @@ body {
   background: none;
   border-radius: 12px;
   transition: all 0.3s ease;
-
 }
 
 #linkButton img {
@@ -291,6 +294,7 @@ body {
   max-height: 200px; /* hauteur nécessaire pour les liens */
   padding: 5px;
 }
+/* #endregion LINK  */
 
 /* #endregion UNDERVIDEO CONTAINER   */
 
@@ -322,3 +326,124 @@ body {
 }
 
 /* #endregion IMG CONTAINER  */
+
+/* #region IMPORTANT POINT CONTAINER  */
+
+.importantPointZone {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border: solid black 1px;
+}
+.importantPointContainer {
+  border: solid rgb(0, 195, 255) 1px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.importantPointContainer .tittle h2 {
+  display: flex;
+  font-size: 40px;
+}
+.todoContainer {
+  display: flex;
+  gap: 100px;
+}
+.doIt,
+.dontDoIt {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.doIt .tittle,
+.dontDoIt .tittle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.todoContainer .tittle h3 {
+  display: flex;
+  font-size: 30px;
+  transition: ease-in-out 0.3s;
+  transform: scale(1);
+}
+.todoContainer .tittle h3:hover {
+  transition: ease-in-out 0.3s;
+  transform: scale(1.1);
+}
+.allpoints {
+  max-width: 100%;
+  margin: 0;
+  /* border: solid rgb(0, 195, 255) 1px; */
+  padding: 20px;
+  border-radius: 15px;
+  transition: ease-in-out 0.3s;
+}
+/* Zoom au hover */
+.allpoints:hover {
+  transform: scale(1.05);
+  transition: ease-in-out 0.3s;
+}
+
+/* --- Effets couleurs (reliés au JS comme Offer2) --- */
+.greenLight {
+  background-color: rgba(50, 205, 50, 0.2) !important;
+  border-color: rgba(50, 205, 50, 0.6);
+}
+
+.redLight {
+  background-color: rgba(255, 0, 0, 0.18) !important;
+  border-color: rgba(255, 0, 0, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .todoContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .doIt,
+  .dontDoIt {
+    width: 90%;
+  }
+}
+
+/* #endregion IMPORTANT POINT CONTAINER  */
+
+/* #region REMEMBER CONTAINER  */
+
+.rememberZone {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.rememberContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 25px;
+  width: 50%;
+}
+
+.rememberContainer h2 {
+  font-size: 30px;
+}
+
+.rememberContainer li {
+  margin-top: 20px;
+  font-size: 18px;
+  transition: ease-in-out 0.2s;
+}
+
+.rememberContainer li:hover {
+  transform: scale(1.05);
+  transition: ease-in-out 0.2s;
+}
+
+/* #endregion REMEMBER CONTAINER  */
