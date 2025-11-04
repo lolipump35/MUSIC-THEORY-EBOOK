@@ -176,3 +176,53 @@ allBadPoint.forEach((el) => {
     el.classList.remove("redLight");
   });
 });
+
+// <!-- TRAINNING PROGRAM  -->
+
+const objectifs = document.querySelectorAll('.objectifContainer li');
+const infoContainer = document.querySelector('.infoContainer1');
+
+objectifs.forEach((li, index) => {
+
+  const objectiveId = `objective-${index + 1}`;
+  li.setAttribute("id", objectiveId);
+
+  const text = li.childNodes[0].textContent.trim();
+
+  const block = document.createElement('div');
+  block.classList.add('difficultyItem');
+  block.dataset.objectiveId = objectiveId;
+
+  block.innerHTML = `
+    <h3>${text}</h3>
+    <div class="scale">
+      <span>Difficile</span>
+      ${createScaleButtons()}
+      <span>Facile</span>
+    </div>
+  `;
+
+  infoContainer.appendChild(block);
+
+  // Gestion du clic sur les boutons
+  const buttons = block.querySelectorAll(".scale-button");
+  buttons.forEach((btn, i) => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      console.log(`Objectif ${index + 1}: niveau ${i + 1}`);
+    });
+  });
+});
+
+function createScaleButtons() {
+  return `
+    <div class="scale-button big orange"></div>
+    <div class="scale-button orange"></div>
+    <div class="scale-button small orange"></div>
+    <div class="scale-button grey"></div>
+    <div class="scale-button small green"></div>
+    <div class="scale-button green"></div>
+    <div class="scale-button big green"></div>
+  `;
+}

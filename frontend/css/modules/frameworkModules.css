@@ -341,6 +341,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 20px;
 }
 .importantPointContainer .tittle h2 {
   display: flex;
@@ -435,6 +436,7 @@ body {
 .rememberContainer h2 {
   font-size: 30px;
   margin: 0;
+  margin-top: 20px;
 }
 
 .rememberContainer li {
@@ -473,6 +475,7 @@ body {
 .objectifContainer h2 {
   font-size: 30px;
   margin: 0;
+  margin-top: 20px;
 }
 
 .objectifContainer li {
@@ -575,24 +578,64 @@ body {
   margin: 30px;
 }
 
-.gameProposalContainer .yesno{
+.gameProposalContainer .yesno {
   margin-bottom: 30px;
   display: flex;
   gap: 60px;
 }
 
-.gameProposalContainer .yesno button{
+.gameProposalContainer .yesno button {
   border: none;
   transform: scale(2);
   border-radius: 5px;
   transition: ease-in-out 0.1s;
   padding: 5px;
-
 }
 
-.gameProposalContainer .yesno button:hover{
-background-color: white;
+.gameProposalContainer .yesno button:hover {
+  background-color: white;
   transition: ease-in-out 0.1s;
 }
 
 /* #endregion GAMEPROPOSAL CONTAINER  */
+
+/* #region TRAINNING PROGRAM CONTAINER  */
+
+.difficultyItem {
+  margin: 20px 0;
+}
+
+.scale {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.scale-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.scale-button.small { width: 22px; height: 22px; }
+.scale-button.big { width: 40px; height: 40px; }
+
+.scale-button.green { border-color: #2CAB7E; }
+.scale-button.green.selected { background-color: #2CAB7E; }
+
+.scale-button.grey { border-color: #bfc4c7; }
+.scale-button.grey.selected { background-color: #bfc4c7; }
+
+.scale-button.orange { border-color: #e4902f; }
+.scale-button.orange.selected { background-color: #e4902f; }
+
+
+/* #endregion TRAINNING PROGRAM CONTAINER  */
