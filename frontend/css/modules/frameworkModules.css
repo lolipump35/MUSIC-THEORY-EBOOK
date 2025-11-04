@@ -419,6 +419,7 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  border: solid black 1px;
 }
 
 .rememberContainer {
@@ -433,10 +434,11 @@ body {
 
 .rememberContainer h2 {
   font-size: 30px;
+  margin: 0;
 }
 
 .rememberContainer li {
-  margin-top: 20px;
+  margin-top: 30px;
   font-size: 18px;
   transition: ease-in-out 0.2s;
 }
@@ -447,3 +449,150 @@ body {
 }
 
 /* #endregion REMEMBER CONTAINER  */
+
+/* #region OBJECTIF CONTAINER  */
+
+.objectifZone {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  border: solid black 1px;
+}
+
+.objectifContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 25px;
+  width: 50%;
+}
+
+.objectifContainer h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.objectifContainer li {
+  margin-top: 30px;
+  font-size: 18px;
+  transition: ease-in-out 0.2s;
+}
+
+.objectifContainer li:hover {
+  transform: scale(1.01);
+  transition: ease-in-out 0.2s;
+}
+
+.objectifContainer li input {
+  transform: scale(1.5);
+  margin-left: 30px;
+}
+
+/* On masque la vraie checkbox */
+.custom-checkbox input {
+  display: none;
+}
+
+/* Container cliquable */
+.custom-checkbox {
+  display: inline-flex;
+  margin-left: 30px;
+  position: relative;
+  top: 10px;
+  cursor: pointer;
+  gap: 20px;
+  font-size: 18px;
+  user-select: none;
+}
+
+/* Style de la fausse checkbox */
+.checkmark {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #8f8f8f;
+  background-color: white;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Effet au survol */
+.custom-checkbox:hover .checkmark {
+  border-color: #a1a1a1;
+}
+
+/* Animation + style quand cochée */
+.custom-checkbox input:checked + .checkmark {
+  background-color: #33ff00d0;
+  border-color: #3b583559;
+}
+
+/* Le check en lui-même */
+.checkmark::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 8px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: scale(0) rotate(45deg);
+  transition: transform 0.25s ease;
+}
+
+/* On fait apparaître le check ✔️ */
+.custom-checkbox input:checked + .checkmark::after {
+  transform: scale(1) rotate(45deg);
+}
+
+/* #endregion OBJECTIF CONTAINER  */
+
+/* #region GAMEPROPOSAL CONTAINER  */
+
+.gameProposalZone {
+  width: 100%;
+  border: solid black 1px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.gameProposalContainer {
+  width: 50%;
+  border: solid rgb(0, 195, 255) 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.gameProposalContainer h2 {
+  font-size: 30px;
+  margin: 30px;
+}
+
+.gameProposalContainer .yesno{
+  margin-bottom: 30px;
+  display: flex;
+  gap: 60px;
+}
+
+.gameProposalContainer .yesno button{
+  border: none;
+  transform: scale(2);
+  border-radius: 5px;
+  transition: ease-in-out 0.1s;
+  padding: 5px;
+
+}
+
+.gameProposalContainer .yesno button:hover{
+background-color: white;
+  transition: ease-in-out 0.1s;
+}
+
+/* #endregion GAMEPROPOSAL CONTAINER  */
