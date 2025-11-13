@@ -232,17 +232,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function createScaleButtons() {
-    return `
-      <div class="scale-button big orange"></div>
-      <div class="scale-button orange"></div>
-      <div class="scale-button small orange"></div>
-      <div class="scale-button grey"></div>
-      <div class="scale-button small green"></div>
-      <div class="scale-button green"></div>
-      <div class="scale-button big green"></div>
-    `;
-  }
+ function createScaleButtons(selectedLevel) {
+  const buttons = [
+    "big orange",
+    "orange",
+    "small orange",
+    "grey",
+    "small green",
+    "green",
+    "big green",
+  ];
+
+  return buttons
+    .map((cls, index) => {
+      // selectedLevel doit aller de 0 à 6
+      const isSelected = index === selectedLevel ? "selected" : "";
+      return `<div class="scale-button ${cls} ${isSelected}"></div>`;
+    })
+    .join("");
+}
 
   const validBtn = document.getElementById("validPrograms");
 
@@ -256,97 +264,74 @@ window.addEventListener("DOMContentLoaded", () => {
     errorMsg.textContent = message;
   }
 
-  // Ajout de l'événement click sur le bouton
- validBtn.addEventListener("click", () => {
-  const results = [];
-  let allSelected = true;
+  // ✅ Événement sur le bouton de validation
+  validBtn.addEventListener("click", () => {
+    const results = [];
+    let allSelected = true;
 
-  document.querySelectorAll(".difficultyItem").forEach((block) => {
-    const objectiveId = block.dataset.objectiveId;
-    const titleElement = block.querySelector("h3");
-    const selected = block.querySelector(".scale-button.selected");
-
-    if (!selected) {
-      allSelected = false;
-
-      // effet visuel : rouge + shake
-      titleElement.classList.add("error-highlight");
-
-      // Retrait progressif de l’effet après 1,5 s
-      setTimeout(() => {
-        titleElement.classList.remove("error-highlight");
-      }, 1500);
-    } else {
-      // Si bien rempli, on remet le style normal
-      titleElement.classList.remove("error-highlight");
-
-      results.push({
-        moduleId: currentModuleId,
-        id: objectiveId,
-        objectif: titleElement.textContent,
-        difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
-      });
-    }
+    // Vérification de chaque objectif
     document.querySelectorAll(".difficultyItem").forEach((block) => {
-  const buttons = block.querySelectorAll(".scale-button");
-  const selected = block.querySelector(".scale-button.selected");
-  const title = block.querySelector("h3");
+      const objectiveId = block.dataset.objectiveId;
+      const titleElement = block.querySelector("h3");
+      const selected = block.querySelector(".scale-button.selected");
 
-  // Si aucun bouton sélectionné
-  if (!selected) {
-    // Ajouter classe au texte pour le mettre en rouge
-    title.classList.add("error");
-    // Supprimer la classe après 3s pour fade-out
-    setTimeout(() => title.classList.remove("error"), 3000);
+      if (!selected) {
+        allSelected = false;
+        titleElement.classList.add("error-highlight");
+        setTimeout(() => titleElement.classList.remove("error-highlight"), 1500);
+      } else {
+        titleElement.classList.remove("error-highlight");
+        results.push({
+          moduleId: currentModuleId,
+          id: objectiveId,
+          objectif: titleElement.textContent,
+          difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
+        });
+      }
+    });
 
-    // Ajouter classe aux boutons pour clignoter
-    buttons.forEach((btn) => btn.classList.add("error-blink"));
-    // Supprimer la classe après 3s
-    setTimeout(() => buttons.forEach((btn) => btn.classList.remove("error-blink")), 3000);
-  }
-});
+    if (!allSelected) {
+      console.warn("⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !");
+      afficherMessageErreur("Merci de sélectionner une difficulté pour chaque objectif.");
+      return;
+    }
 
+    // ✅ Récupération des inputs
+    const howTimeInput = document.querySelector(".howtime input");
+    const howDayInput = document.querySelector(".howday input");
+    const howTime = parseInt(howTimeInput?.value) || 0;
+    const howDay = parseInt(howDayInput?.value) || 0;
+
+    if (howTime <= 0 || howDay <= 0) {
+      afficherMessageErreur("Merci de renseigner le temps et le nombre de jours.");
+      return;
+    }
+
+    // ✅ Stockage dans le localStorage
+    const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
+
+    if (!storedModules[currentModuleId]) {
+      storedModules[currentModuleId] = {
+        name: `Module ${currentModuleId.replace("module-", "")}`,
+        programs: [],
+      };
+    }
+
+    storedModules[currentModuleId].programs.push({
+      objectives: results,
+      timePerWeek: howTime,
+      daysPerWeek: howDay,
+    });
+
+    localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+
+    console.log(`✅ Nouveau programme ajouté dans ${currentModuleId}:`, {
+      objectives: results,
+      timePerWeek: howTime,
+      daysPerWeek: howDay,
+    });
+
+    // ✅ Redirection vers la page des programmes
+    window.location.href = "/frontend/pages/programmsTrainning.html";
   });
-
-  if (!allSelected) {
-    console.warn("⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !");
-    return;
-  }
-
-  // ✅ Si tout est bien rempli, on continue le processus
-  const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
-
-  if (!storedModules[currentModuleId]) {
-    storedModules[currentModuleId] = {
-      name: `Module ${currentModuleId.replace("module-", "")}`,
-      programs: [],
-    };
-  }
-
-  storedModules[currentModuleId].programs.push(results);
-  localStorage.setItem("trainingModules", JSON.stringify(storedModules));
-
-  console.log(`✅ Nouveau programme ajouté dans ${currentModuleId}:`, results);
-
-  window.location.href = "/frontend/pages/programmsTrainning.html";
-});
-
-  // Charger ou initialiser les modules
-  const storedModules =
-    JSON.parse(localStorage.getItem("trainingModules")) || {};
-
-  if (!storedModules[currentModuleId]) {
-    storedModules[currentModuleId] = {
-      name: `Module ${currentModuleId.replace("module-", "")}`,
-      programs: [],
-    };
-  }
-
-  storedModules[currentModuleId].programs.push(results);
-  localStorage.setItem("trainingModules", JSON.stringify(storedModules));
-
-  console.log(`✅ Nouveau programme ajouté dans ${currentModuleId}:`, results);
-
-  // Redirection vers la page des programmes
-  window.location.href = "/frontend/pages/programmsTrainning.html";
 });

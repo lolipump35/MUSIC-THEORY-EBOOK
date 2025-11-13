@@ -35,11 +35,16 @@ window.addEventListener("DOMContentLoaded", () => {
     programTitle.textContent = `Programme ${progIndex + 1}`;
     programDiv.appendChild(programTitle);
 
-    program.forEach((item, objIndex) => {
+    // ✅ Gérer le cas où "program" contient les objectifs dans une propriété "objectives"
+    const objectives = Array.isArray(program)
+      ? program
+      : program.objectives || [];
+
+    objectives.forEach((item, objIndex) => {
       const objectiveDiv = document.createElement("div");
       objectiveDiv.classList.add("objectiveItem");
 
-      // Contenu texte (titre + objectif)
+      // Contenu texte
       const textContainer = document.createElement("div");
       textContainer.classList.add("objectiveText");
       textContainer.innerHTML = `
@@ -47,78 +52,63 @@ window.addEventListener("DOMContentLoaded", () => {
         <p>${item.objectif}</p>
       `;
 
-      // Div pour la difficulté
+      // Échelle de difficulté
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
       scaleDiv.innerHTML = `
-        <span>Difficile</span>
-        ${createScaleButtons(item.difficultyLevel)}
-        <span>Facile</span>
-      `;
+  <span>Difficile</span>
+  ${createScaleButtons(item.difficultyLevel - 1)}
+  <span>Facile</span>
+`;
 
-      // Div pour le temps estimé
+      // Temps estimé
       const timeDiv = document.createElement("div");
       timeDiv.classList.add("timeDisplay");
-      timeDiv.textContent = "Temps estimé : —";
 
-      // ====== 🔹 Mise à jour initiale de TimeDisplay selon la difficulté stockée ======
-      const initialDifficulty = item.difficultyLevel ?? 3; // 3 = valeur par défaut si non définie
+      const initialDifficulty = item.difficultyLevel ?? 3;
       timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-        initialDifficulty
+        initialDifficulty,
+        program
       )} min`;
 
-      // Déclenchement de l'événement pour que la cloche se mette à jour
       timeDiv.dispatchEvent(new Event("change"));
 
-      // Gestion du clic sur une difficulté
+      // Gestion clic difficulté
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", () => {
-          // Retire la sélection des autres boutons et sélectionne celui cliqué
           scaleDiv
             .querySelectorAll(".scale-button")
             .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
 
-          // Mise à jour du temps estimé
           timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-            index
+            index,
+            program
           )} min`;
-
-          // Déclencher un "change" pour informer la cloque
           timeDiv.dispatchEvent(new Event("change"));
-
-          // Mise à jour dans le localStorage
-          item.difficultyLevel = index;
-          localStorage.setItem(
-            "trainingModules",
-            JSON.stringify(storedModules)
-          );
         });
       });
 
-      // Div pour le minuteur
+      // Cloque (minuteur)
       const timerDiv = document.createElement("div");
       timerDiv.classList.add("objectiveTimer");
-
-      // Structure "cloque"
       timerDiv.innerHTML = `
-  <div class="cloche">
-    <svg viewBox="0 0 36 36">
-      <path class="circle-bg"
-            d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"/>
-      <path class="circle"
-            stroke-dasharray="0, 100"
-            d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    </svg>
-    <span class="timerDisplay">00:00</span>
-  </div>
-`;
+        <div class="cloche">
+          <svg viewBox="0 0 36 36">
+            <path class="circle-bg"
+                  d="M18 2.0845
+                     a 15.9155 15.9155 0 0 1 0 31.831
+                     a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            <path class="circle"
+                  stroke-dasharray="0, 100"
+                  d="M18 2.0845
+                     a 15.9155 15.9155 0 0 1 0 31.831
+                     a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          </svg>
+          <span class="timerDisplay">00:00</span>
+        </div>
+      `;
 
-      // Initialisation de la cloque
       initializeCloche(timerDiv, timeDiv);
 
       // Structure finale
@@ -133,7 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
     container.appendChild(programDiv);
   });
 
-  // ====== 🔹 Fonction utilitaire ======
+  // ====== 🔹 Fonctions utilitaires ======
   function createScaleButtons(selectedLevel) {
     const buttons = [
       "big orange",
@@ -144,7 +134,6 @@ window.addEventListener("DOMContentLoaded", () => {
       "green",
       "big green",
     ];
-
     return buttons
       .map((cls, index) => {
         const isSelected = index === selectedLevel ? "selected" : "";
@@ -153,13 +142,35 @@ window.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  // (On fera évoluer cette logique ensuite)
-  function getTimeForDifficulty(level) {
-    const times = [15, 12, 10, 8, 6, 5, 4];
-    return times[level] || 0;
+  function getTimeForDifficulty(level, program) {
+    const module = storedModules[currentModuleId];
+    if (!module || !module.programs.length) return 0;
+
+    const progData = module.programs[0];
+    const totalMinutes = progData.timePerWeek || 120;
+    const days = progData.daysPerWeek || 3;
+    const minutesPerDay = totalMinutes / days;
+
+    // Récupérer toutes les difficultés du programme
+    const objectives = Array.isArray(program)
+      ? program
+      : program.objectives || [];
+
+    // Échelle de poids linéaire (7 niveaux = 1 à 7)
+    const weights = [1, 2, 3, 4, 5, 6, 7];
+    const totalWeight = objectives.reduce(
+      (sum, o) => sum + (weights[o.difficultyLevel] || 1),
+      0
+    );
+
+    const myWeight = weights[level] || 1;
+    const myPercentage = myWeight / totalWeight; // => entre 0 et 1
+    const myMinutes = minutesPerDay * myPercentage;
+
+    return Math.round(myMinutes);
   }
 
-  //#region CLOCK
+  // Cloque
   function initializeCloche(timerDiv, timeDiv) {
     const circle = timerDiv.querySelector(".circle");
     const display = timerDiv.querySelector(".timerDisplay");
@@ -180,7 +191,7 @@ window.addEventListener("DOMContentLoaded", () => {
       display.textContent = `${mins}:${secs}`;
 
       const total = getTime();
-      const percent = (total - seconds) / total;
+      const percent = total > 0 ? (total - seconds) / total : 0;
       circle.setAttribute("stroke-dasharray", `${percent * 100}, 100`);
     }
 
@@ -203,45 +214,36 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Mettre à jour le timer si la difficulté change
     timeDiv.addEventListener("change", () => {
       seconds = getTime();
       updateDisplay();
     });
   }
 
-  //#endregion CLOCK
-
+  // Supprimer un programme
   function enableProgramDeletion(container, storedModules, currentModuleId) {
-    // Sélectionne tous les blocs programme
     const programBlocks = container.querySelectorAll(".programBlock");
 
     programBlocks.forEach((block, index) => {
-      // Crée un bouton "Supprimer"
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "🗑️ Supprimer";
       deleteBtn.classList.add("deleteProgramBtn");
 
-      // Événement du clic
       deleteBtn.addEventListener("click", () => {
         if (confirm("Voulez-vous vraiment supprimer ce programme ?")) {
-          // Supprimer le programme du localStorage
           storedModules[currentModuleId].programs.splice(index, 1);
           localStorage.setItem(
             "trainingModules",
             JSON.stringify(storedModules)
           );
-
-          // Supprimer visuellement le bloc
           block.remove();
-
           console.log(`✅ Programme ${index + 1} supprimé.`);
         }
       });
 
-      // Ajoute le bouton à la fin du bloc programme
       block.appendChild(deleteBtn);
     });
   }
+
   enableProgramDeletion(container, storedModules, currentModuleId);
 });
