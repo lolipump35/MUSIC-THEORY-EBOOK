@@ -600,33 +600,96 @@ body {
 /* #endregion GAMEPROPOSAL CONTAINER  */
 
 /* #region TRAINNING PROGRAM CONTAINER  */
-
-.difficultyItem {
-  margin: 20px 0;
+/* ===== Container principal ===== */
+/* ===== Container principal ===== */
+.programsZone {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  font-family: 'Inter', sans-serif;
+  color: #333;
 }
 
+/* ===== Titres principaux ===== */
+.programsZone .tittle h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: center;
+  color: #333;
+}
+
+/* ===== Intro ===== */
+.programsContainer .intro {
+  font-size: 15px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* ===== Conteneur objectifs ===== */
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ===== Bloc difficulté ===== */
+.difficultyItem {
+  padding: 14px 18px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  transition: 0.25s;
+}
+
+.difficultyItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* ===== Titre de l'objectif ===== */
+.difficultyItem h3 {
+  font-size: 16px; /* plus petit qu’avant */
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+/* ===== Conteneur scale ===== */
 .scale {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 8px;
 }
 
+.scale span {
+  font-size: 13px;
+  color: #777;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* ===== Boutons de difficulté ===== */
 .scale-button {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  border: 3px solid #999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 2px solid #ccc;
   cursor: pointer;
-  transition: 0.25s;
+  transition: all 0.25s;
 }
 
-.scale-button.small { width: 22px; height: 22px; }
-.scale-button.big { width: 40px; height: 40px; }
+.scale-button.big { width: 36px; height: 36px; }
+.scale-button.small { width: 20px; height: 20px; }
+
+.scale-button.orange { border-color: #e4902f; }
+.scale-button.orange.selected { background-color: #e4902f; }
 
 .scale-button.green { border-color: #2CAB7E; }
 .scale-button.green.selected { background-color: #2CAB7E; }
@@ -634,8 +697,76 @@ body {
 .scale-button.grey { border-color: #bfc4c7; }
 .scale-button.grey.selected { background-color: #bfc4c7; }
 
-.scale-button.orange { border-color: #e4902f; }
-.scale-button.orange.selected { background-color: #e4902f; }
+/* ===== Inputs temps / jours ===== */
+.howtime, .howday {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.howtime input, .howday input {
+  width: 60px; /* plus compact */
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.howtime input:focus, .howday input:focus {
+  border-color: #2CAB7E;
+  box-shadow: 0 0 5px rgba(44,171,126,0.25);
+}
+
+/* ===== Bouton principal ===== */
+#validPrograms {
+  display: block;
+  max-width: 200px; /* moins large qu’avant */
+  margin: 25px auto 0 auto;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(90deg, #2CAB7E 0%, #1E8C5A 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#validPrograms:hover {
+  background: linear-gradient(90deg, #1E8C5A 0%, #2CAB7E 100%);
+  box-shadow: 0 4px 12px rgba(44,171,126,0.4);
+}
+
+/* ===== Messages d'erreur ===== */
+.error-message {
+  color: #e74c3c;
+  margin-top: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Titre d’objectif en erreur */
+.difficultyItem.missing h3, 
+.objectiveItem.error, 
+.error-highlight {
+  color: #e74c3c;
+}
+
+/* Boutons de difficulté non sélectionnés en erreur */
+.scale-button.error-blink {
+  animation: blinkRed 1s ease-in-out 2;
+}
+
+@keyframes blinkRed {
+  0%, 100% { background-color: #ffffff; }
+  50% { background-color: #e76f6291; }
+}
+
 
 
 /* #endregion TRAINNING PROGRAM CONTAINER  */

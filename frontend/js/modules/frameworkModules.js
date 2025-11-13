@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ----- MUSIC PLATFORM -----
   const musicWrapper = underContainer.querySelector(".musicPlatformContainer");
-  const musicButton = underContainer.querySelector("#musicPlatformContainerButton");
+  const musicButton = underContainer.querySelector(
+    "#musicPlatformContainerButton"
+  );
   const musicContainer = underContainer.querySelector("#musicContainer");
 
   // ----- LINK CONTAINER -----
@@ -29,10 +31,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const res = await fetch("http://localhost:5000/api/user/platform", {
       method: "GET",
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token }
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
     });
 
-    if (!res.ok) throw new Error(`Erreur backend : ${res.status}`);
     const data = await res.json();
     const platform = data.platform;
 
@@ -56,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.stopPropagation();
       muxPlayer.currentTime = parseFloat(btn.dataset.time);
       muxPlayer.play();
-      chapterButtons.forEach(b => b.classList.remove("active"));
+      chapterButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
     });
   });
@@ -67,20 +71,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     chapterButtons.forEach((btn, index) => {
       const nextBtn = chapterButtons[index + 1];
       const start = parseFloat(btn.dataset.time);
-      const end = nextBtn ? parseFloat(nextBtn.dataset.time) : muxPlayer.duration;
+      const end = nextBtn
+        ? parseFloat(nextBtn.dataset.time)
+        : muxPlayer.duration;
       if (current >= start && current < end) activeIndex = index;
     });
-    chapterButtons.forEach((b, i) => b.classList.toggle("active", i === activeIndex));
+    chapterButtons.forEach((b, i) =>
+      b.classList.toggle("active", i === activeIndex)
+    );
   });
 
   // -------------------- LINK CONTAINER --------------------
   const links = [
     { label: "YouTube", url: "https://www.youtube.com/" },
     { label: "Site web", url: "https://www.example.com/" },
-    { label: "Spotify", url: "https://www.spotify.com/" }
+    { label: "Spotify", url: "https://www.spotify.com/" },
   ];
 
-  links.forEach(link => {
+  links.forEach((link) => {
     const a = document.createElement("a");
     a.href = link.url;
     a.target = "_blank";
@@ -100,7 +108,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (linkContainer.classList.contains("open")) {
       linkContainer.classList.remove("open");
-      setTimeout(() => linkContainer.classList.remove("expand-horizontal"), 400);
+      setTimeout(
+        () => linkContainer.classList.remove("expand-horizontal"),
+        400
+      );
     }
   };
 
@@ -144,16 +155,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // -------------------- CLIC HORS CONTAINERS --------------------
   document.addEventListener("click", (e) => {
-    if (!timeCodeContainer.contains(e.target) &&
-        !musicWrapper.contains(e.target) &&
-        !linkContainer.contains(e.target)) {
+    if (
+      !timeCodeContainer.contains(e.target) &&
+      !musicWrapper.contains(e.target) &&
+      !linkContainer.contains(e.target)
+    ) {
       closeAll();
     }
   });
 });
 
-
-// IMPORTANT POINT CONTANER 
+// IMPORTANT POINT CONTANER
 
 const allGoodPoint = document.querySelectorAll(".doIt .allpoints");
 
@@ -177,52 +189,164 @@ allBadPoint.forEach((el) => {
   });
 });
 
-// <!-- TRAINNING PROGRAM  -->
+// TRAINNING PROGRAM
+window.addEventListener("DOMContentLoaded", () => {
+  // Récupération sûre du module courant
+  const currentModuleId = localStorage.getItem("currentModule");
+  console.log("Module courant avant push :", currentModuleId);
 
-const objectifs = document.querySelectorAll('.objectifContainer li');
-const infoContainer = document.querySelector('.infoContainer1');
+  if (!currentModuleId) {
+    alert("Aucun module sélectionné !");
+    return;
+  }
 
-objectifs.forEach((li, index) => {
+  const objectifs = document.querySelectorAll(".objectifContainer li");
+  const infoContainer = document.querySelector(".infoContainer");
 
-  const objectiveId = `objective-${index + 1}`;
-  li.setAttribute("id", objectiveId);
+  objectifs.forEach((li, index) => {
+    const objectiveId = `objective-${index + 1}`;
+    li.setAttribute("id", objectiveId);
+    const text = li.textContent.trim();
 
-  const text = li.childNodes[0].textContent.trim();
+    const block = document.createElement("div");
+    block.classList.add("difficultyItem");
+    block.dataset.objectiveId = objectiveId;
 
-  const block = document.createElement('div');
-  block.classList.add('difficultyItem');
-  block.dataset.objectiveId = objectiveId;
+    block.innerHTML = `
+      <h3>${text}</h3>
+      <div class="scale">
+        <span>Difficile</span>
+        ${createScaleButtons()}
+        <span>Facile</span>
+      </div>
+    `;
 
-  block.innerHTML = `
-    <h3>${text}</h3>
-    <div class="scale">
-      <span>Difficile</span>
-      ${createScaleButtons()}
-      <span>Facile</span>
-    </div>
-  `;
+    infoContainer.appendChild(block);
 
-  infoContainer.appendChild(block);
-
-  // Gestion du clic sur les boutons
-  const buttons = block.querySelectorAll(".scale-button");
-  buttons.forEach((btn, i) => {
-    btn.addEventListener("click", () => {
-      buttons.forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      console.log(`Objectif ${index + 1}: niveau ${i + 1}`);
+    const buttons = block.querySelectorAll(".scale-button");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+      });
     });
   });
+
+  function createScaleButtons() {
+    return `
+      <div class="scale-button big orange"></div>
+      <div class="scale-button orange"></div>
+      <div class="scale-button small orange"></div>
+      <div class="scale-button grey"></div>
+      <div class="scale-button small green"></div>
+      <div class="scale-button green"></div>
+      <div class="scale-button big green"></div>
+    `;
+  }
+
+  const validBtn = document.getElementById("validPrograms");
+
+  function afficherMessageErreur(message) {
+    let errorMsg = document.querySelector(".error-message");
+    if (!errorMsg) {
+      errorMsg = document.createElement("p");
+      errorMsg.className = "error-message";
+      validBtn.insertAdjacentElement("afterend", errorMsg);
+    }
+    errorMsg.textContent = message;
+  }
+
+  // Ajout de l'événement click sur le bouton
+ validBtn.addEventListener("click", () => {
+  const results = [];
+  let allSelected = true;
+
+  document.querySelectorAll(".difficultyItem").forEach((block) => {
+    const objectiveId = block.dataset.objectiveId;
+    const titleElement = block.querySelector("h3");
+    const selected = block.querySelector(".scale-button.selected");
+
+    if (!selected) {
+      allSelected = false;
+
+      // effet visuel : rouge + shake
+      titleElement.classList.add("error-highlight");
+
+      // Retrait progressif de l’effet après 1,5 s
+      setTimeout(() => {
+        titleElement.classList.remove("error-highlight");
+      }, 1500);
+    } else {
+      // Si bien rempli, on remet le style normal
+      titleElement.classList.remove("error-highlight");
+
+      results.push({
+        moduleId: currentModuleId,
+        id: objectiveId,
+        objectif: titleElement.textContent,
+        difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
+      });
+    }
+    document.querySelectorAll(".difficultyItem").forEach((block) => {
+  const buttons = block.querySelectorAll(".scale-button");
+  const selected = block.querySelector(".scale-button.selected");
+  const title = block.querySelector("h3");
+
+  // Si aucun bouton sélectionné
+  if (!selected) {
+    // Ajouter classe au texte pour le mettre en rouge
+    title.classList.add("error");
+    // Supprimer la classe après 3s pour fade-out
+    setTimeout(() => title.classList.remove("error"), 3000);
+
+    // Ajouter classe aux boutons pour clignoter
+    buttons.forEach((btn) => btn.classList.add("error-blink"));
+    // Supprimer la classe après 3s
+    setTimeout(() => buttons.forEach((btn) => btn.classList.remove("error-blink")), 3000);
+  }
 });
 
-function createScaleButtons() {
-  return `
-    <div class="scale-button big orange"></div>
-    <div class="scale-button orange"></div>
-    <div class="scale-button small orange"></div>
-    <div class="scale-button grey"></div>
-    <div class="scale-button small green"></div>
-    <div class="scale-button green"></div>
-    <div class="scale-button big green"></div>
-  `;
-}
+  });
+
+  if (!allSelected) {
+    console.warn("⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !");
+    return;
+  }
+
+  // ✅ Si tout est bien rempli, on continue le processus
+  const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
+
+  if (!storedModules[currentModuleId]) {
+    storedModules[currentModuleId] = {
+      name: `Module ${currentModuleId.replace("module-", "")}`,
+      programs: [],
+    };
+  }
+
+  storedModules[currentModuleId].programs.push(results);
+  localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+
+  console.log(`✅ Nouveau programme ajouté dans ${currentModuleId}:`, results);
+
+  window.location.href = "/frontend/pages/programmsTrainning.html";
+});
+
+  // Charger ou initialiser les modules
+  const storedModules =
+    JSON.parse(localStorage.getItem("trainingModules")) || {};
+
+  if (!storedModules[currentModuleId]) {
+    storedModules[currentModuleId] = {
+      name: `Module ${currentModuleId.replace("module-", "")}`,
+      programs: [],
+    };
+  }
+
+  storedModules[currentModuleId].programs.push(results);
+  localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+
+  console.log(`✅ Nouveau programme ajouté dans ${currentModuleId}:`, results);
+
+  // Redirection vers la page des programmes
+  window.location.href = "/frontend/pages/programmsTrainning.html";
+});

@@ -1,0 +1,237 @@
+#trainingResult {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 30px;
+  max-width: 70%;
+  margin: 0 auto;
+  font-family: "Poppins", sans-serif;
+}
+
+.moduleTitle {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.programBlock {
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 20px 25px;
+  width: 95%; /* ⬆️ élargi légèrement (10–15%) */
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.programBlock:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+}
+
+.programBlock h3 {
+  margin-bottom: 14px;
+  color: #34495e;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+/* ===== OBJECTIFS ===== */
+.objectiveItem {
+  margin-bottom: 15px;
+  padding: 14px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Conteneur texte objectif */
+.objectiveText {
+  width: 30%;
+}
+
+.objectiveText h4 {
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.objectiveText p {
+  margin-bottom: 6px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* Échelle de difficulté */
+.scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 30%;
+}
+
+.scale span {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.scale-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.scale-button:hover {
+  transform: scale(1.15);
+}
+
+/* Palette difficulté */
+.scale-button.big.orange { background-color: #ff9800; }
+.scale-button.orange { background-color: #ffa726; }
+.scale-button.small.orange { background-color: #ffcc80; }
+.scale-button.grey { background-color: #e0e0e0; }
+.scale-button.small.green { background-color: #a5d6a7; }
+.scale-button.green { background-color: #66bb6a; }
+.scale-button.big.green { background-color: #43a047; }
+
+.scale-button.selected {
+  border: 2px solid #0000007a;
+  transform: scale(1.25);
+  opacity: 1;
+}
+
+/* ===== TEMPS ASSOCIÉ ===== */
+.timeDisplay {
+  color: #888;
+  font-size: 0.9rem;
+  width: 12%;
+  text-align: left;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  margin-left: 20px;
+}
+
+.timeDisplay.updated {
+  color: #2c3e50;
+}
+
+/* ===== HEADER & ACTIONS ===== */
+.programHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.programActions button {
+  margin-left: 8px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.programActions button:hover {
+  background: #d6d6d6;
+}
+
+.objectiveItem p[contenteditable="true"] {
+  border: 1px dashed #999;
+  padding: 4px;
+  background: #fff8e1;
+}
+
+
+
+
+
+
+
+
+
+
+.deleteProgramBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.deleteProgramBtn:hover {
+  background: #ff5555ce; /* Rouge vif à l'hover */
+  color: white;
+  transform: scale(1.05);
+}
+
+
+
+
+
+
+
+
+
+
+
+.objectiveTimer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.cloche {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.cloche svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 4;
+}
+
+.circle {
+  fill: none;
+  stroke: #f0b3b3;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.timerDisplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2c3e50;
+  user-select: none;
+}

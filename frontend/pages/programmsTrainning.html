@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/dashboard.css" />
+    <link rel="stylesheet" href="/frontend/css/programmsTrainning.css" />
+    <title>programms</title>
+</head>
+<body>
+    
+ <!-- NAVBAR -->
+    <section class="navbar">
+      <button id="homeButton" class="navbarButton">
+        <img src="../img/navbar/logo png (1).png" alt="" />
+      </button>
+      <button id="signInButton" class="navbarButton">
+        <img
+          src="../img/navbar/png-clipart-computer-icons-google-account-icon-design-login-others-miscellaneous-desktop-wallpaper-thumbnail-removebg-preview.png"
+          alt=""
+        />
+      </button>
+      <button id="menuButton" class="navbarButton">
+        <img src="../img/navbar/menu-modified.png" alt="" />
+      </button>
+    </section>
+
+    <section class="menuNavbar">
+      <button class="menu-item item1">item</button>
+      <button class="menu-item item2">item</button>
+      <button class="menu-item item3">item</button>
+      <button class="menu-item item4">item</button>
+      <button class="menu-item item5">item</button>
+    </section>
+
+    <!-- CONTROLLEBAR  -->
+    <div class="controllBarContainer">
+      <div class="itemContainer"  id="setting">
+        <img
+          src="/frontend/img/logo/reglages.png"
+          alt=""
+        />
+        <p class="controllBarContainerText">Setting</p>
+      </div>
+      <div class="itemContainer" id="framework">
+        <img src="/frontend/img/logo/reglages.png" alt="" />
+        <p class="controllBarContainerText">framework</p>
+      </div>
+      <div class="itemContainer" id="programsTrainning">
+        <img src="/frontend/img/logo/logo entrainnement.png" alt="" />
+        <p class="controllBarContainerText">Programmes</p>
+      </div>
+
+    </div>
+
+    <!-- SETTING  -->
+    <div class="settings">
+      <button id="closeSeting" class="closeButtonControllBar"><p>x</p></button>
+      <div id="userPreference">
+        <h2>Plateforme de streaming:</h2>
+        <div class="platformContainer">
+          <button class="platform-btn" data-platform="spotify">Spotify</button>
+          <button class="platform-btn" data-platform="deezer">Deezer</button>
+          <button class="platform-btn" data-platform="applemusic">
+            Apple Music
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRAMS TRAINNING  -->
+<section class="trainingLobby">
+  <h1>Mes programmes d’entraînement</h1>
+  <div id="trainingResult" class="modulesGrid"></div>
+</section>
+
+
+    <script src="/frontend/js/dashboard.js"></script>
+    <script src="/frontend/js/programmsTrainning.js"></script>
+
+</body>
+</html>

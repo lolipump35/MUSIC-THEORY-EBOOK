@@ -1,4 +1,4 @@
-// dashboard.js
+// #region BACK
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
@@ -45,6 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
       alert("Impossible de charger le dashboard");
     });
 });
+// #endregion BACK
 
 // #region NAVBARE
 // navbar dynamique
@@ -119,35 +120,22 @@ signInButton.addEventListener("click", () => {
 
 //#region CONTROLBAR
 
-// SETTING 
+// SETTING
 
+// button settings
+const settingsPanel = document.querySelector(".settings");
+const openButton = document.getElementById("setting");
+const closeButton = document.getElementById("closeSeting");
 
+// Quand on clique sur le bouton "Setting"
+openButton.addEventListener("click", () => {
+  settingsPanel.style.display = "flex"; // affiche le panneau
+});
 
-// TEMPORAIRE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-  const frameworkButton = document.getElementById('framework');
-  frameworkButton.addEventListener('click', () => {
-    window.location.href = '/frontend/pages/modules/frameworkModules.html'; 
-  });
-// TEMPORAIRE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-
-
-
-
-
-// button settings 
-  const settingsPanel = document.querySelector('.settings');
-  const openButton = document.getElementById('setting');
-  const closeButton = document.getElementById('closeSeting');
-
-  // Quand on clique sur le bouton "Setting"
-  openButton.addEventListener('click', () => {
-    settingsPanel.style.display = 'flex'; // affiche le panneau
-  });
-
-  // Quand on clique sur le bouton de fermeture "x"
-  closeButton.addEventListener('click', () => {
-    settingsPanel.style.display = 'none'; // cache le panneau
-  });
+// Quand on clique sur le bouton de fermeture "x"
+closeButton.addEventListener("click", () => {
+  settingsPanel.style.display = "none"; // cache le panneau
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const platformButtons = document.querySelectorAll(".platform-btn");
@@ -173,9 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Mettre à jour les boutons visuellement
       platformButtons.forEach((b) => b.classList.remove("selected"));
-      const btn = document.querySelector(`.platform-btn[data-platform="${platform}"]`);
+      const btn = document.querySelector(
+        `.platform-btn[data-platform="${platform}"]`
+      );
       if (btn) btn.classList.add("selected");
-
     } catch (err) {
       console.error("❌ Erreur :", err);
     }
@@ -200,7 +189,9 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Préférence actuelle :", data.platform);
 
       if (data.platform) {
-        const btn = document.querySelector(`.platform-btn[data-platform="${data.platform}"]`);
+        const btn = document.querySelector(
+          `.platform-btn[data-platform="${data.platform}"]`
+        );
         if (btn) btn.classList.add("selected");
       }
     } catch (err) {
@@ -217,6 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPreference();
 });
 
+//PROGRAMMS
+const programsButton = document.getElementById("programsTrainning");
+programsButton.addEventListener("click", () => {
+  window.location.href = "/frontend/pages/programmsTrainning.html";
+});
 
 //#endregion CONTROLBAR
 
@@ -226,8 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //#region teaser
 
-// --- Sélection des éléments du teaser ---
-// --- Variables teaser / overlay / bouton ---
 const teaserContainer = document.getElementById("teaser1");
 const teaserImage = teaserContainer.querySelector(".cover img");
 const teaserTitle = teaserContainer.querySelector(".tittle h1");
@@ -237,6 +231,13 @@ const overlay = document.getElementById("overlay");
 
 // --- Données de chaque module (1 à 20) ---
 const modulesData = {
+  moduleTEST: {
+    title: "modulesTEST",
+    text: "test .",
+    image: "/frontend/img/dashboard/cours.png",
+    link: "/frontend/pages/modules/frameworkModules.html",
+  },
+
   module1: {
     title: "Les bases du rythme",
     text: "Découvre comment bien tenir ta guitare, placer tes doigts, et garder un rythme régulier dès les premiers accords.",
@@ -394,11 +395,8 @@ function fermerTeaser() {
 
 // --- Écouteurs DOM ---
 document.addEventListener("DOMContentLoaded", () => {
-  const allModules = document.querySelectorAll(".modules");
-
-  allModules.forEach((module) => {
+  document.querySelectorAll(".modules").forEach((module) => {
     module.addEventListener("click", () => {
-      console.log("Clic sur :", module.id);
       afficherModule(module.id);
     });
   });
@@ -420,3 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //#endregion teaser
+
+// #region STOCKAGE CURRENT MODULEID
+
+document.querySelectorAll(".modules").forEach((module) => {
+  module.addEventListener("click", () => {
+    localStorage.setItem("currentModule", module.id);
+    console.log("Module cliqué :", module.id);
+  });
+});
+
+// #endregion STOCKAGE CURRENT MODULEID

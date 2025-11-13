@@ -147,7 +147,6 @@ body {
   opacity: 1;
 }
 
-/* SETTING  */
 .itemContainer {
   height: 60px;
   display: flex;
@@ -171,6 +170,16 @@ body {
   display: flex;
 }
 
+/* SETTING  */
+
+/* PROGRAMMS TRAINNING  */
+
+#programsTrainning img{
+   scale:0.17;
+  position: fixed;
+  left: -125px;
+}
+
 /* #endregion controlleBar  */
 
 /* #region SETTING  */
@@ -179,7 +188,6 @@ body {
   display: none;
   align-items: center;
   flex-direction: column;
-  border: solid black 1px;
   border-radius: 10px;
   height: 70%;
   width: 800px;
@@ -191,7 +199,7 @@ body {
   background-color: #bdbdbd;
 }
 
-#closeSeting {
+.closeButtonControllBar {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -204,7 +212,7 @@ body {
   background-color: rgb(253, 132, 132);
   border: none;
 }
-#closeSeting p {
+.closeButtonControllBar p {
   color: white;
 }
 
@@ -253,6 +261,12 @@ body {
 }
 
 /* #endregion SETTING  */
+
+/* #region PROGRAMMS TRAINNING  */
+
+
+
+/* #endregion PROGRAMMS TRAINNING  */
 
 /* #region modules  */
 .modulesZone {
@@ -319,7 +333,6 @@ body {
 .allContainer {
   height: 60%;
   width: 60%;
-  /* border: solid black 1px; */
   position: fixed;
   top: 20%;
   border-radius: 20px;
