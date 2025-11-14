@@ -7,8 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const storedModules =
-    JSON.parse(localStorage.getItem("trainingModules")) || {};
+  const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
   const currentModuleId = localStorage.getItem("currentModule");
 
   if (!currentModuleId || !storedModules[currentModuleId]) {
@@ -35,12 +34,16 @@ window.addEventListener("DOMContentLoaded", () => {
     programTitle.textContent = `Programme ${progIndex + 1}`;
     programDiv.appendChild(programTitle);
 
-    // ✅ Gérer le cas où "program" contient les objectifs dans une propriété "objectives"
+    // ✅ Récupération des objectifs
     const objectives = Array.isArray(program)
       ? program
       : program.objectives || [];
 
     objectives.forEach((item, objIndex) => {
+      // Générer un id si absent
+      item.id = item.id || `objective-${objIndex + 1}`;
+
+      // === Création div objectif
       const objectiveDiv = document.createElement("div");
       objectiveDiv.classList.add("objectiveItem");
 
@@ -56,35 +59,27 @@ window.addEventListener("DOMContentLoaded", () => {
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
       scaleDiv.innerHTML = `
-  <span>Difficile</span>
-  ${createScaleButtons(item.difficultyLevel - 1)}
-  <span>Facile</span>
-`;
+        <span>Difficile</span>
+        ${createScaleButtons(item.difficultyLevel - 1)}
+        <span>Facile</span>
+      `;
 
       // Temps estimé
       const timeDiv = document.createElement("div");
       timeDiv.classList.add("timeDisplay");
+      timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(item.id, program)} min`;
 
-      const initialDifficulty = item.difficultyLevel ?? 3;
-      timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-        initialDifficulty,
-        program
-      )} min`;
-
-      timeDiv.dispatchEvent(new Event("change"));
-
-      // Gestion clic difficulté
+      // Gestion clic sur difficulté
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", () => {
-          scaleDiv
-            .querySelectorAll(".scale-button")
-            .forEach((b) => b.classList.remove("selected"));
+          scaleDiv.querySelectorAll(".scale-button").forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
 
-          timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-            index,
-            program
-          )} min`;
+          // Mise à jour du difficultyLevel dans l'objet
+          item.difficultyLevel = index + 1;
+
+          // Recalcul du temps estimé
+          timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(item.id, program)} min`;
           timeDiv.dispatchEvent(new Event("change"));
         });
       });
@@ -108,7 +103,6 @@ window.addEventListener("DOMContentLoaded", () => {
           <span class="timerDisplay">00:00</span>
         </div>
       `;
-
       initializeCloche(timerDiv, timeDiv);
 
       // Structure finale
@@ -125,52 +119,43 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // ====== 🔹 Fonctions utilitaires ======
   function createScaleButtons(selectedLevel) {
-    const buttons = [
-      "big orange",
-      "orange",
-      "small orange",
-      "grey",
-      "small green",
-      "green",
-      "big green",
-    ];
-    return buttons
-      .map((cls, index) => {
-        const isSelected = index === selectedLevel ? "selected" : "";
-        return `<div class="scale-button ${cls} ${isSelected}"></div>`;
-      })
-      .join("");
+    const buttons = ["big orange","orange","small orange","grey","small green","green","big green"];
+    return buttons.map((cls, index) => {
+      const isSelected = index === selectedLevel ? "selected" : "";
+      return `<div class="scale-button ${cls} ${isSelected}"></div>`;
+    }).join("");
   }
 
-  function getTimeForDifficulty(level, program) {
+  function getTimeForDifficulty(objectiveId, program) {
     const module = storedModules[currentModuleId];
     if (!module || !module.programs.length) return 0;
 
     const progData = module.programs[0];
-    const totalMinutes = progData.timePerWeek || 120;
-    const days = progData.daysPerWeek || 3;
+    if (!progData.timePerWeek || !progData.daysPerWeek) return 0;
+
+    const totalMinutes = progData.timePerWeek;
+    const days = progData.daysPerWeek;
     const minutesPerDay = totalMinutes / days;
 
-    // Récupérer toutes les difficultés du programme
-    const objectives = Array.isArray(program)
-      ? program
-      : program.objectives || [];
+    const objectives = Array.isArray(program) ? program : program.objectives || [];
 
-    // Échelle de poids linéaire (7 niveaux = 1 à 7)
-    const weights = [1, 2, 3, 4, 5, 6, 7];
-    const totalWeight = objectives.reduce(
-      (sum, o) => sum + (weights[o.difficultyLevel] || 1),
-      0
-    );
+    // Poids modéré linéaire + coef
+    const processedObjectives = objectives.map(o => {
+      const facteurModere = 1 + ((7 - o.difficultyLevel) / 6) * 2; // entre 1 et 3
+      const poidsFinal = facteurModere * (o.coef || 1);
+      return { ...o, poidsFinal };
+    });
 
-    const myWeight = weights[level] || 1;
-    const myPercentage = myWeight / totalWeight; // => entre 0 et 1
+    const totalWeight = processedObjectives.reduce((sum, o) => sum + o.poidsFinal, 0);
+    const myObjective = processedObjectives.find(o => o.id === objectiveId);
+    if (!myObjective) return 0;
+
+    const myPercentage = myObjective.poidsFinal / totalWeight;
     const myMinutes = minutesPerDay * myPercentage;
 
     return Math.round(myMinutes);
   }
 
-  // Cloque
   function initializeCloche(timerDiv, timeDiv) {
     const circle = timerDiv.querySelector(".circle");
     const display = timerDiv.querySelector(".timerDisplay");
@@ -232,10 +217,7 @@ window.addEventListener("DOMContentLoaded", () => {
       deleteBtn.addEventListener("click", () => {
         if (confirm("Voulez-vous vraiment supprimer ce programme ?")) {
           storedModules[currentModuleId].programs.splice(index, 1);
-          localStorage.setItem(
-            "trainingModules",
-            JSON.stringify(storedModules)
-          );
+          localStorage.setItem("trainingModules", JSON.stringify(storedModules));
           block.remove();
           console.log(`✅ Programme ${index + 1} supprimé.`);
         }

@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// IMPORTANT POINT CONTANER
+// #region IMPORTANT POINT CONTANER
 
 const allGoodPoint = document.querySelectorAll(".doIt .allpoints");
 
@@ -188,8 +188,9 @@ allBadPoint.forEach((el) => {
     el.classList.remove("redLight");
   });
 });
+// #endregion IMPORTANT POINT CONTANER
 
-// TRAINNING PROGRAM
+// #region TRAINNING PROGRAM
 window.addEventListener("DOMContentLoaded", () => {
   // Récupération sûre du module courant
   const currentModuleId = localStorage.getItem("currentModule");
@@ -232,25 +233,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
- function createScaleButtons(selectedLevel) {
-  const buttons = [
-    "big orange",
-    "orange",
-    "small orange",
-    "grey",
-    "small green",
-    "green",
-    "big green",
-  ];
+  function createScaleButtons(selectedLevel) {
+    const buttons = [
+      "big orange",
+      "orange",
+      "small orange",
+      "grey",
+      "small green",
+      "green",
+      "big green",
+    ];
 
-  return buttons
-    .map((cls, index) => {
-      // selectedLevel doit aller de 0 à 6
-      const isSelected = index === selectedLevel ? "selected" : "";
-      return `<div class="scale-button ${cls} ${isSelected}"></div>`;
-    })
-    .join("");
-}
+    return buttons
+      .map((cls, index) => {
+        // selectedLevel doit aller de 0 à 6
+        const isSelected = index === selectedLevel ? "selected" : "";
+        return `<div class="scale-button ${cls} ${isSelected}"></div>`;
+      })
+      .join("");
+  }
 
   const validBtn = document.getElementById("validPrograms");
 
@@ -271,28 +272,40 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Vérification de chaque objectif
     document.querySelectorAll(".difficultyItem").forEach((block) => {
-      const objectiveId = block.dataset.objectiveId;
-      const titleElement = block.querySelector("h3");
-      const selected = block.querySelector(".scale-button.selected");
+  const objectiveId = block.dataset.objectiveId; // id du block
+  const titleElement = block.querySelector("h3");
+  const selected = block.querySelector(".scale-button.selected");
 
-      if (!selected) {
-        allSelected = false;
-        titleElement.classList.add("error-highlight");
-        setTimeout(() => titleElement.classList.remove("error-highlight"), 1500);
-      } else {
-        titleElement.classList.remove("error-highlight");
-        results.push({
-          moduleId: currentModuleId,
-          id: objectiveId,
-          objectif: titleElement.textContent,
-          difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
-        });
-      }
+  // Récupération du <li> correspondant grâce à l'ID
+  const originalLi = document.getElementById(objectiveId);
+  const coef = originalLi ? parseFloat(originalLi.dataset.coef) : 1;
+
+  if (!selected) {
+    titleElement.classList.add("error-highlight");
+    setTimeout(() => titleElement.classList.remove("error-highlight"), 1500);
+  } else {
+    titleElement.classList.remove("error-highlight");
+
+    results.push({
+      moduleId: currentModuleId,
+      id: objectiveId,
+      objectif: titleElement.textContent.trim(),
+      difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
+      coef: coef // ✅ coef correctement récupéré
     });
+  }
+});
+
+console.log(results);
+      
 
     if (!allSelected) {
-      console.warn("⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !");
-      afficherMessageErreur("Merci de sélectionner une difficulté pour chaque objectif.");
+      console.warn(
+        "⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !"
+      );
+      afficherMessageErreur(
+        "Merci de sélectionner une difficulté pour chaque objectif."
+      );
       return;
     }
 
@@ -303,12 +316,15 @@ window.addEventListener("DOMContentLoaded", () => {
     const howDay = parseInt(howDayInput?.value) || 0;
 
     if (howTime <= 0 || howDay <= 0) {
-      afficherMessageErreur("Merci de renseigner le temps et le nombre de jours.");
+      afficherMessageErreur(
+        "Merci de renseigner le temps et le nombre de jours."
+      );
       return;
     }
 
     // ✅ Stockage dans le localStorage
-    const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
+    const storedModules =
+      JSON.parse(localStorage.getItem("trainingModules")) || {};
 
     if (!storedModules[currentModuleId]) {
       storedModules[currentModuleId] = {
@@ -335,3 +351,5 @@ window.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/frontend/pages/programmsTrainning.html";
   });
 });
+
+// #endregion TRAINNING PROGRAM
