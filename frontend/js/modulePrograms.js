@@ -7,7 +7,8 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
+  const storedModules =
+    JSON.parse(localStorage.getItem("trainingModules")) || {};
   const currentModuleId = localStorage.getItem("currentModule");
 
   if (!currentModuleId || !storedModules[currentModuleId]) {
@@ -33,6 +34,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const programTitle = document.createElement("h3");
     programTitle.textContent = `Programme ${progIndex + 1}`;
     programDiv.appendChild(programTitle);
+
+    const daysPerWeek = program.daysPerWeek;
+    createDayButtons(programDiv, daysPerWeek);
 
     // ✅ Récupération des objectifs
     const objectives = Array.isArray(program)
@@ -67,19 +71,27 @@ window.addEventListener("DOMContentLoaded", () => {
       // Temps estimé
       const timeDiv = document.createElement("div");
       timeDiv.classList.add("timeDisplay");
-      timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(item.id, program)} min`;
+      timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
+        item.id,
+        program
+      )} min`;
 
       // Gestion clic sur difficulté
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", () => {
-          scaleDiv.querySelectorAll(".scale-button").forEach((b) => b.classList.remove("selected"));
+          scaleDiv
+            .querySelectorAll(".scale-button")
+            .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
 
           // Mise à jour du difficultyLevel dans l'objet
           item.difficultyLevel = index + 1;
 
           // Recalcul du temps estimé
-          timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(item.id, program)} min`;
+          timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
+            item.id,
+            program
+          )} min`;
           timeDiv.dispatchEvent(new Event("change"));
         });
       });
@@ -106,7 +118,9 @@ window.addEventListener("DOMContentLoaded", () => {
       initializeCloche(timerDiv, timeDiv);
 
       // Structure finale
+
       objectiveDiv.appendChild(textContainer);
+
       objectiveDiv.appendChild(scaleDiv);
       objectiveDiv.appendChild(timeDiv);
       objectiveDiv.appendChild(timerDiv);
@@ -119,12 +133,47 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // ====== 🔹 Fonctions utilitaires ======
   function createScaleButtons(selectedLevel) {
-    const buttons = ["big orange","orange","small orange","grey","small green","green","big green"];
-    return buttons.map((cls, index) => {
-      const isSelected = index === selectedLevel ? "selected" : "";
-      return `<div class="scale-button ${cls} ${isSelected}"></div>`;
-    }).join("");
+    const buttons = [
+      "big orange",
+      "orange",
+      "small orange",
+      "grey",
+      "small green",
+      "green",
+      "big green",
+    ];
+    return buttons
+      .map((cls, index) => {
+        const isSelected = index === selectedLevel ? "selected" : "";
+        return `<div class="scale-button ${cls} ${isSelected}"></div>`;
+      })
+      .join("");
   }
+
+ function createDayButtons(programDiv, daysPerWeek) {
+  const container = document.createElement("div");
+  container.classList.add("programDays");
+
+  for (let i = 1; i <= daysPerWeek; i++) {
+    const btn = document.createElement("button");
+    btn.classList.add("dayProgramBtn");
+    btn.textContent = `Jour ${i}`;
+
+    // Jour 1 sélectionné par défaut
+    if (i === 1) btn.classList.add("selected");
+
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".dayProgramBtn")
+        .forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+
+    container.appendChild(btn);
+  }
+
+  programDiv.appendChild(container);
+}
+
 
   function getTimeForDifficulty(objectiveId, program) {
     const module = storedModules[currentModuleId];
@@ -137,17 +186,22 @@ window.addEventListener("DOMContentLoaded", () => {
     const days = progData.daysPerWeek;
     const minutesPerDay = totalMinutes / days;
 
-    const objectives = Array.isArray(program) ? program : program.objectives || [];
+    const objectives = Array.isArray(program)
+      ? program
+      : program.objectives || [];
 
     // Poids modéré linéaire + coef
-    const processedObjectives = objectives.map(o => {
+    const processedObjectives = objectives.map((o) => {
       const facteurModere = 1 + ((7 - o.difficultyLevel) / 6) * 2; // entre 1 et 3
       const poidsFinal = facteurModere * (o.coef || 1);
       return { ...o, poidsFinal };
     });
 
-    const totalWeight = processedObjectives.reduce((sum, o) => sum + o.poidsFinal, 0);
-    const myObjective = processedObjectives.find(o => o.id === objectiveId);
+    const totalWeight = processedObjectives.reduce(
+      (sum, o) => sum + o.poidsFinal,
+      0
+    );
+    const myObjective = processedObjectives.find((o) => o.id === objectiveId);
     if (!myObjective) return 0;
 
     const myPercentage = myObjective.poidsFinal / totalWeight;
@@ -217,7 +271,10 @@ window.addEventListener("DOMContentLoaded", () => {
       deleteBtn.addEventListener("click", () => {
         if (confirm("Voulez-vous vraiment supprimer ce programme ?")) {
           storedModules[currentModuleId].programs.splice(index, 1);
-          localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+          localStorage.setItem(
+            "trainingModules",
+            JSON.stringify(storedModules)
+          );
           block.remove();
           console.log(`✅ Programme ${index + 1} supprimé.`);
         }
