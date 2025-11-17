@@ -726,7 +726,7 @@ body {
   display: block;
   max-width: 200px; /* moins large qu’avant */
   margin: 25px auto 0 auto;
-  padding: 12px 0;
+  padding: 12px 20px;
   font-size: 16px;
   font-weight: 600;
   color: #fff;
@@ -734,7 +734,7 @@ body {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: ease-in-out 0.3s;
 }
 
 #validPrograms:hover {
@@ -742,40 +742,27 @@ body {
   box-shadow: 0 4px 12px rgba(44,171,126,0.4);
 }
 
-/* ===== Messages d'erreur ===== */
-.error-message {
-  color: #e74c3c;
-  margin-top: 8px;
-  font-weight: 600;
-  text-align: center;
+/* ============================
+   Boutons de difficulté en erreur
+   ============================ */
+
+/* Boutons de difficulté clignotants */
+/* Animation clignotante partagée */
+@keyframes blinkRed {
+  0%, 100% { background-color: #f8f9fa; }
+  50% { background-color: #e76f6291; }
 }
 
-/* Titre d’objectif en erreur */
-.difficultyItem.missing h3, 
-.objectiveItem.error, 
-.error-highlight {
-  color: #e74c3c;
-}
-
-/* Boutons de difficulté non sélectionnés en erreur */
+/* Boutons de difficulté en erreur */
 .scale-button.error-blink {
   animation: blinkRed 1s ease-in-out 2;
 }
 
-@keyframes blinkRed {
-  0%, 100% { background-color: #ffffff; }
-  50% { background-color: #e76f6291; }
-}
-
-
-/* Animation des inputs en erreur */
-input.error-blink {
-  animation: blinkRed 1s ease-in-out 2;
-}
-
-@keyframes blinkRed {
-  0%, 100% { background-color: #ffffff; }
-  50% { background-color: #e76f6291; }
+/* Inputs de temps et jours en erreur */
+input.error-border {
+  animation: blinkRed 1s ease-in-out 2; /* <-- réutilisation de la même animation */
+  border-radius: 6px;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 

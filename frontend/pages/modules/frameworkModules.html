@@ -189,8 +189,16 @@
     <p class="intro">Pour chacun des objectifs de ce module, comment en évaluerais-tu la difficulté ?</p>
     <div class="infoContainer"></div>
   </div>
-  <div class="howtime"><h3>Combien de temps pense tu pouvoir t entrainemer dans la semaine ?</h3> <input type="number">minutes</div>
-  <div class="howday"><h3>Combien de jour dans la semaine pense tu pouvoir t entrainer ?</h3><input type="number" id="daysPerWeek" min="1" max="7" />jours</div>
+<div class="howtime">
+  <h3>Combien de temps pense tu pouvoir t entrainemer dans la semaine ?</h3>
+  <input type="number" id="trainingTime" class="program-input"> minutes
+</div>
+
+<div class="howday">
+  <h3>Combien de jour dans la semaine pense tu pouvoir t entrainer ?</h3>
+  <input type="number" id="trainingDays" class="program-input" min="1" max="7"> jours
+</div>
+
   <button id="validPrograms">Créer le programme</button>
 </div>
 
