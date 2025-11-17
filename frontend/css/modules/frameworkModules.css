@@ -768,5 +768,16 @@ body {
 }
 
 
+/* Animation des inputs en erreur */
+input.error-blink {
+  animation: blinkRed 1s ease-in-out 2;
+}
+
+@keyframes blinkRed {
+  0%, 100% { background-color: #ffffff; }
+  50% { background-color: #e76f6291; }
+}
+
+
 
 /* #endregion TRAINNING PROGRAM CONTAINER  */

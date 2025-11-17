@@ -210,54 +210,79 @@ window.addEventListener("DOMContentLoaded", () => {
     return Math.round(myMinutes);
   }
 
-  function initializeCloche(timerDiv, timeDiv) {
-    const circle = timerDiv.querySelector(".circle");
-    const display = timerDiv.querySelector(".timerDisplay");
-    let paused = true;
-    let interval = null;
+  function markObjectiveAsCompleted(objectiveElement) {
+  objectiveElement.classList.add("completed");
+}
 
-    function getTime() {
-      const text = timeDiv.textContent;
-      const match = text.match(/(\d+)\s*min/);
-      return match ? parseInt(match[1], 10) * 60 : 0;
-    }
 
-    let seconds = getTime();
+function initializeCloche(timerDiv, timeDiv) {
+  const circle = timerDiv.querySelector(".circle");
+  const display = timerDiv.querySelector(".timerDisplay");
+  let paused = true;
+  let interval = null;
 
-    function updateDisplay() {
-      const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
-      const secs = String(seconds % 60).padStart(2, "0");
-      display.textContent = `${mins}:${secs}`;
-
-      const total = getTime();
-      const percent = total > 0 ? (total - seconds) / total : 0;
-      circle.setAttribute("stroke-dasharray", `${percent * 100}, 100`);
-    }
-
-    updateDisplay();
-
-    timerDiv.querySelector(".cloche").addEventListener("click", () => {
-      if (paused) {
-        paused = false;
-        interval = setInterval(() => {
-          if (seconds > 0) {
-            seconds--;
-            updateDisplay();
-          } else {
-            clearInterval(interval);
-          }
-        }, 1000);
-      } else {
-        paused = true;
-        clearInterval(interval);
-      }
-    });
-
-    timeDiv.addEventListener("change", () => {
-      seconds = getTime();
-      updateDisplay();
-    });
+  // Fonction pour récupérer le temps en secondes depuis le timeDiv
+  function getTime() {
+    const text = timeDiv.textContent;
+    const match = text.match(/(\d+)\s*min/);
+    return match ? parseInt(match[1], 10) * 60 : 0;
   }
+
+  let seconds = getTime();
+
+  function updateDisplay() {
+    const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const secs = String(seconds % 60).padStart(2, "0");
+    display.textContent = `${mins}:${secs}`;
+
+    const total = getTime();
+    const percent = total > 0 ? (total - seconds) / total : 0;
+    circle.setAttribute("stroke-dasharray", `${percent * 100}, 100`);
+
+    // Quand le timer arrive à 0
+    if (seconds === 0) {
+  console.log("[debug] timer reached 0 ! seconds:", seconds);
+
+  const objectiveItem = timerDiv.closest(".objectiveItem");
+  if (objectiveItem) {
+    console.log("[debug] objectiveItem trouvé :", objectiveItem);
+
+    // ✅ Appel de la fonction utilitaire pour marquer l'objectif comme complété
+    markObjectiveAsCompleted(objectiveItem);
+  } else {
+    console.warn("[debug] objectiveItem non trouvé");
+  }
+
+  clearInterval(interval);
+  paused = true;
+}
+  }
+
+  updateDisplay();
+
+  timerDiv.querySelector(".cloche").addEventListener("click", () => {
+    if (paused) {
+      paused = false;
+      interval = setInterval(() => {
+        if (seconds > 0) {
+          seconds--;
+          updateDisplay();
+        }
+      }, 1000);
+    } else {
+      paused = true;
+      clearInterval(interval);
+    }
+  });
+
+  // Mettre à jour le timer si le temps change dynamiquement
+  timeDiv.addEventListener("change", () => {
+    seconds = getTime();
+    updateDisplay();
+  });
+}
+
+
 
   // Supprimer un programme
   function enableProgramDeletion(container, storedModules, currentModuleId) {

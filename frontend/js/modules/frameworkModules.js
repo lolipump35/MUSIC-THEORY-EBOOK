@@ -266,13 +266,17 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // ✅ Événement sur le bouton de validation
+  // =======================
+  // ✅ Événement sur le bouton de validation
+  // =======================
   validBtn.addEventListener("click", () => {
     const results = [];
     let allSelected = true;
 
     // Vérification de chaque objectif
-    document.querySelectorAll(".difficultyItem").forEach((block) => {
-  const objectiveId = block.dataset.objectiveId; // id du block
+// Vérification de chaque objectif
+document.querySelectorAll(".difficultyItem").forEach((block) => {
+  const objectiveId = block.dataset.objectiveId;
   const titleElement = block.querySelector("h3");
   const selected = block.querySelector(".scale-button.selected");
 
@@ -281,45 +285,79 @@ window.addEventListener("DOMContentLoaded", () => {
   const coef = originalLi ? parseFloat(originalLi.dataset.coef) : 1;
 
   if (!selected) {
+    allSelected = false;
+
+    // Mettre le titre en rouge
     titleElement.classList.add("error-highlight");
+
+    // Ajouter l’animation sur tous les boutons
+    block.querySelectorAll(".scale-button").forEach((btn) => {
+      btn.classList.add("error-blink");
+      // Supprimer après 2 secondes pour pouvoir relancer l'animation si l'utilisateur revalide
+      setTimeout(() => btn.classList.remove("error-blink"), 2000);
+    });
+
+    // Retirer le rouge après un petit délai
     setTimeout(() => titleElement.classList.remove("error-highlight"), 1500);
   } else {
     titleElement.classList.remove("error-highlight");
-
     results.push({
       moduleId: currentModuleId,
       id: objectiveId,
       objectif: titleElement.textContent.trim(),
       difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
-      coef: coef // ✅ coef correctement récupéré
+      coef: coef
     });
   }
 });
 
-console.log(results);
-      
 
+    // Vérification des difficultés
     if (!allSelected) {
-      console.warn(
-        "⚠️ Certains objectifs n'ont pas de difficulté sélectionnée !"
-      );
       afficherMessageErreur(
         "Merci de sélectionner une difficulté pour chaque objectif."
       );
       return;
     }
 
-    // ✅ Récupération des inputs
-    const howTimeInput = document.querySelector(".howtime input");
-    const howDayInput = document.querySelector(".howday input");
-    const howTime = parseInt(howTimeInput?.value) || 0;
-    const howDay = parseInt(howDayInput?.value) || 0;
+    // ✅ Récupération des inputs de temps et jours
+  const howTimeInput = document.querySelector(".howtime input");
+  const howDayInput = document.querySelector(".howday input");
+  const howTime = parseInt(howTimeInput?.value) || 0;
+  const howDay = parseInt(howDayInput?.value) || 0;
+
+    // Vérification que les valeurs sont supérieures au minimum
+    let timeValid = true;
+    let dayValid = true;
+
+    if (howTime < 30) {
+      // par exemple minimum 30 minutes
+      timeValid = false;
+      howTimeSelect.classList.add("error-highlight");
+      setTimeout(() => howTimeSelect.classList.remove("error-highlight"), 1500);
+    }
+
+    if (howDay < 1) {
+      // minimum 1 jour
+      dayValid = false;
+      howDaySelect.classList.add("error-highlight");
+      setTimeout(() => howDaySelect.classList.remove("error-highlight"), 1500);
+    }
 
     if (howTime <= 0 || howDay <= 0) {
-      afficherMessageErreur(
-        "Merci de renseigner le temps et le nombre de jours."
-      );
-      return;
+  afficherMessageErreur(
+    "Merci de renseigner le temps et le nombre de jours."
+  );
+
+  // Animation des inputs
+  [howTimeInput, howDayInput].forEach((input) => {
+    input.classList.add("error-blink");
+    setTimeout(() => input.classList.remove("error-blink"), 2000);
+  });
+
+  return;
+
+
     }
 
     // ✅ Stockage dans le localStorage
