@@ -276,6 +276,5 @@
 
 .objectiveItem.completed {
   background-color: #4CAF50 !important;
-  color: white !important;
   transition: background-color 0.3s ease;
 }
