@@ -49,11 +49,12 @@
   display: flex;
   align-items: center;
   gap: 20px;
+    flex-wrap: wrap;   
 }
 
 /* Conteneur texte objectif */
 .objectiveText {
-  width: 30%;
+  width: 25%;
 }
 
 .objectiveText h4 {
@@ -75,6 +76,7 @@
   justify-content: space-between;
   gap: 8px;
   width: 30%;
+  margin-right: 5%;
 }
 
 .scale span {
@@ -126,6 +128,7 @@
 
 /* ===== TEMPS ASSOCIÉ ===== */
 .timeDisplay {
+  display: none;
   color: #888;
   font-size: 0.9rem;
   width: 12%;
@@ -200,12 +203,43 @@
   cursor: pointer;
 }
 
+/* Le wrapper qui ZOOME (uniquement le SVG) */
+.zoomWrapper {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Le texte reste entièrement fixe, jamais transformé */
+.timerDisplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* pas de scale ici */
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2c3e50;
+  user-select: none;
+  z-index: 10;
+}
+
+/* SVG */
 .cloche svg {
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
+  transition: transform 0.4s ease-in-out;
 }
 
+.cloche:hover svg {
+  transform: rotate(-90deg) scale(1.15);
+}
+
+
+/* Cercles */
 .circle-bg {
   fill: none;
   stroke: #eee;
@@ -220,16 +254,56 @@
   transition: stroke-dasharray 0.3s ease;
 }
 
-.timerDisplay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #2c3e50;
-  user-select: none;
+
+
+/* Pour que le bouton se place tout à droite de la ligne principale */
+.exerciseToggleBtn {
+  margin-left: auto;      /* pousse le bouton à l'extrémité droite */
+  align-self: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  cursor: pointer;
 }
+
+/* Tiroir : on le force à occuper la ligne complète sous la row principale */
+.exerciseContainer {
+  flex-basis: 100%;       /* prend 100% de la largeur (force nouvelle ligne grâce à flex-wrap) */
+  order: 100;             /* s'assure d'être tout en bas (après les éléments ligne) */
+  display: flex;
+  flex-direction: column; /* ici, le contenu de l'exercice est en colonne */
+  gap: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+}
+
+/* Version fermée : tiroir caché sans impacter la row principale */
+.exerciseContainer.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  margin-top: 0;
+}
+
+/* items internes */
+.exerciseItem {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+
+
+
+
+
 
 .dayButtonsContainer {
   display: flex;
@@ -275,6 +349,6 @@
 
 
 .objectiveItem.completed {
-  background-color: #4CAF50 !important;
+  background-color: #90ce92b6 !important;
   transition: background-color 0.3s ease;
 }

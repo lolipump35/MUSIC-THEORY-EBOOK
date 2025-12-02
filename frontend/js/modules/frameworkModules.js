@@ -191,6 +191,14 @@ allBadPoint.forEach((el) => {
 // #endregion IMPORTANT POINT CONTANER
 
 // #region TRAINNING PROGRAM
+function collectExercisesForObjective(objectiveId) {
+  const exercises = document.querySelectorAll(
+    `.exercice[data-objective="${objectiveId}"]`
+  );
+
+  return Array.from(exercises).map((ex) => ex.outerHTML);
+}
+ 
 window.addEventListener("DOMContentLoaded", () => {
   // Récupération sûre du module courant
   const currentModuleId = localStorage.getItem("currentModule");
@@ -280,21 +288,30 @@ window.addEventListener("DOMContentLoaded", () => {
           btn.classList.add("error-blink");
           setTimeout(() => btn.classList.remove("error-blink"), 2000);
         });
-        setTimeout(() => titleElement.classList.remove("error-highlight"), 1500);
+        setTimeout(
+          () => titleElement.classList.remove("error-highlight"),
+          1500
+        );
       } else {
         titleElement.classList.remove("error-highlight");
 
         const originalLi = document.getElementById(objectiveId);
         const coef = originalLi ? parseFloat(originalLi.dataset.coef) : 1;
 
+        const difficultyLevel = Array.from(
+          selected.parentNode.children
+        ).indexOf(selected);
+        const assignedDays = Array.from({ length: howDay }, (_, i) => i + 1);
+
         results.push({
           moduleId: currentModuleId,
           id: objectiveId,
           objectif: titleElement.textContent.trim(),
-          difficultyLevel: Array.from(selected.parentNode.children).indexOf(selected),
-          coef: coef,
-          assignedDays: Array.from({ length: howDay }, (_, i) => i + 1),
+          difficultyLevel,
+          coef,
+          assignedDays,
           completedDays: [],
+          exercises: collectExercisesForObjective(objectiveId), // 🟢 NOUVEAU
         });
       }
     });
@@ -313,14 +330,21 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!inputsValid || !allSelected) {
-      if (!inputsValid) afficherMessageErreur("Merci de renseigner un temps et un nombre de jours valides.");
+      if (!inputsValid)
+        afficherMessageErreur(
+          "Merci de renseigner un temps et un nombre de jours valides."
+        );
       return;
     }
 
     // Stockage dans le localStorage
-    const storedModules = JSON.parse(localStorage.getItem("trainingModules")) || {};
+    const storedModules =
+      JSON.parse(localStorage.getItem("trainingModules")) || {};
     if (!storedModules[currentModuleId]) {
-      storedModules[currentModuleId] = { name: `Module ${currentModuleId}`, programs: [] };
+      storedModules[currentModuleId] = {
+        name: `Module ${currentModuleId}`,
+        programs: [],
+      };
     }
 
     storedModules[currentModuleId].programs.push({
@@ -337,5 +361,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// AJOUT DE L EXERCICEHTML
 
 // #endregion TRAINNING PROGRAM

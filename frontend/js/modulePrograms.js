@@ -232,6 +232,46 @@ window.addEventListener("DOMContentLoaded", () => {
       objectiveDiv.appendChild(scaleDiv);
       objectiveDiv.appendChild(timeDiv);
       objectiveDiv.appendChild(timerDiv);
+// ======== 🔹 Bouton et panneau Exercice ========
+
+// Bouton pour plier/déplier (restera dans la ligne principale)
+const toggleBtn = document.createElement("button");
+toggleBtn.classList.add("exerciseToggleBtn");
+toggleBtn.type = "button";
+toggleBtn.textContent = "Afficher l'exercice";
+
+// Conteneur des exercices (sera ajouté dans la même objectiveItem mais forcé en dessous par le CSS)
+const exerciseContainer = document.createElement("div");
+exerciseContainer.classList.add("exerciseContainer", "collapsed");
+
+// Remplissage selon les exercices disponibles
+if (Array.isArray(item.exercises) && item.exercises.length > 0) {
+  exerciseContainer.innerHTML = item.exercises
+    .map((ex) => `<div class="exerciseItem">${ex}</div>`)
+    .join("");
+} else {
+  exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
+}
+
+// Toggle : ouvre/ferme le tiroir
+toggleBtn.addEventListener("click", () => {
+  const isCollapsed = exerciseContainer.classList.contains("collapsed");
+  if (isCollapsed) {
+    exerciseContainer.classList.remove("collapsed");
+    toggleBtn.textContent = "Masquer l'exercice";
+  } else {
+    exerciseContainer.classList.add("collapsed");
+    toggleBtn.textContent = "Afficher l'exercice";
+  }
+});
+
+// On ajoute le bouton DANS la row principale (objectiveDiv), puis le container aussi (appendChild)
+// Grâce à flex-wrap + flex-basis:100% le container s'affiche forcément en dessous et plein-width
+objectiveDiv.appendChild(toggleBtn);
+objectiveDiv.appendChild(exerciseContainer);
+
+// ============================================
+
 
       list.appendChild(objectiveDiv);
     });
@@ -316,3 +356,4 @@ window.addEventListener("DOMContentLoaded", () => {
 
   enableProgramDeletion(container, storedModules, currentModuleId);
 });
+

@@ -1,3 +1,11 @@
+  // Fonction pour afficher les messages
+  function showMessage(text, type = "error") {
+    const messageEl = document.getElementById("message");
+    messageEl.textContent = text;
+    messageEl.className = `message ${type}`;
+  }
+const BASE_URL = "http://127.0.0.1:5000";
+
 document.addEventListener("DOMContentLoaded", () => {
   // Récupère les éléments, PAS leurs valeurs tout de suite
   const emailInput = document.getElementById("mailSignIn");
@@ -10,17 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
   //   ? "http://localhost:5000"
   //   : "https://music-theory-ebook.onrender.com";
 
-const BASE_URL = "http://localhost:5000";
+
+
 
    
   console.log("BASE_URL =", BASE_URL);
-
-  // Fonction pour afficher les messages
-  function showMessage(text, type = "error") {
-    const messageEl = document.getElementById("message");
-    messageEl.textContent = text;
-    messageEl.className = `message ${type}`;
-  }
 
   signInButton.addEventListener("click", async () => {
     // Récupère la valeur au moment du clic (trim)
@@ -104,3 +106,44 @@ const BASE_URL = "http://localhost:5000";
   });
 
   console.log("button cliquer",creeUnCompte);
+
+  window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "747548011522-kkolfhnsm9tbs6ilgq997osm0bv1k0iq.apps.googleusercontent.com",
+    callback: handleGoogleCredentialResponse
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("googleSignInButton"),
+    { theme: "outline", size: "large" }
+  );
+};
+
+async function handleGoogleCredentialResponse(response) {
+  const googleToken = response.credential;
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/auth/google-login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: googleToken }),
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+      showMessage("Connexion réussie !", "success");
+      setTimeout(() => window.location.href="dashboard.html", 1000);
+    } else {
+      showMessage(data.message || "Erreur Google");
+    }
+
+  } catch (err) {
+    console.error(err);
+    showMessage("Erreur serveur Google");
+  }
+}
+
