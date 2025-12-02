@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.onload = function () {
   google.accounts.id.initialize({
-    client_id: "747548011522-kkolfhnsm9tbs6ilgq997osm0bv1k0iq.apps.googleusercontent.com",
+    client_id: "747548011522-a9bo6j62ikokdocnbld33fiseqge8rgu.apps.googleusercontent.com",
     callback: handleGoogleCredentialResponse
   });
 
