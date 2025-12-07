@@ -2,43 +2,32 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Mini Module Admin</title>
+    <title>Module Admin – Création de programme</title>
     <link rel="stylesheet" href="/frontend/css/admin-module.css" />
   </head>
+
   <body>
-    <div class="adminModuleContainer">
-      <h2>Créer un mini-module</h2>
+  <div class="adminModuleContainer">
+    <h2>Créer un mini-programme</h2>
 
-      <label for="moduleTitle">Titre du module :</label>
-      <input type="text" id="moduleTitle" placeholder="Titre du module" />
+    <!-- TITRE GLOBAL DU MODULE -->
+    <label for="moduleTitle">Titre du module :</label>
+    <input type="text" id="moduleTitle" placeholder="Titre du module" />
 
-      <label for="moduleCoef">Coefficient de difficulté :</label>
-      <input type="number" id="moduleCoef" value="1" min="1" max="5" />
+    <!-- LISTE DES OBJECTIFS -->
+    <h3>Objectifs du module</h3>
 
-      <label for="moduleImageUrl">URL de l'image :</label>
-      <input
-        type="text"
-        id="moduleImageUrl"
-        placeholder="https://moncdn.com/img1234.png"
-      />
+    <div id="objectivesContainer"></div>
 
-      <label for="modulePlaybackId">Playback ID (MUX) :</label>
-      <input
-        type="text"
-        id="modulePlaybackId"
-        placeholder="ex: RFX1M02tqXPH9AQWdPWalJQ2sP001U22XnrkrL8XBdFwk"
-      />
+    <button id="addObjectiveBtn">Ajouter un objectif +</button>
 
-      <label for="moduleExtra">Éléments supplémentaires :</label>
-      <textarea
-        id="moduleExtra"
-        placeholder="Ajouter des informations, instructions ou notes"
-      ></textarea>
+    <br /><br />
 
-      <button id="saveModuleBtn">Enregistrer le module</button>
-      <p id="statusMsg"></p>
-    </div>
+    <button id="saveModuleBtn">Enregistrer le module</button>
+    <p id="statusMsg"></p>
+  </div>
 
-    <script src="/frontend/js/admin-module.js"></script>
-  </body>
+  <script src="/frontend/js/admin-module.js"></script>
+</body>
+
 </html>
