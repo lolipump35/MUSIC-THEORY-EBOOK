@@ -199,6 +199,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+
+  const adminControl = document.getElementById("adminControl");
+  console.log("adminControl:", adminControl); // vérifie si l'élément est trouvé
+
+  async function loadDashboard() {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Token récupéré :", token); // voir si le token est bien là
+      if (!token) return console.log("Pas de token, utilisateur non connecté");
+
+      const res = await fetch("http://localhost:5000/api/dashboard", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (!res.ok) {
+        console.log("Erreur serveur :", res.status);
+        throw new Error(`Erreur serveur : ${res.status}`);
+      }
+
+      const user = await res.json();
+      console.log("Données utilisateur reçues :", user); // <--- log pour voir le rôle et autres infos
+
+      if (adminControl) {
+        console.log("Rôle de l'utilisateur :", user.role);
+
+        if (user.role === "admin") {
+          adminControl.style.display = "flex"; // Affiche le module
+          console.log("AdminControl affiché ✅");
+        } else {
+          adminControl.style.display = "none"; // Cache le module
+          console.log("AdminControl caché ❌");
+        }
+
+        // Redirection vers le module admin
+        adminControl.addEventListener("click", () => {
+          window.location.href = "admin-module.html";
+        });
+      }
+    } catch (err) {
+      console.error("Erreur lors du chargement du dashboard :", err);
+    }
+  }
+
+  // Appel de la fonction
+  loadDashboard();
+
+
+
+
+
   // --- Ajout des écouteurs sur les boutons ---
   platformButtons.forEach((btn) => {
     btn.addEventListener("click", () => setPlatform(btn.dataset.platform));
@@ -429,3 +483,8 @@ document.querySelectorAll(".modules").forEach((module) => {
 });
 
 // #endregion STOCKAGE CURRENT MODULEID
+
+// #region ADMIN SECTION
+
+
+// #endregion ADMIN SECTION

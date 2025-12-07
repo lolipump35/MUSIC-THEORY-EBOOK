@@ -28,6 +28,7 @@ const registerUser = async (req, res) => {
     phone,
     email,
     password: hashedPassword,
+    role: "user", // <- par défaut
   });
 
   await newUser.save();
@@ -53,13 +54,17 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Mot de passe incorrect." });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    // 🟢 JWT avec rôle inclus
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.json({
       token,
       userId: user._id,
+      role: user.role, // <- rôle renvoyé au frontend
     });
 
   } catch (err) {
@@ -76,7 +81,6 @@ const loginGoogle = async (req, res) => {
     if (!credential)
       return res.status(400).json({ message: "Token Google manquant." });
 
-    // Vérifier le token Google
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -85,7 +89,6 @@ const loginGoogle = async (req, res) => {
     const payload = ticket.getPayload();
     const email = payload.email;
 
-    // Vérifier si cet email existe chez toi
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -94,16 +97,17 @@ const loginGoogle = async (req, res) => {
       });
     }
 
-    // Générer ton token JWT classique
+    // 🟢 JWT avec rôle inclus
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1d" }
     );
 
     res.json({
       token,
       userId: user._id,
+      role: user.role, // <- rôle renvoyé au frontend
     });
 
   } catch (err) {

@@ -26,19 +26,30 @@ app.use("/webhook", stripeWebhook);
 // ----------------------------
 // Middleware CORS
 // ----------------------------
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : [];
+const allowedOrigins = [
+  "http://127.0.0.1:5501",  // frontend local
+  "http://localhost:5501",  // alternative
+  "https://music-theory-ebook.onrender.com" // ton futur frontend sur Render
+];
 
 const corsOptions = {
-  origin: true,        // accepte toutes les origines
-  credentials: true,   // autorise les cookies
-  methods: ["GET", "POST", "PUT", "DELETE"]
+  origin: function(origin, callback) {
+    // autorise les requêtes sans origin (ex: Postman ou fetch local)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `La CORS policy ne permet pas l'accès depuis ${origin}`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 };
 
+// Appliquer CORS
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static("public")); // pour success.html, cancel.html
+app.use(express.static("public"));
 
 // ----------------------------
 // Connexion à MongoDB
@@ -104,9 +115,14 @@ app.post("/create-checkout-session", authMiddleware, async (req, res) => {
 // ----------------------------
 // Route dashboard protégée
 // ----------------------------
-app.get("/dashboard", authMiddleware, (req, res) => {
-  res.json({ userId: req.user.userId });
+app.get("/api/dashboard", authMiddleware, (req, res) => {
+  res.json({
+    userId: req.user.userId,
+    role: req.user.role, // très important pour savoir si admin
+    message: "Bienvenue sur ton dashboard 🚀"
+  });
 });
+
 
 // ----------------------------
 // Démarrage du serveur
