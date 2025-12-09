@@ -201,53 +201,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   const adminControl = document.getElementById("adminControl");
-  console.log("adminControl:", adminControl); // vérifie si l'élément est trouvé
 
-  async function loadDashboard() {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Token récupéré :", token); // voir si le token est bien là
-      if (!token) return console.log("Pas de token, utilisateur non connecté");
+async function loadDashboard() {
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5000/api/dashboard", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-
-      if (!res.ok) {
-        console.log("Erreur serveur :", res.status);
-        throw new Error(`Erreur serveur : ${res.status}`);
-      }
-
-      const user = await res.json();
-      console.log("Données utilisateur reçues :", user); // <--- log pour voir le rôle et autres infos
-
-      if (adminControl) {
-        console.log("Rôle de l'utilisateur :", user.role);
-
-        if (user.role === "admin") {
-          adminControl.style.display = "flex"; // Affiche le module
-          console.log("AdminControl affiché ✅");
-        } else {
-          adminControl.style.display = "none"; // Cache le module
-          console.log("AdminControl caché ❌");
-        }
-
-        // Redirection vers le module admin
-        adminControl.addEventListener("click", () => {
-          window.location.href = "admin-module.html";
-        });
-      }
-    } catch (err) {
-      console.error("Erreur lors du chargement du dashboard :", err);
+    if (!token) {
+      console.log("Pas de token, utilisateur non connecté");
+      return;
     }
-  }
 
-  // Appel de la fonction
-  loadDashboard();
+    // 🔹 On garde juste la récupération du rôle pour afficher ou cacher le bouton
+    const res = await fetch("http://localhost:5000/api/dashboard", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+
+    const user = await res.json();
+
+    if (adminControl) {
+      if (user.role === "admin") {
+        adminControl.style.display = "flex"; // bouton visible
+      } else {
+        adminControl.style.display = "none"; // bouton caché
+      }
+
+      // 🔹 Redirection simple côté front pur
+      adminControl.addEventListener("click", () => {
+        window.location.href = "/frontend/pages/admin/dashboardAdmin.html";
+      });
+    }
+  } catch (err) {
+    console.error("Erreur lors du chargement du dashboard :", err);
+  }
+}
+
+// Appel de la fonction
+loadDashboard();
+
 
 
 
