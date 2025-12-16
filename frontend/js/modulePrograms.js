@@ -7,61 +7,79 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const storedModules =
-    JSON.parse(localStorage.getItem("trainingModules")) || {};
+  const storedModules = {}; // Initialisation vide
   const currentModuleId = localStorage.getItem("currentModule");
 
-  if (!currentModuleId || !storedModules[currentModuleId]) {
-    container.innerHTML = "<p>Aucun module sélectionné ou trouvé.</p>";
-    console.warn("⚠️ Aucun module correspondant dans le localStorage.");
+  if (!currentModuleId) {
+    container.innerHTML = "<p>Aucun module sélectionné.</p>";
+    console.warn("⚠️ Aucun module sélectionné dans le localStorage.");
     return;
   }
 
-  const moduleData = storedModules[currentModuleId];
-  container.innerHTML = ""; // Nettoyage avant affichage
+  const token = localStorage.getItem("token");
+  if (!token) {
+    container.innerHTML = "<p>Connectez-vous pour voir vos modules.</p>";
+    console.error("❌ Pas de token trouvé !");
+    return;
+  }
 
-  // ====== 🔹 Fonctions utilitaires ======
+  // ================== 🔹 Fonctions utilitaires ==================
+
   function saveModules() {
-    localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+    const currentModuleId = localStorage.getItem("currentModule");
+    if (!currentModuleId || !storedModules[currentModuleId]) return;
+
+    // Envoi au backend pour persister les modifications
+    fetch(`http://localhost:5000/api/me/user-created-modules`, {
+      method: "POST", // ou PATCH selon ton endpoint
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(storedModules[currentModuleId]),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("✅ Module mis à jour côté serveur :", data))
+      .catch((err) => console.error("Erreur mise à jour module :", err));
   }
 
   function markObjectiveAsCompleted(objectiveElement, day) {
     objectiveElement.classList.add("completed");
 
     const objectiveId = objectiveElement.dataset.objectiveId;
-    const currentModuleId = localStorage.getItem("currentModule");
-    const storedModules =
-      JSON.parse(localStorage.getItem("trainingModules")) || {};
-
     if (!storedModules[currentModuleId]) return;
 
-    // On parcourt tous les programmes du module
     storedModules[currentModuleId].programs.forEach((program) => {
       const obj = program.objectives.find((o) => o.id === objectiveId);
       if (obj && !obj.completedDays.includes(day)) {
-        obj.completedDays.push(day); // <- on ajoute le jour courant
+        obj.completedDays.push(day);
       }
     });
 
-    // On sauvegarde immédiatement le localStorage
-    localStorage.setItem("trainingModules", JSON.stringify(storedModules));
+    saveModules();
   }
 
-  function getTimeForDifficulty(objectiveId, program) {
-    const module = storedModules[currentModuleId];
-    if (!module || !module.programs.length) return 0;
+  function getTimeForDifficulty(objectiveId, dayNumber) {
+    const moduleData = storedModules[currentModuleId]?.programData;
+    if (!moduleData || !moduleData.timePerWeek || !moduleData.trainingDays)
+      return 0;
 
-    const progData = module.programs[0];
-    if (!progData.timePerWeek || !progData.daysPerWeek) return 0;
+    const totalMinutes = moduleData.timePerWeek;
+    const days = moduleData.trainingDays.length;
+    if (days === 0) return 0;
 
-    const totalMinutes = progData.timePerWeek;
-    const days = progData.daysPerWeek;
     const minutesPerDay = totalMinutes / days;
 
-    const objectives = program.objectives || [];
+    // On récupère les objectifs du jour correspondant
+    const dayObj = moduleData.trainingDays.find(
+      (d) => d.dayNumber === dayNumber
+    );
+    if (!dayObj || !dayObj.objectives) return 0;
+
+    const objectives = dayObj.objectives;
 
     const processedObjectives = objectives.map((o) => {
-      const facteurModere = 1 + ((7 - o.difficultyLevel) / 6) * 2; // entre 1 et 3
+      const facteurModere = 1 + ((7 - (o.difficultyLevel || 4)) / 6) * 2;
       const poidsFinal = facteurModere * (o.coef || 1);
       return { ...o, poidsFinal };
     });
@@ -70,11 +88,54 @@ window.addEventListener("DOMContentLoaded", () => {
       (sum, o) => sum + o.poidsFinal,
       0
     );
-    const myObjective = processedObjectives.find((o) => o.id === objectiveId);
+    if (totalWeight === 0) return 0;
+
+    const myObjective = processedObjectives.find(
+      (o) => o.objectiveId === objectiveId || o.id === objectiveId
+    );
     if (!myObjective) return 0;
 
     const myPercentage = myObjective.poidsFinal / totalWeight;
     return Math.round(minutesPerDay * myPercentage);
+  }
+
+  function applyDifficultyToObjective(timeDiv, newDifficultyLevel) {
+    const difficultyMultipliers = {
+      1: 1.4,
+      2: 1.25,
+      3: 1.1,
+      4: 1,
+      5: 0.9,
+      6: 0.75,
+      7: 0.6,
+    };
+
+    const baseTime = parseInt(timeDiv.dataset.baseEstimatedSeconds, 10);
+    const baseDifficulty = parseInt(timeDiv.dataset.baseDifficultyLevel, 10);
+    const oldTotal = parseInt(timeDiv.dataset.estimatedSeconds, 10);
+    const oldRemaining = parseInt(timeDiv.dataset.remainingSeconds, 10);
+
+    if (!baseTime || !baseDifficulty || !oldTotal || !oldRemaining) return;
+
+    // progression actuelle
+    const elapsed = oldTotal - oldRemaining;
+    const progress = elapsed / oldTotal;
+
+    // rapport entre la nouvelle difficulté et la difficulté pivot
+    const baseMultiplier = difficultyMultipliers[baseDifficulty];
+    const newMultiplier = difficultyMultipliers[newDifficultyLevel];
+
+    const relativeMultiplier = newMultiplier / baseMultiplier;
+
+    const newTotal = Math.round((baseTime * relativeMultiplier) / 10) * 10;
+
+    const newRemaining = Math.max(
+      Math.round((newTotal * (1 - progress)) / 10) * 10,
+      10
+    );
+
+    timeDiv.dataset.estimatedSeconds = newTotal;
+    timeDiv.dataset.remainingSeconds = newRemaining;
   }
 
   function createScaleButtons(selectedLevel) {
@@ -98,35 +159,25 @@ window.addEventListener("DOMContentLoaded", () => {
   function initializeCloche(timerDiv, timeDiv) {
     const circle = timerDiv.querySelector(".circle");
     const display = timerDiv.querySelector(".timerDisplay");
+
+    function getRemaining() {
+      return parseInt(timeDiv.dataset.remainingSeconds, 10);
+    }
+
     let paused = true;
     let interval = null;
 
-    function getTime() {
-      const text = timeDiv.textContent;
-      const match = text.match(/(\d+)\s*min/);
-      return match ? parseInt(match[1], 10) * 60 : 0;
-    }
-
-    let seconds = getTime();
-
     function updateDisplay() {
-      const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
-      const secs = String(seconds % 60).padStart(2, "0");
+      const seconds = getRemaining();
+      const mins = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0");
+      const secs = (seconds % 60).toString().padStart(2, "0");
       display.textContent = `${mins}:${secs}`;
 
-      const total = getTime();
+      const total = parseInt(timeDiv.dataset.estimatedSeconds, 10);
       const percent = total > 0 ? (total - seconds) / total : 0;
       circle.setAttribute("stroke-dasharray", `${percent * 100}, 100`);
-
-      if (seconds === 0) {
-        const objectiveItem = timerDiv.closest(".objectiveItem");
-        if (objectiveItem) {
-          const day = parseInt(objectiveItem.dataset.day, 10);
-          markObjectiveAsCompleted(objectiveItem, day);
-        }
-        clearInterval(interval);
-        paused = true;
-      }
     }
 
     updateDisplay();
@@ -135,9 +186,21 @@ window.addEventListener("DOMContentLoaded", () => {
       if (paused) {
         paused = false;
         interval = setInterval(() => {
-          if (seconds > 0) {
-            seconds--;
+          let current = getRemaining();
+          if (current > 0) {
+            current--;
+            timeDiv.dataset.remainingSeconds = current;
+
             updateDisplay();
+          } else {
+            clearInterval(interval);
+            paused = true;
+
+            const objectiveItem = timerDiv.closest(".objectiveItem");
+            if (objectiveItem) {
+              const day = parseInt(objectiveItem.dataset.day, 10);
+              markObjectiveAsCompleted(objectiveItem, day);
+            }
           }
         }, 1000);
       } else {
@@ -146,54 +209,45 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    timeDiv.addEventListener("change", () => {
-      seconds = getTime();
-      updateDisplay();
-    });
+    timerDiv.updateDisplay = updateDisplay;
   }
 
   function renderObjectivesForDay(programDiv, objectives, day, program) {
     const list = programDiv.querySelector(".objectivesContainer");
     list.innerHTML = "";
 
-    console.log("Day sélectionné :", day);
-    console.log("Objectifs reçus :", objectives);
+    const filtered = objectives; // déjà les bons objectifs pour ce jour
 
-    const filtered = objectives.filter((obj) =>
-      obj.assignedDays?.includes(day)
-    );
-
-    console.log("Objectifs filtrés pour ce jour :", filtered);
-
-    filtered.forEach((item, objIndex) => {
+    objectives.forEach((item, objIndex) => {
       item.id = item.id || `objective-${objIndex + 1}`;
 
       const objectiveDiv = document.createElement("div");
       objectiveDiv.classList.add("objectiveItem");
+      objectiveDiv.dataset.day = day;
+      objectiveDiv.dataset.objectiveId = item.id;
 
-      objectiveDiv.dataset.day = day; // numéro du jour actuel
-      objectiveDiv.dataset.objectiveId = item.id; // l’id de l’objectif
+      if (item.isCompleted || item.completedDays?.includes(day)) {
+        objectiveDiv.classList.add("completed");
+      }
 
-      if (item.completedDays?.includes(day))
-  objectiveDiv.classList.add("completed");
-
+      // ===== Texte de l'objectif =====
       const textContainer = document.createElement("div");
       textContainer.classList.add("objectiveText");
-      textContainer.innerHTML = `<h4>Objectif ${objIndex + 1}</h4><p>${
-        item.objectif
-      }</p>`;
 
-      const timeDiv = document.createElement("div");
-      timeDiv.classList.add("timeDisplay");
-      timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-        item.id,
-        program
-      )} min`;
+      const objectiveTitle = item.objectiveTitle || `Objectif ${objIndex + 1}`;
+      textContainer.innerHTML = `
+    <div class="objectiveNumber">Objectif ${objIndex + 1}</div>
+    <div class="objectiveTitle">${objectiveTitle}</div>
+  `;
+      objectiveDiv.appendChild(textContainer);
 
+      // ===== Difficulté =====
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
+
+      const difficultyIndex = (item.difficultyLevel || 4) - 1;
       scaleDiv.innerHTML = `<span>Difficile</span>${createScaleButtons(
-        item.difficultyLevel - 1
+        difficultyIndex
       )}<span>Facile</span>`;
 
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
@@ -202,84 +256,104 @@ window.addEventListener("DOMContentLoaded", () => {
             .querySelectorAll(".scale-button")
             .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
+
           item.difficultyLevel = index + 1;
-          timeDiv.textContent = `Temps estimé : ${getTimeForDifficulty(
-            item.id,
-            program
+
+          // 🔹 appliquer la difficulté AVANT le rendu
+          applyDifficultyToObjective(timeDiv, item.difficultyLevel);
+
+          // 🔹 mise à jour immédiate du texte
+          const estimatedSeconds = parseInt(
+            timeDiv.dataset.estimatedSeconds,
+            10
+          );
+          timeDiv.textContent = `Temps estimé : ${Math.round(
+            estimatedSeconds / 60
           )} min`;
-          timeDiv.dispatchEvent(new Event("change"));
+
+          // 🔹 mise à jour IMMÉDIATE de la cloche
+          timerDiv.updateDisplay();
+
           saveModules();
         });
       });
 
+      objectiveDiv.appendChild(scaleDiv);
+
+      // ===== Temps estimé =====
+      const timeDiv = document.createElement("div");
+      timeDiv.classList.add("timeDisplay");
+
+      const estimatedMinutes = getTimeForDifficulty(item.objectiveId, day);
+      const estimatedSeconds = estimatedMinutes * 60;
+
+      // difficulté actuelle (1 à 7)
+      const currentDifficulty = item.difficultyLevel || 4;
+
+      if (!timeDiv.dataset.baseEstimatedSeconds) {
+        timeDiv.dataset.baseEstimatedSeconds = estimatedSeconds;
+        timeDiv.dataset.baseDifficultyLevel = currentDifficulty;
+      }
+
+      timeDiv.dataset.estimatedSeconds = estimatedSeconds;
+
+      if (!timeDiv.dataset.remainingSeconds) {
+        timeDiv.dataset.remainingSeconds = estimatedSeconds;
+      }
+
+      objectiveDiv.appendChild(timeDiv);
+
+      // ===== Timer cloche =====
       const timerDiv = document.createElement("div");
       timerDiv.classList.add("objectiveTimer");
       timerDiv.innerHTML = `
-        <div class="cloche">
-          <svg viewBox="0 0 36 36">
-            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-            <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          </svg>
-          <span class="timerDisplay">00:00</span>
-        </div>
-      `;
+    <div class="cloche">
+      <svg viewBox="0 0 36 36">
+        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+      </svg>
+      <span class="timerDisplay">00:00</span>
+    </div>
+  `;
       initializeCloche(timerDiv, timeDiv);
-
-      if (item.completedDays?.includes(day))
-        objectiveDiv.classList.add("completed");
-
-      objectiveDiv.appendChild(textContainer);
-      objectiveDiv.appendChild(scaleDiv);
-      objectiveDiv.appendChild(timeDiv);
       objectiveDiv.appendChild(timerDiv);
-// ======== 🔹 Bouton et panneau Exercice ========
 
-// Bouton pour plier/déplier (restera dans la ligne principale)
-const toggleBtn = document.createElement("button");
-toggleBtn.classList.add("exerciseToggleBtn");
-toggleBtn.type = "button";
-toggleBtn.textContent = "Afficher l'exercice";
+      // ===== Toggle Exercices =====
+      const toggleBtn = document.createElement("button");
+      toggleBtn.classList.add("exerciseToggleBtn");
+      toggleBtn.type = "button";
+      toggleBtn.textContent = "Afficher l'exercice";
 
-// Conteneur des exercices (sera ajouté dans la même objectiveItem mais forcé en dessous par le CSS)
-const exerciseContainer = document.createElement("div");
-exerciseContainer.classList.add("exerciseContainer", "collapsed");
+      const exerciseContainer = document.createElement("div");
+      exerciseContainer.classList.add("exerciseContainer", "collapsed");
+      if (Array.isArray(item.exercises) && item.exercises.length > 0) {
+        exerciseContainer.innerHTML = item.exercises
+          .map((ex) => `<div class="exerciseItem">${ex}</div>`)
+          .join("");
+      } else {
+        exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
+      }
 
-// Remplissage selon les exercices disponibles
-if (Array.isArray(item.exercises) && item.exercises.length > 0) {
-  exerciseContainer.innerHTML = item.exercises
-    .map((ex) => `<div class="exerciseItem">${ex}</div>`)
-    .join("");
-} else {
-  exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
-}
+      toggleBtn.addEventListener("click", () => {
+        const isCollapsed = exerciseContainer.classList.contains("collapsed");
+        exerciseContainer.classList.toggle("collapsed");
+        toggleBtn.textContent = isCollapsed
+          ? "Masquer l'exercice"
+          : "Afficher l'exercice";
+      });
 
-// Toggle : ouvre/ferme le tiroir
-toggleBtn.addEventListener("click", () => {
-  const isCollapsed = exerciseContainer.classList.contains("collapsed");
-  if (isCollapsed) {
-    exerciseContainer.classList.remove("collapsed");
-    toggleBtn.textContent = "Masquer l'exercice";
-  } else {
-    exerciseContainer.classList.add("collapsed");
-    toggleBtn.textContent = "Afficher l'exercice";
-  }
-});
+      objectiveDiv.appendChild(toggleBtn);
+      objectiveDiv.appendChild(exerciseContainer);
 
-// On ajoute le bouton DANS la row principale (objectiveDiv), puis le container aussi (appendChild)
-// Grâce à flex-wrap + flex-basis:100% le container s'affiche forcément en dessous et plein-width
-objectiveDiv.appendChild(toggleBtn);
-objectiveDiv.appendChild(exerciseContainer);
-
-// ============================================
-
-
+      // ===== Ajout à la liste =====
+      const list = programDiv.querySelector(".objectivesContainer");
       list.appendChild(objectiveDiv);
     });
   }
 
   function createDayButtons(programDiv, daysPerWeek, objectives, program) {
-    const container = document.createElement("div");
-    container.classList.add("programDays");
+    const containerDiv = document.createElement("div");
+    containerDiv.classList.add("programDays");
 
     for (let i = 1; i <= daysPerWeek; i++) {
       const btn = document.createElement("button");
@@ -288,22 +362,20 @@ objectiveDiv.appendChild(exerciseContainer);
       if (i === 1) btn.classList.add("selected");
 
       btn.addEventListener("click", () => {
-        container
+        containerDiv
           .querySelectorAll(".dayProgramBtn")
           .forEach((b) => b.classList.remove("selected"));
         btn.classList.add("selected");
         renderObjectivesForDay(programDiv, objectives, i, program);
       });
 
-      container.appendChild(btn);
+      containerDiv.appendChild(btn);
     }
 
-    programDiv.appendChild(container);
-
+    programDiv.appendChild(containerDiv);
     const objectivesContainer = document.createElement("div");
     objectivesContainer.classList.add("objectivesContainer");
     programDiv.appendChild(objectivesContainer);
-
     renderObjectivesForDay(programDiv, objectives, 1, program);
   }
 
@@ -317,10 +389,7 @@ objectiveDiv.appendChild(exerciseContainer);
       deleteBtn.addEventListener("click", () => {
         if (confirm("Voulez-vous vraiment supprimer ce programme ?")) {
           storedModules[currentModuleId].programs.splice(index, 1);
-          localStorage.setItem(
-            "trainingModules",
-            JSON.stringify(storedModules)
-          );
+          saveModules(); // mise à jour côté serveur
           block.remove();
           console.log(`✅ Programme ${index + 1} supprimé.`);
         }
@@ -330,30 +399,106 @@ objectiveDiv.appendChild(exerciseContainer);
     });
   }
 
-  // ====== 🔹 Affichage du titre du module ======
-  const title = document.createElement("h2");
-  title.textContent = moduleData.name;
-  title.classList.add("moduleTitle");
-  container.appendChild(title);
+  function renderModuleData(storedModules, currentModuleId) {
+    const container = document.getElementById("trainingResult");
+    if (!container) return;
 
-  // ====== 🔹 Affichage des programmes ======
-  moduleData.programs.forEach((program, progIndex) => {
+    const moduleObj = storedModules[currentModuleId];
+    if (!moduleObj || !moduleObj.programData) {
+      container.innerHTML = "<p>Aucun programme disponible pour ce module.</p>";
+      return;
+    }
+
+    const programData = moduleObj.programData;
+
+    container.innerHTML = ""; // nettoyage avant affichage
+
+    // ====== Titre du module ======
+    const title = document.createElement("h2");
+    title.textContent = programData.name;
+    title.classList.add("moduleTitle");
+    container.appendChild(title);
+
+    // ====== Création des programmes ======
+    // Ici on suppose 1 programme par module pour simplifier
     const programDiv = document.createElement("div");
     programDiv.classList.add("programBlock");
 
+    // Programme titre
     const programTitle = document.createElement("h3");
-    programTitle.textContent = `Programme ${progIndex + 1}`;
+    programTitle.textContent = `Programme - ${programData.trainingDays.length} jour(s)`;
     programDiv.appendChild(programTitle);
 
-    createDayButtons(
-      programDiv,
-      program.daysPerWeek,
-      program.objectives || [],
-      program
-    );
+    // ====== Boutons pour sélectionner les jours ======
+    const dayButtonsContainer = document.createElement("div");
+    dayButtonsContainer.classList.add("programDays");
+
+    programData.trainingDays.forEach((dayObj, index) => {
+      const btn = document.createElement("button");
+      btn.classList.add("dayProgramBtn");
+      btn.textContent = `Jour ${dayObj.dayNumber}`;
+      if (index === 0) btn.classList.add("selected");
+
+      btn.addEventListener("click", () => {
+        dayButtonsContainer
+          .querySelectorAll(".dayProgramBtn")
+          .forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+
+        renderObjectivesForDay(
+          programDiv,
+          dayObj.objectives || [],
+          dayObj.dayNumber,
+          programData
+        );
+      });
+
+      dayButtonsContainer.appendChild(btn);
+    });
+
+    programDiv.appendChild(dayButtonsContainer);
+
+    // Container pour les objectifs
+    const objectivesContainer = document.createElement("div");
+    objectivesContainer.classList.add("objectivesContainer");
+    programDiv.appendChild(objectivesContainer);
+
+    // Afficher les objectifs du premier jour par défaut
+    if (programData.trainingDays.length > 0) {
+      renderObjectivesForDay(
+        programDiv,
+        programData.trainingDays[0].objectives || [],
+        programData.trainingDays[0].dayNumber,
+        programData
+      );
+    }
+
     container.appendChild(programDiv);
-  });
+  }
 
-  enableProgramDeletion(container, storedModules, currentModuleId);
+  // ================== 🔹 Fetch backend ==================
+  fetch("http://localhost:5000/api/me/user-created-modules", {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((modules) => {
+      const moduleData = modules.find((m) => m.moduleKey === currentModuleId);
+
+      if (!moduleData) {
+        container.innerHTML = "<p>Module introuvable.</p>";
+        console.warn("⚠️ Aucun module correspondant trouvé dans le backend.");
+        return;
+      }
+
+      storedModules[currentModuleId] = moduleData;
+      renderModuleData(storedModules, currentModuleId);
+    })
+    .catch((err) => {
+      console.error("Erreur lors de la récupération du module :", err);
+      container.innerHTML = "<p>Erreur lors de la récupération du module.</p>";
+    });
 });
-

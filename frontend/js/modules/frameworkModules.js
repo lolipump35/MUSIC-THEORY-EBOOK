@@ -27,7 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------- Précharge MusicPlatform --------------------
   try {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("Utilisateur non connecté");
+    console.log("JWT Token récupéré :", token);
+    if (!token) {
+      alert("Pas de token trouvé ! Connecte-toi d'abord.");
+      return;
+    }
 
     const res = await fetch("http://localhost:5000/api/user/platform", {
       method: "GET",
@@ -198,21 +202,18 @@ function collectExercisesForObjective(objectiveId) {
 
   return Array.from(exercises).map((ex) => ex.outerHTML);
 }
- 
+
 window.addEventListener("DOMContentLoaded", () => {
-  // Récupération sûre du module courant
   const currentModuleId = localStorage.getItem("currentModule");
+  console.log("Module courant récupéré :", currentModuleId);
   if (!currentModuleId) {
     alert("Aucun module sélectionné !");
     return;
   }
-  console.log("Module courant avant push :", currentModuleId);
 
-  // Récupération des objectifs et du container
   const objectifs = document.querySelectorAll(".objectifContainer li");
   const infoContainer = document.querySelector(".infoContainer");
 
-  // Création des blocs de difficulté pour chaque objectif
   objectifs.forEach((li, index) => {
     const objectiveId = `objective-${index + 1}`;
     li.setAttribute("id", objectiveId);
@@ -242,7 +243,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ===== Fonction utilitaire pour créer les boutons de difficulté =====
   function createScaleButtons(selectedLevel) {
     const buttons = [
       "big orange",
@@ -262,59 +262,16 @@ window.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  // ===== Récupération des inputs et bouton de validation =====
   const howTimeInput = document.getElementById("trainingTime");
   const howDayInput = document.getElementById("trainingDays");
   const validBtn = document.getElementById("validPrograms");
 
   validBtn.addEventListener("click", () => {
-    const results = [];
-    let allSelected = true;
-
-    // Récupération des valeurs d’input **avant** la création des objectifs
+    const token = localStorage.getItem("token");
+    console.log("Token récupéré au moment du click :", token);
+    const allSelected = [];
     const howTime = parseInt(howTimeInput.value) || 0;
     const howDay = parseInt(howDayInput.value) || 0;
-
-    // Création des objets objectifs
-    document.querySelectorAll(".difficultyItem").forEach((block) => {
-      const objectiveId = block.dataset.objectiveId;
-      const titleElement = block.querySelector("h3");
-      const selected = block.querySelector(".scale-button.selected");
-
-      if (!selected) {
-        allSelected = false;
-        titleElement.classList.add("error-highlight");
-        block.querySelectorAll(".scale-button").forEach((btn) => {
-          btn.classList.add("error-blink");
-          setTimeout(() => btn.classList.remove("error-blink"), 2000);
-        });
-        setTimeout(
-          () => titleElement.classList.remove("error-highlight"),
-          1500
-        );
-      } else {
-        titleElement.classList.remove("error-highlight");
-
-        const originalLi = document.getElementById(objectiveId);
-        const coef = originalLi ? parseFloat(originalLi.dataset.coef) : 1;
-
-        const difficultyLevel = Array.from(
-          selected.parentNode.children
-        ).indexOf(selected);
-        const assignedDays = Array.from({ length: howDay }, (_, i) => i + 1);
-
-        results.push({
-          moduleId: currentModuleId,
-          id: objectiveId,
-          objectif: titleElement.textContent.trim(),
-          difficultyLevel,
-          coef,
-          assignedDays,
-          completedDays: [],
-          exercises: collectExercisesForObjective(objectiveId), // 🟢 NOUVEAU
-        });
-      }
-    });
 
     // Vérification des inputs
     let inputsValid = true;
@@ -328,36 +285,84 @@ window.addEventListener("DOMContentLoaded", () => {
       howDayInput.classList.add("error-border");
       setTimeout(() => howDayInput.classList.remove("error-border"), 2000);
     }
-
-    if (!inputsValid || !allSelected) {
-      if (!inputsValid)
-        afficherMessageErreur(
-          "Merci de renseigner un temps et un nombre de jours valides."
-        );
+    if (!inputsValid) {
+      afficherMessageErreur(
+        "Merci de renseigner un temps et un nombre de jours valides."
+      );
       return;
     }
 
-    // Stockage dans le localStorage
-    const storedModules =
-      JSON.parse(localStorage.getItem("trainingModules")) || {};
-    if (!storedModules[currentModuleId]) {
-      storedModules[currentModuleId] = {
-        name: `Module ${currentModuleId}`,
-        programs: [],
-      };
-    }
+    // Construction des objectifs par jour
+    const objectivesByDay = {};
+    document.querySelectorAll(".difficultyItem").forEach((block, index) => {
+      const objectiveId = block.dataset.objectiveId;
+      const title = block.querySelector("h3").textContent.trim();
+      const selected = block.querySelector(".scale-button.selected");
+      const coef =
+        parseFloat(document.getElementById(objectiveId)?.dataset.coef) || 1;
+      const difficultyLevel = selected
+        ? Array.from(selected.parentNode.children).indexOf(selected)
+        : 0;
+      const assignedDays = Array.from({ length: howDay }, (_, i) => i + 1);
 
-    storedModules[currentModuleId].programs.push({
-      objectives: results,
-      timePerWeek: howTime,
-      daysPerWeek: howDay,
+      if (!selected) {
+        block.querySelector("h3").classList.add("error-highlight");
+        allSelected.push(false);
+      } else {
+        block.querySelector("h3").classList.remove("error-highlight");
+        allSelected.push(true);
+      }
+
+      assignedDays.forEach((day) => {
+        if (!objectivesByDay[day]) objectivesByDay[day] = [];
+        objectivesByDay[day].push({
+          objectiveId,
+          objectiveTitle: title, 
+          difficultyLevel, 
+          coef,
+          isCompleted: false,
+          timerProgress: 0,
+          exercises: collectExercisesForObjective(objectiveId),
+        });
+      });
     });
 
-    localStorage.setItem("trainingModules", JSON.stringify(storedModules));
-    console.log("Programme ajouté :", storedModules[currentModuleId].programs);
+    if (!allSelected.every((v) => v)) return;
 
-    // Redirection
-    window.location.href = "/frontend/pages/programmsTrainning.html";
+    // Création de l'objet module complet
+    const trainingDays = Object.keys(objectivesByDay).map((dayNum) => ({
+      dayNumber: parseInt(dayNum),
+      objectives: objectivesByDay[dayNum],
+    }));
+
+    const moduleData = {
+      moduleKey: currentModuleId,
+      type: "user",
+      programData: {
+        name: `Module ${currentModuleId}`,
+        trainingDays,
+        timePerWeek: howTime,
+        daysPerWeek: howDay,
+      },
+    };
+
+    // Envoi au backend
+    fetch("http://localhost:5000/api/me/user-created-modules", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify(moduleData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Module envoyé avec succès :", data);
+        window.location.href = "/frontend/pages/programmsTrainning.html";
+      })
+      .catch((err) => {
+        console.error("Erreur lors de l'envoi du module :", err);
+      });
   });
 });
 

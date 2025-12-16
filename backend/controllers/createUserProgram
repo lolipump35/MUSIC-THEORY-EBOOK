@@ -1,0 +1,18 @@
+exports.createUserProgram = async (req, res) => {
+  try {
+    const user = req.user; // déjà récupéré par le middleware
+
+    const newProgram = {
+      type: "user",
+      programData: req.body.programData || { trainingDays: [] }
+    };
+
+    user.userCreatedModules.push(newProgram);
+    await user.save();
+
+    res.status(201).json(newProgram);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
