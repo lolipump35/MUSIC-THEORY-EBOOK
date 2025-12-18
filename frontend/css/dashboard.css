@@ -264,6 +264,19 @@ body {
 
 /* #region PROGRAMMS TRAINNING  */
 
+/* #region admin */
+
+#adminControl {
+  display: none; /* caché par défaut */
+}
+
+#adminControl img{
+   scale:0.15;
+  position: fixed;
+  left: -150px;
+}
+
+/* #endregion admin */
 
 
 /* #endregion PROGRAMMS TRAINNING  */

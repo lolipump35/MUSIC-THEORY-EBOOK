@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Module Admin – Création de programme</title>
+    <link rel="stylesheet" href="/frontend/css/admin-module.css" />
+  </head>
+
+  <body>
+ <div class="adminModuleContainer">
+  <h2>Créer un mini-programme</h2>
+
+  <!-- TITRE GLOBAL DU MODULE -->
+  <label for="moduleTitle">Titre du module :</label>
+  <input type="text" id="moduleTitle" placeholder="Titre du module" />
+
+  <!-- LISTE DES OBJECTIFS -->
+  <h3>Objectifs du module</h3>
+
+  <div id="objectivesContainer"></div>
+
+  <button id="addObjectiveBtn" type="button">Ajouter un objectif +</button>
+
+  <br /><br />
+
+  <button id="saveModuleBtn">Enregistrer le module</button>
+  <p id="statusMsg"></p>
+</div>
+
+  <script src="/frontend/js/admin-module.js"></script>
+</body>
+
+</html>
