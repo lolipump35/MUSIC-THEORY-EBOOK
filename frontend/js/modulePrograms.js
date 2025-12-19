@@ -340,21 +340,27 @@ window.addEventListener("DOMContentLoaded", () => {
       // ===== Difficulté =====
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
+
+      // index de difficulté pour l'affichage (1-5)
       const difficultyIndex = (item.difficultyLevel || 4) - 1;
+
       scaleDiv.innerHTML = `<span>Difficile</span>${createScaleButtons(
         difficultyIndex
       )}<span>Facile</span>`;
 
+      // Ajout des event listeners pour chaque bouton de difficulté
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", async () => {
+          // 🔹 Mise à jour visuelle
           scaleDiv
             .querySelectorAll(".scale-button")
             .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
 
+          // 🔹 Mise à jour de l'objet local
           item.difficultyLevel = index + 1;
 
-          // 🔹 appliquer la difficulté sur le timer
+          // 🔹 Application immédiate sur le timer
           applyDifficultyToObjective(timeDiv, item.difficultyLevel);
           const estimatedSeconds = parseInt(
             timeDiv.dataset.estimatedSeconds,
@@ -367,8 +373,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
           // 🔹 PATCH backend pour difficultyLevel
           try {
-            await fetch(
-              `http://localhost:5000/api/me/user-created-modules/${program.moduleKey}/training-days/${day}/objectives/${item.id}`,
+            console.log("ModuleKey utilisé pour patch :", moduleKey);
+            const res = await fetch(
+              `http://localhost:5000/api/me/user-created-modules/${moduleId}/training-days/${day}/objectives/${item.id}/difficulty`,
               {
                 method: "PATCH",
                 headers: {
@@ -378,6 +385,12 @@ window.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ difficulty: item.difficultyLevel }),
               }
             );
+
+            if (!res.ok) {
+              const errorText = await res.text();
+              throw new Error(`Erreur backend: ${res.status} ${errorText}`);
+            }
+
             console.log(
               "✅ DifficultyLevel mis à jour côté serveur :",
               item.difficultyLevel
@@ -386,11 +399,12 @@ window.addEventListener("DOMContentLoaded", () => {
             console.error("Erreur mise à jour difficultyLevel :", err);
           }
 
-          // sauvegarde locale
+          // 🔹 Sauvegarde locale
           saveModules();
         });
       });
 
+      // Ajout du bloc difficulté à l'objectif
       objectiveDiv.appendChild(scaleDiv);
 
       // ===== Temps estimé =====

@@ -192,3 +192,42 @@ exports.deleteProgram = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// PATCH : update difficultyLevel pour un objectif
+exports.updateObjectiveDifficulty = async (req, res) => {
+  try {
+    const { moduleId, dayNumber, objectiveId } = req.params;
+    const { difficulty } = req.body;
+
+    if (!difficulty)
+      return res.status(400).json({ message: "Difficulty manquante" });
+
+    const user = req.user;
+
+    // On récupère le module exact par ID
+    const module = user.userCreatedModules.find(
+      (m) => m._id.toString() === moduleId
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
+    // 🔹 Trouver le jour
+    const day = module.programData.trainingDays.find(
+      (d) => d.dayNumber === parseInt(dayNumber)
+    );
+    if (!day) return res.status(404).json({ message: "Jour introuvable" });
+
+    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
+    if (!objective)
+      return res.status(404).json({ message: "Objectif introuvable" });
+
+    // Mise à jour de la difficulté
+    objective.difficultyLevel = difficulty;
+
+    // Sauvegarde
+    await user.save();
+    return res.json({ message: "Difficulty mise à jour", objective });
+  } catch (err) {
+    console.error("Erreur updateObjectiveDifficulty :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};

@@ -10,7 +10,10 @@ router.use(authMiddleware);
 router.get("/", programController.getPrograms);
 router.post("/user-created", programController.createUserProgram);
 router.post("/assigned/:moduleId", programController.assignAdminProgram);
-router.patch("/:programId/day/:dayNumber/objective/:objectiveId", programController.updateObjective);
+router.patch(
+  "/:programId/day/:dayNumber/objective/:objectiveId",
+  programController.updateObjective
+);
 router.delete("/:programId", programController.deleteProgram);
 
 // Routes timerProgress indépendantes (PATCH périodique)
@@ -25,6 +28,13 @@ router.get(
   "/user-created-modules/:moduleKey",
   authFullMiddleware,
   programController.getUserModuleByKey
+);
+
+// PATCH spécifique pour mettre à jour la difficulté d'un objectif
+router.patch(
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/difficulty",
+  authFullMiddleware,
+  programController.updateObjectiveDifficulty
 );
 
 module.exports = router;
