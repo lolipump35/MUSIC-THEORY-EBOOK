@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // Appel sécurisé vers le backend
-  fetch("http://localhost:5000/dashboard", {
+  fetch("http://localhost:5000/api/dashboard", {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
@@ -199,55 +199,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
   const adminControl = document.getElementById("adminControl");
 
-async function loadDashboard() {
-  try {
-    const token = localStorage.getItem("token");
+  async function loadDashboard() {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      console.log("Pas de token, utilisateur non connecté");
-      return;
-    }
-
-    // 🔹 On garde juste la récupération du rôle pour afficher ou cacher le bouton
-    const res = await fetch("http://localhost:5000/api/dashboard", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    });
-
-    if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
-
-    const user = await res.json();
-
-    if (adminControl) {
-      if (user.role === "admin") {
-        adminControl.style.display = "flex"; // bouton visible
-      } else {
-        adminControl.style.display = "none"; // bouton caché
+      if (!token) {
+        console.log("Pas de token, utilisateur non connecté");
+        return;
       }
 
-      // 🔹 Redirection simple côté front pur
-      adminControl.addEventListener("click", () => {
-        window.location.href = "/frontend/pages/admin/dashboardAdmin.html";
+      // 🔹 On garde juste la récupération du rôle pour afficher ou cacher le bouton
+      const res = await fetch("http://localhost:5000/api/dashboard", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
       });
+
+      if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+
+      const user = await res.json();
+
+      if (adminControl) {
+        if (user.role === "admin") {
+          adminControl.style.display = "flex"; // bouton visible
+        } else {
+          adminControl.style.display = "none"; // bouton caché
+        }
+
+        // 🔹 Redirection simple côté front pur
+        adminControl.addEventListener("click", () => {
+          window.location.href = "/frontend/pages/admin/dashboardAdmin.html";
+        });
+      }
+    } catch (err) {
+      console.error("Erreur lors du chargement du dashboard :", err);
     }
-  } catch (err) {
-    console.error("Erreur lors du chargement du dashboard :", err);
   }
-}
 
-// Appel de la fonction
-loadDashboard();
-
-
-
-
-
+  // Appel de la fonction
+  loadDashboard();
 
   // --- Ajout des écouteurs sur les boutons ---
   platformButtons.forEach((btn) => {
@@ -481,6 +475,5 @@ document.querySelectorAll(".modules").forEach((module) => {
 // #endregion STOCKAGE CURRENT MODULEID
 
 // #region ADMIN SECTION
-
 
 // #endregion ADMIN SECTION

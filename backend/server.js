@@ -11,15 +11,16 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // ----------------------------
 const authRoutes = require("./routes/authRoutes");
 const stripeWebhook = require("./routes/stripeWebhook");
+const routes = require("./routes/index"); // index.js global pour /videos et autres routes
+const userPreferenceRoutes = require("./routes/userPreferenceRoutes"); // route préférence plateforme
+const programRoutes = require("./routes/programRoutes"); // <-- notre route programmes
 const authMiddleware = require("./middleware/authMiddleware");
-const routes = require("./routes/index"); // index.js global (inclura les routes vidéo)
-const userPreferenceRoutes = require("./routes/userPreferenceRoutes"); // <-- notre nouvelle route
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 // ----------------------------
-// Webhook Stripe (doit venir avant express.json())
+// Webhook Stripe (avant express.json())
 // ----------------------------
 app.use("/webhook", stripeWebhook);
 
@@ -27,15 +28,14 @@ app.use("/webhook", stripeWebhook);
 // Middleware CORS
 // ----------------------------
 const allowedOrigins = [
-  "http://127.0.0.1:5501",  // frontend local
-  "http://localhost:5501",  // alternative
-  "https://music-theory-ebook.onrender.com" // ton futur frontend sur Render
+  "http://127.0.0.1:5501",
+  "http://localhost:5501",
+  "https://music-theory-ebook.onrender.com",
 ];
 
 const corsOptions = {
-  origin: function(origin, callback) {
-    // autorise les requêtes sans origin (ex: Postman ou fetch local)
-    if (!origin) return callback(null, true);
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // autoriser Postman ou fetch local
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = `La CORS policy ne permet pas l'accès depuis ${origin}`;
       return callback(new Error(msg), false);
@@ -43,13 +43,24 @@ const corsOptions = {
     return callback(null, true);
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 };
 
-// Appliquer CORS
+// 1. Middleware CORS : doit être avant toutes les routes API
 app.use(cors(corsOptions));
+
+// 2. Middleware JSON
 app.use(express.json());
+
+// 3. Static (frontend)
 app.use(express.static("public"));
+
+// 4. Routes API
+app.use("/api/auth", authRoutes);
+app.use("/api", routes);
+app.use("/api/user", userPreferenceRoutes);
+app.use("/api/programs", programRoutes);
+app.use("/api/me", programRoutes);
 
 
 // ----------------------------
@@ -63,12 +74,6 @@ mongoose
   .then(() => console.log("✅ Database connected"))
   .catch((err) => console.error("❌ Database connection error:", err));
 
-// ----------------------------
-// Routes
-// ----------------------------
-app.use("/api/auth", authRoutes);
-app.use("/api", routes); // index.js global pour /videos et autres routes existantes
-app.use("/api/user", userPreferenceRoutes); // <-- route pour la préférence de plateforme
 
 // ----------------------------
 // Route par défaut
@@ -78,7 +83,7 @@ app.get("/", (req, res) => {
 });
 
 // ----------------------------
-// Route Stripe
+// Route Stripe checkout
 // ----------------------------
 app.post("/create-checkout-session", authMiddleware, async (req, res) => {
   if (!req.user || !req.user.userId) {
@@ -101,7 +106,7 @@ app.post("/create-checkout-session", authMiddleware, async (req, res) => {
           quantity: 1,
         },
       ],
-      client_reference_id: userId, // ID utilisateur
+      client_reference_id: userId,
       success_url: `${process.env.FRONTEND_URL}/success.html`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel.html`,
     });
@@ -114,16 +119,15 @@ app.post("/create-checkout-session", authMiddleware, async (req, res) => {
 });
 
 // ----------------------------
-// Route dashboard protégée
+// Dashboard protégé
 // ----------------------------
 app.get("/api/dashboard", authMiddleware, (req, res) => {
   res.json({
     userId: req.user.userId,
-    role: req.user.role, // très important pour savoir si admin
-    message: "Bienvenue sur ton dashboard 🚀"
+    role: req.user.role,
+    message: "Bienvenue sur ton dashboard 🚀",
   });
 });
-
 
 // ----------------------------
 // Démarrage du serveur

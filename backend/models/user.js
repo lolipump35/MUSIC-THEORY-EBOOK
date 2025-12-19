@@ -1,5 +1,41 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+
+const objectiveSchema = new mongoose.Schema({
+  objectiveId: { type: String, required: true },
+  objectiveTitle: { type: String, required: true },
+  isCompleted: { type: Boolean, default: false },
+  timerProgress: { type: Number, default: 0 },
+  difficultyLevel: { type: Number, default: 4 },
+  coef: { type: Number, default: 1 },
+  completedDays: { type: [Number], default: [] },
+  exercises: { type: [String], default: [] },
+});
+
+const trainingDaySchema = new mongoose.Schema({
+  dayNumber: { type: Number, required: true },
+  objectives: [objectiveSchema],
+});
+
+const programDataSchema = new mongoose.Schema({
+  name: { type: String },
+  daysPerWeek: { type: Number },
+  timePerWeek: { type: Number },
+  trainingDays: [trainingDaySchema],
+});
+
+const userCreatedModuleSchema = new mongoose.Schema({
+  moduleKey: { type: String, required: true },
+  moduleRef: { type: mongoose.Schema.Types.ObjectId, ref: "Module", default: null },
+  type: { type: String, enum: ["user"], default: "user" },
+  startDate: { type: Date, default: Date.now },
+  programData: programDataSchema,
+});
+
+const assignedModuleSchema = new mongoose.Schema({
+  moduleId: { type: mongoose.Schema.Types.ObjectId, ref: "Module" },
+  assignedAt: { type: Date, default: Date.now },
+  programData: { type: Object, default: {} },
+});
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -9,90 +45,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   purchases: [{ type: String }],
   preferredPlatform: { type: String, default: "spotify" },
-
-  userCreatedModules: [
-    {
-      moduleKey: {
-        type: String,
-        required: true,
-      },
-
-      moduleRef: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Module",
-        default: null,
-      },
-
-      type: {
-        type: String,
-        enum: ["user"],
-        default: "user",
-      },
-
-      startDate: {
-        type: Date,
-        default: Date.now,
-      },
-
-      programData: {
-        name: String,
-        daysPerWeek: Number,
-        timePerWeek: Number,
-        difficultyLevel: Number,
-
-        completedDays: {
-          type: [Number],
-          default: [],
-        },
-
-        objectives: [
-          {
-            moduleId: String,
-            id: String,
-            objectif: String, // tu peux garder si tu veux, mais inutile pour le rendu
-            objectiveTitle: String, // 👈 nouveau champ pour le titre visible
-            assignedDays: { type: [Number], default: [] },
-            coef: Number,
-            difficultyLevel: Number,
-            completedDays: { type: [Number], default: [] },
-            isCompleted: { type: Boolean, default: false },
-            timerProgress: { type: Number, default: 0 },
-            exercises: { type: [String], default: [] },
-          },
-        ],
-
-        trainingDays: [
-          {
-            dayNumber: Number,
-            objectives: [
-              {
-                objectiveId: String,
-                objectiveTitle: String, // 👈 nouveau champ
-                isCompleted: { type: Boolean, default: false },
-                timerProgress: { type: Number, default: 0 },
-                exercises: { type: [String], default: [] },
-                difficultyLevel: { type: Number, default: 4 }, // ajouté
-                coef: { type: Number, default: 1 },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-  role: {
-    type: String,
-    enum: ["user", "admin"],
-    default: "user",
-  },
-  assignedModules: [
-    {
-      moduleId: { type: mongoose.Schema.Types.ObjectId, ref: "Module" },
-      assignedAt: { type: Date, default: Date.now },
-      programData: { type: Object, default: {} }, // pour que l'élève ajuste ses jours / temps / difficulté
-    },
-  ],
+  userCreatedModules: [userCreatedModuleSchema],
+  assignedModules: [assignedModuleSchema],
+  role: { type: String, enum: ["user", "admin"], default: "user" },
 });
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);
