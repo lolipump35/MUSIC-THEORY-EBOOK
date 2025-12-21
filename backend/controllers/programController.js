@@ -210,9 +210,16 @@ exports.updateObjectiveDifficulty = async (req, res) => {
     const user = req.user;
 
     // On récupère le module exact par ID
-    const module = user.userCreatedModules.find(
-      (m) => m._id.toString() === moduleId
+    console.log("Recherche module avec moduleKey:", req.params.moduleKey);
+    console.log(
+      "Liste modules utilisateur:",
+      req.user.userCreatedModules.map((m) => m.moduleKey)
     );
+
+    const module = req.user.userCreatedModules.find(
+      (m) => m.moduleKey === req.params.moduleKey
+    );
+
     if (!module) return res.status(404).json({ message: "Module introuvable" });
 
     // 🔹 Trouver le jour
