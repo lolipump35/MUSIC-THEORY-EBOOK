@@ -29,16 +29,28 @@ window.addEventListener("DOMContentLoaded", () => {
     const currentModuleId = localStorage.getItem("currentModule");
     if (!currentModuleId || !storedModules[currentModuleId]) return;
 
-    // Envoi au backend pour persister les modifications
-    fetch(`http://localhost:5000/api/me/user-created-modules`, {
-      method: "POST", // ou PATCH selon ton endpoint
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(storedModules[currentModuleId]),
-    })
-      .then((res) => res.json())
+    const moduleToSave = storedModules[currentModuleId];
+
+    // On fait un PATCH sur le module existant pour éviter les doublons
+    fetch(
+      `http://localhost:5000/api/me/user-created-modules/${currentModuleId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(moduleToSave),
+      }
+    )
+      .then((res) => {
+        if (!res.ok) {
+          return res.text().then((text) => {
+            throw new Error(`Erreur backend: ${res.status} ${text}`);
+          });
+        }
+        return res.json();
+      })
       .then((data) => console.log("✅ Module mis à jour côté serveur :", data))
       .catch((err) => console.error("Erreur mise à jour module :", err));
   }

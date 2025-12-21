@@ -195,6 +195,11 @@ exports.deleteProgram = async (req, res) => {
 
 // PATCH : update difficultyLevel pour un objectif
 exports.updateObjectiveDifficulty = async (req, res) => {
+  console.log("PATCH difficulty reçu :", {
+    params: req.params,
+    body: req.body,
+    userId: req.user?.id, // si ton middleware met le userId
+  });
   try {
     const { moduleId, dayNumber, objectiveId } = req.params;
     const { difficulty } = req.body;
