@@ -375,7 +375,7 @@ window.addEventListener("DOMContentLoaded", () => {
           try {
             console.log("ModuleKey utilisé pour patch :", moduleKey);
             const res = await fetch(
-              `http://localhost:5000/api/me/user-created-modules/${moduleId}/training-days/${day}/objectives/${item.id}/difficulty`,
+              `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${day}/objectives/${item.id}/difficulty`,
               {
                 method: "PATCH",
                 headers: {
