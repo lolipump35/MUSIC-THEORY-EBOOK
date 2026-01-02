@@ -203,6 +203,34 @@ function collectExercisesForObjective(objectiveId) {
   return Array.from(exercises).map((ex) => ex.outerHTML);
 }
 
+async function commitModuleTimes(moduleKey) {
+  const token = localStorage.getItem("token");
+  if (!token) return console.error("Pas de token trouvé");
+
+  try {
+    const res = await fetch(
+      `http://localhost:5000/api/me/user-created-modules/${moduleKey}/commit-times`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Erreur commit times: ${errorText}`);
+    }
+
+    const data = await res.json();
+    console.log("✅ Temps initialisés :", data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const currentModuleId = localStorage.getItem("currentModule");
   console.log("Module courant récupéré :", currentModuleId);
@@ -317,8 +345,12 @@ window.addEventListener("DOMContentLoaded", () => {
         if (!objectivesByDay[day]) objectivesByDay[day] = [];
         objectivesByDay[day].push({
           objectiveId,
-          objectiveTitle: title, 
-          difficultyLevel, 
+          objectiveTitle: title,
+
+          // 🔹 difficulté
+          difficultyLevel,
+          baseDifficultyLevel: difficultyLevel, // ← pivot initial
+
           coef,
           isCompleted: false,
           timerProgress: 0,
@@ -345,6 +377,7 @@ window.addEventListener("DOMContentLoaded", () => {
         daysPerWeek: howDay,
       },
     };
+    console.log("ModuleData envoyé au backend :", moduleData);
 
     // Envoi au backend
     fetch("http://localhost:5000/api/me/user-created-modules", {
@@ -356,8 +389,13 @@ window.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify(moduleData),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         console.log("Module envoyé avec succès :", data);
+
+        // 🔹 Initialiser les temps de référence pour chaque objectif
+        await commitModuleTimes(currentModuleId);
+        console.log("🔥 Token envoyé pour commitTimes :", token);
+
         window.location.href = "/frontend/pages/programmsTrainning.html";
       })
       .catch((err) => {

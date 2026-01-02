@@ -1,3 +1,4 @@
+console.log("📌 ProgramRoute.js chargé !");
 const express = require("express");
 const router = express.Router();
 const programController = require("../controllers/programController");
@@ -10,18 +11,39 @@ router.use(authMiddleware);
 router.get("/", programController.getPrograms);
 router.post("/user-created", programController.createUserProgram);
 router.post("/assigned/:moduleId", programController.assignAdminProgram);
-router.patch(
-  "/:programId/day/:dayNumber/objective/:objectiveId",
-  programController.updateObjective
-);
 router.delete("/:programId", programController.deleteProgram);
 
-// Routes timerProgress indépendantes (PATCH périodique)
+router.use((req, res, next) => {
+  console.log("📥 ROUTE PROGRAM HIT :", req.method, req.originalUrl);
+  next();
+});
+
+// ------------------------------
+// ROUTES TIMER / PROGRESSION
+// ------------------------------
 router.patch(
-  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId",
-  authFullMiddleware,
-  programController.updateObjectiveTimer
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/start",
+  programController.startObjective
 );
+
+router.patch(
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/pause",
+  programController.pauseObjective
+);
+
+router.patch(
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/complete",
+  programController.completeObjective
+);
+
+// ------------------------------
+// ROUTE DIFFICULTY
+// ------------------------------
+router.patch(
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/difficulty",
+  programController.updateObjectiveDifficulty
+);
+
 
 // Récupérer un module par clé
 router.get(
@@ -30,11 +52,16 @@ router.get(
   programController.getUserModuleByKey
 );
 
-// PATCH spécifique pour mettre à jour la difficulté d'un objectif
-router.patch(
-  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId/difficulty",
-  authFullMiddleware,
-  programController.updateObjectiveDifficulty
+// 🔹 Initialiser les temps de référence pour un module utilisateur
+router.post(
+  "/user-created-modules/:moduleKey/commit-times",
+  programController.commitProgramTimes
+);
+
+// GET AFTER REFRESH 
+router.get(
+  "/user-created-modules/:moduleKey/training-days/:dayNumber/objectives/:objectiveId",
+  programController.getObjective
 );
 
 module.exports = router;

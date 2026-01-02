@@ -25,129 +25,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // ================== 🔹 Fonctions utilitaires ==================
 
-function saveModules() {
-  const currentModuleId = localStorage.getItem("currentModule");
-  if (!currentModuleId || !storedModules[currentModuleId]) return;
-
-  const moduleToSave = storedModules[currentModuleId];
-
-  // On fait un PATCH sur le module existant pour éviter les doublons
-  fetch(`http://localhost:5000/api/me/user-created-modules/${currentModuleId}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(moduleToSave),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then((text) => {
-          throw new Error(`Erreur backend: ${res.status} ${text}`);
-        });
-      }
-      return res.json();
-    })
-    .then((data) => console.log("✅ Module mis à jour côté serveur :", data))
-    .catch((err) => console.error("Erreur mise à jour module :", err));
-}
-
-
-  function markObjectiveAsCompleted(objectiveElement, day) {
-    objectiveElement.classList.add("completed");
-
-    const objectiveId = objectiveElement.dataset.objectiveId;
-    if (!storedModules[currentModuleId]) return;
-
-    storedModules[currentModuleId].programs.forEach((program) => {
-      const obj = program.objectives.find((o) => o.id === objectiveId);
-      if (obj && !obj.completedDays.includes(day)) {
-        obj.completedDays.push(day);
-      }
-    });
-
-    saveModules();
-  }
-
-  function getTimeForDifficulty(objectiveId, dayNumber) {
-    const moduleData = storedModules[currentModuleId]?.programData;
-    if (!moduleData || !moduleData.timePerWeek || !moduleData.trainingDays)
-      return 0;
-
-    const totalMinutes = moduleData.timePerWeek;
-    const days = moduleData.trainingDays.length;
-    if (days === 0) return 0;
-
-    const minutesPerDay = totalMinutes / days;
-
-    // On récupère les objectifs du jour correspondant
-    const dayObj = moduleData.trainingDays.find(
-      (d) => d.dayNumber === dayNumber
-    );
-    if (!dayObj || !dayObj.objectives) return 0;
-
-    const objectives = dayObj.objectives;
-
-    const processedObjectives = objectives.map((o) => {
-      const facteurModere = 1 + ((7 - (o.difficultyLevel || 4)) / 6) * 2;
-      const poidsFinal = facteurModere * (o.coef || 1);
-      return { ...o, poidsFinal };
-    });
-
-    const totalWeight = processedObjectives.reduce(
-      (sum, o) => sum + o.poidsFinal,
-      0
-    );
-    if (totalWeight === 0) return 0;
-
-    const myObjective = processedObjectives.find(
-      (o) => o.objectiveId === objectiveId || o.id === objectiveId
-    );
-    if (!myObjective) return 0;
-
-    const myPercentage = myObjective.poidsFinal / totalWeight;
-    return Math.round(minutesPerDay * myPercentage);
-  }
-
-  function applyDifficultyToObjective(timeDiv, newDifficultyLevel) {
-    const difficultyMultipliers = {
-      1: 1.4,
-      2: 1.25,
-      3: 1.1,
-      4: 1,
-      5: 0.9,
-      6: 0.75,
-      7: 0.6,
-    };
-
-    const baseTime = parseInt(timeDiv.dataset.baseEstimatedSeconds, 10);
-    const baseDifficulty = parseInt(timeDiv.dataset.baseDifficultyLevel, 10);
-    const oldTotal = parseInt(timeDiv.dataset.estimatedSeconds, 10);
-    const oldRemaining = parseInt(timeDiv.dataset.remainingSeconds, 10);
-
-    if (!baseTime || !baseDifficulty || !oldTotal || !oldRemaining) return;
-
-    // progression actuelle
-    const elapsed = oldTotal - oldRemaining;
-    const progress = elapsed / oldTotal;
-
-    // rapport entre la nouvelle difficulté et la difficulté pivot
-    const baseMultiplier = difficultyMultipliers[baseDifficulty];
-    const newMultiplier = difficultyMultipliers[newDifficultyLevel];
-
-    const relativeMultiplier = newMultiplier / baseMultiplier;
-
-    const newTotal = Math.round((baseTime * relativeMultiplier) / 10) * 10;
-
-    const newRemaining = Math.max(
-      Math.round((newTotal * (1 - progress)) / 10) * 10,
-      10
-    );
-
-    timeDiv.dataset.estimatedSeconds = newTotal;
-    timeDiv.dataset.remainingSeconds = newRemaining;
-  }
-
   function createScaleButtons(selectedLevel) {
     const buttons = [
       "big orange",
@@ -166,150 +43,207 @@ function saveModules() {
       .join("");
   }
 
+  function markObjectiveAsCompleted(objectiveElement, day) {
+    objectiveElement.classList.add("completed");
+
+    const objectiveId = objectiveElement.dataset.objectiveId;
+    const currentModuleId = localStorage.getItem("currentModule");
+    if (!storedModules[currentModuleId]) return;
+
+    storedModules[currentModuleId].programData.trainingDays.forEach(
+      (dayObj) => {
+        const obj = dayObj.objectives.find(
+          (o) => o.objectiveId === objectiveId
+        );
+        if (obj && !obj.completedDays.includes(day)) {
+          obj.completedDays.push(day);
+        }
+      }
+    );
+  }
+
   function initializeCloche(timerDiv, timeDiv, meta) {
-    const { moduleKey, dayNumber, objectiveId, token } = meta; // 🔹 récup depuis meta
+    const { moduleKey, dayNumber, objectiveId, token } = meta;
 
     const circle = timerDiv.querySelector(".circle");
     const display = timerDiv.querySelector(".timerDisplay");
 
-    function getRemaining() {
-      return parseInt(timeDiv.dataset.remainingSeconds, 10);
-    }
-
     let paused = true;
     let interval = null;
 
+    // 🔹 Timer local pour gérer texte + cercle
+    let remaining;
+
+    if (timeDiv.dataset.remainingSeconds !== undefined) {
+      remaining = parseInt(timeDiv.dataset.remainingSeconds, 10);
+    } else {
+      remaining = parseInt(timeDiv.dataset.estimatedSeconds, 10) || 0;
+    }
+
+    // 🔹 Hydrater le timer depuis le backend après un refresh
+    (async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}`,
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        );
+        const data = await res.json();
+
+        if (data.objective) {
+          // Mettre à jour les datas du DOM
+          timeDiv.dataset.remainingSeconds = data.objective.remainingSeconds;
+          timeDiv.dataset.isRunning = data.objective.isRunning;
+          timeDiv.dataset.lastStartTimestamp =
+            data.objective.lastStartTimestamp;
+
+          // Mettre à jour la variable locale `remaining`
+          remaining =
+            parseInt(timeDiv.dataset.remainingSeconds, 10) || remaining;
+
+          // Mettre à jour l'affichage texte + cercle
+          updateDisplay();
+        }
+      } catch (err) {
+        console.error("Erreur hydrateTimer :", err);
+      }
+    })();
+
+    const totalTime =
+      parseInt(timeDiv.dataset.estimatedSeconds, 10) || remaining;
+
+    // 🔹 Mise à jour UI texte + cercle
     function updateDisplay() {
-      const seconds = getRemaining();
-      const mins = Math.floor(seconds / 60)
+      // Texte
+      const mins = Math.floor(remaining / 60)
         .toString()
         .padStart(2, "0");
-      const secs = (seconds % 60).toString().padStart(2, "0");
+      const secs = (remaining % 60).toString().padStart(2, "0");
       display.textContent = `${mins}:${secs}`;
 
-      const total = parseInt(timeDiv.dataset.estimatedSeconds, 10);
-      const percent = total > 0 ? (total - seconds) / total : 0;
+      // Cercle SVG
+      const percent = totalTime > 0 ? (totalTime - remaining) / totalTime : 0;
       circle.setAttribute("stroke-dasharray", `${percent * 100}, 100`);
+    }
+
+    // 🔁 RÉHYDRATATION APRÈS REFRESH
+    const isRunning = timeDiv.dataset.isRunning === "true";
+    const lastStart = timeDiv.dataset.lastStartTimestamp
+      ? new Date(timeDiv.dataset.lastStartTimestamp)
+      : null;
+
+    if (isRunning && lastStart) {
+      if (interval) clearInterval(interval);
+
+      const elapsed = Math.floor((Date.now() - lastStart.getTime()) / 1000);
+
+      remaining = Math.max(remaining - elapsed, 0);
+      timeDiv.dataset.remainingSeconds = remaining;
+      console.log(timeDiv.dataset.remainingSeconds);
+
+      paused = false;
+
+      // 🔁 relancer le tick automatiquement
+      interval = setInterval(() => {
+        if (!paused) {
+          remaining = Math.max(remaining - 1, 0);
+          timeDiv.dataset.remainingSeconds = remaining;
+          updateDisplay();
+
+          if (remaining <= 0) {
+            clearInterval(interval);
+            paused = true;
+            timeDiv.dataset.isRunning = "false";
+          }
+        }
+      }, 1000);
     }
 
     updateDisplay();
 
-    // 🔹 Fetch en arrière-plan pour récupérer timerProgress depuis la DB
-    (async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/me/user-created-modules/${moduleKey}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-        const moduleData = await res.json();
-        if (!moduleData) return;
+    // 🔹 Click sur cloche
+    timerDiv.querySelector(".cloche").addEventListener("click", async () => {
+      console.log("🖱️ CLIC SUR LA CLOCHE", paused, remaining);
 
-        const day = moduleData.trainingDays?.find(
-          (d) => d.dayNumber === dayNumber
-        );
-        if (!day) return;
-
-        const objective = day.objectives?.find(
-          (o) => o.objectiveId === objectiveId
-        );
-        if (!objective) return;
-
-        // 🔹 Pivot : ne mettre à jour le timer que si l'objectif a déjà été commencé ou est terminé
-        if (
-          !(objective.isCompleted === false && objective.timerProgress === 0)
-        ) {
-          timeDiv.dataset.remainingSeconds = objective.timerProgress;
-          updateDisplay();
-        }
-        // sinon, on garde le timer par défaut
-      } catch (err) {
-        console.error("Erreur fetch timerProgress initial :", err);
-      }
-
-      console.log("ModuleKey utilisé :", moduleKey);
-      console.log("Token :", token);
-    })();
-
-    timerDiv.querySelector(".cloche").addEventListener("click", () => {
       if (paused) {
+        // ▶️ START
+
+        if (remaining <= 0) {
+          console.log("⛔️ Timer déjà à 0, start bloqué");
+          return;
+        }
+
+        console.log("▶️ START déclenché");
         paused = false;
-        let lastSync = Date.now();
 
-        interval = setInterval(async () => {
-          let current = getRemaining();
+        try {
+          console.log(
+            "PATCH URL :",
+            `/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/start`
+          );
+          console.log("TOKEN :", token); // vérifie qu’il n’est pas vide
+          await fetch(
+            `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/start`,
+            {
+              method: "PATCH",
+              headers: { Authorization: "Bearer " + token },
+            }
+          );
+          console.log("📤 START envoyé");
+        } catch (err) {
+          console.error("❌ Erreur fetch START :", err);
+        }
 
-          if (current > 0) {
-            current--;
-            timeDiv.dataset.remainingSeconds = current;
+        // 🔹 Intervalle local
+        interval = setInterval(() => {
+          if (!paused) {
+            remaining = Math.max(remaining - 1, 0);
+            timeDiv.dataset.remainingSeconds = remaining;
             updateDisplay();
 
-            // Envoi périodique au backend toutes les 5 secondes
-            if (current % 5 === 0) {
-              try {
-                console.log(
-                  "Envoi timerProgress périodique :",
-                  current,
-                  moduleKey,
-                  dayNumber,
-                  objectiveId
-                );
-                await fetch(
-                  `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}`,
-                  {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: "Bearer " + token,
-                    },
-                    body: JSON.stringify({
-                      timerProgress: current,
-                      completed: false,
-                    }),
-                  }
-                );
-              } catch (err) {
-                console.error("Erreur fetch périodique :", err);
-              }
-            }
-          } else {
-            clearInterval(interval);
-            paused = true;
+            if (remaining <= 0) {
+              console.log("⏱ TIMER TERMINÉ → COMPLETE");
+              clearInterval(interval);
+              paused = true;
+              timeDiv.dataset.isRunning = "false";
 
-            const objectiveItem = timerDiv.closest(".objectiveItem");
-            if (objectiveItem) {
-              markObjectiveAsCompleted(objectiveItem, dayNumber);
+              const objectiveItem = timerDiv.closest(".objectiveItem");
+              if (objectiveItem)
+                markObjectiveAsCompleted(objectiveItem, dayNumber);
 
-              try {
-                console.log("Envoi timerProgress final + completed :", current);
-                await fetch(
-                  `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}`,
-                  {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: "Bearer " + token,
-                    },
-                    body: JSON.stringify({ timerProgress: 0, completed: true }),
-                  }
-                );
-              } catch (err) {
-                console.error("Erreur fetch final :", err);
-              }
+              // PATCH COMPLETE
+              fetch(
+                `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/complete`,
+                {
+                  method: "PATCH",
+                  headers: { Authorization: "Bearer " + token },
+                }
+              ).catch((err) =>
+                console.error("❌ Erreur fetch COMPLETE :", err)
+              );
             }
           }
         }, 1000);
       } else {
+        // ⏸ PAUSE
+        console.log("⏸ PAUSE déclenché");
         paused = true;
         clearInterval(interval);
+
+        try {
+          await fetch(
+            `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/pause`,
+            { method: "PATCH", headers: { Authorization: "Bearer " + token } }
+          );
+          console.log("📤 PAUSE envoyé");
+        } catch (err) {
+          console.error("❌ Erreur fetch PAUSE :", err);
+        }
       }
     });
 
+    // Expose updateDisplay pour usage externe
     timerDiv.updateDisplay = updateDisplay;
   }
 
@@ -317,14 +251,13 @@ function saveModules() {
     programDiv,
     objectives,
     day,
-    program,
+    programData,
     moduleKey
   ) {
     const list = programDiv.querySelector(".objectivesContainer");
     list.innerHTML = "";
 
     objectives.forEach((item, objIndex) => {
-      // Assigner un id unique si nécessaire
       item.id = item.id || `objective-${objIndex + 1}`;
 
       // ===== Container objectif =====
@@ -340,50 +273,40 @@ function saveModules() {
       // ===== Texte objectif =====
       const textContainer = document.createElement("div");
       textContainer.classList.add("objectiveText");
-      const objectiveTitle = item.objectiveTitle || `Objectif ${objIndex + 1}`;
       textContainer.innerHTML = `
       <div class="objectiveNumber">Objectif ${objIndex + 1}</div>
-      <div class="objectiveTitle">${objectiveTitle}</div>
+      <div class="objectiveTitle">${
+        item.objectiveTitle || `Objectif ${objIndex + 1}`
+      }</div>
     `;
       objectiveDiv.appendChild(textContainer);
 
       // ===== Difficulté =====
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
-
-      // index de difficulté pour l'affichage (1-5)
       const difficultyIndex = (item.difficultyLevel || 4) - 1;
 
       scaleDiv.innerHTML = `<span>Difficile</span>${createScaleButtons(
         difficultyIndex
       )}<span>Facile</span>`;
 
-      // Ajout des event listeners pour chaque bouton de difficulté
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", async () => {
-          // 🔹 Mise à jour visuelle
+          // Visuel
           scaleDiv
             .querySelectorAll(".scale-button")
             .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
 
-          // 🔹 Mise à jour de l'objet local
+          // Mise à jour locale
           item.difficultyLevel = index + 1;
 
-          // 🔹 Application immédiate sur le timer
-          applyDifficultyToObjective(timeDiv, item.difficultyLevel);
-          const estimatedSeconds = parseInt(
-            timeDiv.dataset.estimatedSeconds,
-            10
-          );
-          timeDiv.textContent = `Temps estimé : ${Math.round(
-            estimatedSeconds / 60
-          )} min`;
-          timerDiv.updateDisplay();
+          // Mise à jour du timer affiché
+          const timerDiv = objectiveDiv.querySelector(".objectiveTimer");
+          const timeDiv = objectiveDiv.querySelector(".timeDisplay");
 
-          // 🔹 PATCH backend pour difficultyLevel
+          // PATCH backend
           try {
-            console.log("ModuleKey utilisé pour patch :", moduleKey);
             const res = await fetch(
               `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${day}/objectives/${item.id}/difficulty`,
               {
@@ -392,46 +315,69 @@ function saveModules() {
                   "Content-Type": "application/json",
                   Authorization: "Bearer " + localStorage.getItem("token"),
                 },
-                body: JSON.stringify({ difficulty: item.difficultyLevel }),
+                body: JSON.stringify({
+                  difficultyLevel: Number(index + 1),
+                }),
               }
             );
 
-            if (!res.ok) {
-              const errorText = await res.text();
-              throw new Error(`Erreur backend: ${res.status} ${errorText}`);
+            if (!res.ok) throw new Error(await res.text());
+
+            const data = await res.json();
+
+            /**
+             * 1️⃣ On met à jour la SOURCE DE VÉRITÉ
+             */
+            const dayToUpdate = programData.trainingDays.find(
+              (d) => d.dayNumber === day
+            );
+
+            if (!dayToUpdate) {
+              console.error("Jour introuvable dans programData");
+              return;
             }
 
-            console.log(
-              "✅ DifficultyLevel mis à jour côté serveur :",
-              item.difficultyLevel
+            data.objectives.forEach((updatedObj) => {
+              const localObj = dayToUpdate.objectives.find(
+                (o) => o.id === updatedObj.objectiveId
+              );
+
+              if (!localObj) return;
+
+              // 🔥 On ne met à jour QUE ce que le backend recalcule
+              localObj.estimatedSeconds = updatedObj.estimatedSeconds;
+              localObj.baseEstimatedSeconds = updatedObj.baseEstimatedSeconds;
+              localObj.remainingSeconds = updatedObj.remainingSeconds;
+              localObj.difficultyLevel = updatedObj.difficultyLevel;
+              localObj.baseDifficultyLevel = updatedObj.baseDifficultyLevel;
+            });
+
+            /**
+             * 2️⃣ On rerender complètement le jour
+             */
+            renderObjectivesForDay(
+              programDiv,
+              dayToUpdate.objectives,
+              day,
+              programData,
+              moduleKey
             );
           } catch (err) {
             console.error("Erreur mise à jour difficultyLevel :", err);
           }
-
-          // 🔹 Sauvegarde locale
-          saveModules();
         });
       });
 
-      // Ajout du bloc difficulté à l'objectif
       objectiveDiv.appendChild(scaleDiv);
 
       // ===== Temps estimé =====
       const timeDiv = document.createElement("div");
       timeDiv.classList.add("timeDisplay");
-      const estimatedMinutes = getTimeForDifficulty(item.objectiveId, day);
-      const estimatedSeconds = estimatedMinutes * 60;
-      const currentDifficulty = item.difficultyLevel || 4;
-
-      if (!timeDiv.dataset.baseEstimatedSeconds) {
-        timeDiv.dataset.baseEstimatedSeconds = estimatedSeconds;
-        timeDiv.dataset.baseDifficultyLevel = currentDifficulty;
-      }
+      const estimatedSeconds = item.estimatedSeconds ?? 0;
+      timeDiv.dataset.baseEstimatedSeconds = estimatedSeconds;
+      timeDiv.dataset.baseDifficultyLevel = item.difficultyLevel || 4;
       timeDiv.dataset.estimatedSeconds = estimatedSeconds;
-      if (!timeDiv.dataset.remainingSeconds) {
-        timeDiv.dataset.remainingSeconds = estimatedSeconds;
-      }
+      timeDiv.dataset.remainingSeconds = item.timerProgress ?? estimatedSeconds;
       objectiveDiv.appendChild(timeDiv);
 
       // ===== Timer cloche =====
@@ -447,12 +393,11 @@ function saveModules() {
       </div>
     `;
       initializeCloche(timerDiv, timeDiv, {
-        moduleKey: moduleKey, // 🔑 MAINTENANT TOUJOURS DÉFINI
+        moduleKey,
         dayNumber: day,
         objectiveId: item.id,
         token: localStorage.getItem("token"),
       });
-
       objectiveDiv.appendChild(timerDiv);
 
       // ===== Toggle exercices =====
@@ -486,54 +431,6 @@ function saveModules() {
     });
   }
 
-  function createDayButtons(programDiv, daysPerWeek, objectives, program) {
-    const containerDiv = document.createElement("div");
-    containerDiv.classList.add("programDays");
-
-    for (let i = 1; i <= daysPerWeek; i++) {
-      const btn = document.createElement("button");
-      btn.classList.add("dayProgramBtn");
-      btn.textContent = `Jour ${i}`;
-      if (i === 1) btn.classList.add("selected");
-
-      btn.addEventListener("click", () => {
-        containerDiv
-          .querySelectorAll(".dayProgramBtn")
-          .forEach((b) => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        renderObjectivesForDay(programDiv, objectives, i, program);
-      });
-
-      containerDiv.appendChild(btn);
-    }
-
-    programDiv.appendChild(containerDiv);
-    const objectivesContainer = document.createElement("div");
-    objectivesContainer.classList.add("objectivesContainer");
-    programDiv.appendChild(objectivesContainer);
-    renderObjectivesForDay(programDiv, objectives, 1, program);
-  }
-
-  function enableProgramDeletion(container, storedModules, currentModuleId) {
-    const programBlocks = container.querySelectorAll(".programBlock");
-    programBlocks.forEach((block, index) => {
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "🗑️ Supprimer";
-      deleteBtn.classList.add("deleteProgramBtn");
-
-      deleteBtn.addEventListener("click", () => {
-        if (confirm("Voulez-vous vraiment supprimer ce programme ?")) {
-          storedModules[currentModuleId].programs.splice(index, 1);
-          saveModules(); // mise à jour côté serveur
-          block.remove();
-          console.log(`✅ Programme ${index + 1} supprimé.`);
-        }
-      });
-
-      block.appendChild(deleteBtn);
-    });
-  }
-
   function renderModuleData(storedModules, currentModuleId) {
     const container = document.getElementById("trainingResult");
     if (!container) return;
@@ -545,27 +442,24 @@ function saveModules() {
     }
 
     const programData = moduleObj.programData;
-    const moduleKey = moduleObj.moduleKey; // 🔑 IMPORTANT
+    const moduleKey = moduleObj.moduleKey;
 
     container.innerHTML = "";
 
-    // ====== Titre du module ======
+    // Titre du module
     const title = document.createElement("h2");
     title.textContent = programData.name;
     title.classList.add("moduleTitle");
     container.appendChild(title);
 
-    // ====== Création des programmes ======
-    // Ici on suppose 1 programme par module pour simplifier
     const programDiv = document.createElement("div");
     programDiv.classList.add("programBlock");
 
-    // Programme titre
     const programTitle = document.createElement("h3");
     programTitle.textContent = `Programme - ${programData.trainingDays.length} jour(s)`;
     programDiv.appendChild(programTitle);
 
-    // ====== Boutons pour sélectionner les jours ======
+    // Boutons jours
     const dayButtonsContainer = document.createElement("div");
     dayButtonsContainer.classList.add("programDays");
 
@@ -580,12 +474,12 @@ function saveModules() {
           .querySelectorAll(".dayProgramBtn")
           .forEach((b) => b.classList.remove("selected"));
         btn.classList.add("selected");
-
         renderObjectivesForDay(
           programDiv,
           dayObj.objectives || [],
           dayObj.dayNumber,
-          programData
+          programData,
+          moduleKey
         );
       });
 
@@ -594,21 +488,20 @@ function saveModules() {
 
     programDiv.appendChild(dayButtonsContainer);
 
-    // Container pour les objectifs
+    // Container objectifs
     const objectivesContainer = document.createElement("div");
     objectivesContainer.classList.add("objectivesContainer");
     programDiv.appendChild(objectivesContainer);
 
-    // Afficher les objectifs du premier jour par défaut
-    // Afficher les objectifs du premier jour par défaut
+    // Afficher premier jour
     if (programData.trainingDays.length > 0) {
-      const firstDay = programData.trainingDays[0]; // ✅ définir le premier jour
+      const firstDay = programData.trainingDays[0];
       renderObjectivesForDay(
         programDiv,
         firstDay.objectives || [],
         firstDay.dayNumber,
         programData,
-        moduleKey // 🔑
+        moduleKey
       );
     }
 

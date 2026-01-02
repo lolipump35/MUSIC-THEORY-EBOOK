@@ -69,78 +69,6 @@ exports.assignAdminProgram = async (req, res) => {
   }
 };
 
-// 🔹 Mettre à jour un objectif (difficultyLevel ou autre)
-exports.updateObjective = async (req, res) => {
-  try {
-    const { programId, dayNumber, objectiveId } = req.params;
-    const { isCompleted, timerProgress, difficulty } = req.body;
-
-    const user = await User.findById(req.user._id);
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-
-    const program =
-      user.userCreatedModules.id(programId) ||
-      user.assignedModules.id(programId);
-
-    if (!program)
-      return res.status(404).json({ message: "Programme non trouvé" });
-
-    const day = program.programData.trainingDays.find(
-      (d) => d.dayNumber === parseInt(dayNumber)
-    );
-    if (!day) return res.status(404).json({ message: "Jour non trouvé" });
-
-    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
-    if (!objective)
-      return res.status(404).json({ message: "Objectif non trouvé" });
-
-    if (isCompleted !== undefined) objective.isCompleted = isCompleted;
-    if (timerProgress !== undefined) objective.timerProgress = timerProgress;
-    if (difficulty !== undefined) objective.difficultyLevel = difficulty;
-
-    await user.save();
-    res.json(objective);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-// 🔹 Mettre à jour timerProgress / isCompleted (PATCH périodique)
-exports.updateObjectiveTimer = async (req, res) => {
-  try {
-    const { moduleKey, dayNumber, objectiveId } = req.params;
-    const { timerProgress, completed } = req.body;
-
-    const user = await User.findById(req.user._id);
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-
-    const module = user.userCreatedModules.find(
-      (m) => m.moduleKey === moduleKey
-    );
-    if (!module) return res.status(404).json({ message: "Module introuvable" });
-
-    const dayNum = parseInt(dayNumber, 10);
-    const day = module.programData.trainingDays.find(
-      (d) => d.dayNumber === dayNum
-    );
-    if (!day) return res.status(404).json({ message: "Jour introuvable" });
-
-    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
-    if (!objective)
-      return res.status(404).json({ message: "Objectif introuvable" });
-
-    objective.timerProgress = timerProgress;
-    objective.isCompleted = completed;
-
-    await user.save();
-    res.json({ message: "Objectif mis à jour ✅", objective });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
 // 🔹 Récupérer un module utilisateur par moduleKey
 exports.getUserModuleByKey = async (req, res) => {
   try {
@@ -193,38 +121,62 @@ exports.deleteProgram = async (req, res) => {
   }
 };
 
-// PATCH : update difficultyLevel pour un objectif
-exports.updateObjectiveDifficulty = async (req, res) => {
-  console.log("PATCH difficulty reçu :", {
-    params: req.params,
-    body: req.body,
-    userId: req.user?.id, // si ton middleware met le userId
-  });
+const recalculateDayObjectivesTime = require("../utils/recalculateDayObjectivesTime");
+
+exports.commitProgramTimes = async (req, res) => {
   try {
-    const { moduleId, dayNumber, objectiveId } = req.params;
-    const { difficulty } = req.body;
+    const userId = req.user._id || req.user.userId;
+    const { moduleKey } = req.params;
 
-    if (!difficulty)
-      return res.status(400).json({ message: "Difficulty manquante" });
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    const user = req.user;
-
-    // On récupère le module exact par ID
-    console.log("Recherche module avec moduleKey:", req.params.moduleKey);
-    console.log(
-      "Liste modules utilisateur:",
-      req.user.userCreatedModules.map((m) => m.moduleKey)
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
     );
-
-    const module = req.user.userCreatedModules.find(
-      (m) => m.moduleKey === req.params.moduleKey
-    );
-
     if (!module) return res.status(404).json({ message: "Module introuvable" });
 
-    // 🔹 Trouver le jour
+    const programData = module.programData;
+    const totalDays = programData.trainingDays.length;
+
+    programData.trainingDays.forEach((day) => {
+      recalculateDayObjectivesTime({
+        trainingDay: day,
+        timePerWeek: programData.timePerWeek,
+        totalDays,
+      });
+    });
+
+    await user.save();
+
+    res.json({ message: "Temps initialisés ✅" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// MET A JOUR
+// ------------------------------
+// CONTROLLERS TIMER / PROGRESSION PATCH
+// ------------------------------
+exports.startObjective = async (req, res) => {
+  try {
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+    const userId = req.user._id || req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
     const day = module.programData.trainingDays.find(
-      (d) => d.dayNumber === parseInt(dayNumber)
+      (d) => d.dayNumber === parseInt(dayNumber, 10)
     );
     if (!day) return res.status(404).json({ message: "Jour introuvable" });
 
@@ -232,14 +184,272 @@ exports.updateObjectiveDifficulty = async (req, res) => {
     if (!objective)
       return res.status(404).json({ message: "Objectif introuvable" });
 
-    // Mise à jour de la difficulté
-    objective.difficultyLevel = difficulty;
+    // 🔹 Si timer était déjà en pause, on le reprend avec remainingSeconds
+    objective.isRunning = true;
+    objective.lastStartTimestamp = new Date();
 
-    // Sauvegarde
     await user.save();
-    return res.json({ message: "Difficulty mise à jour", objective });
+
+    res.json({ message: "Objectif démarré ✅", objective });
   } catch (err) {
-    console.error("Erreur updateObjectiveDifficulty :", err);
-    res.status(500).json({ message: "Erreur serveur" });
+    console.error("Erreur startObjective :", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.pauseObjective = async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.userId;
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    const day = module.programData.trainingDays.find(
+      (d) => d.dayNumber === parseInt(dayNumber)
+    );
+    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
+
+    if (!objective.isRunning || !objective.lastStartTimestamp) {
+      return res.json({ message: "Timer déjà en pause" });
+    }
+
+    // 🧠 CALCUL BACKEND (règle d’or respectée)
+    const elapsedSeconds = Math.floor(
+      (Date.now() - new Date(objective.lastStartTimestamp).getTime()) / 1000
+    );
+
+    objective.remainingSeconds = Math.max(
+      objective.remainingSeconds - elapsedSeconds,
+      0
+    );
+
+    objective.isRunning = false;
+    objective.lastStartTimestamp = null;
+
+    await user.save();
+
+    res.json({
+      message: "⏸ Timer mis en pause",
+      remainingSeconds: objective.remainingSeconds,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.completeObjective = async (req, res) => {
+  try {
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+    const userId = req.user._id || req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
+    const day = module.programData.trainingDays.find(
+      (d) => d.dayNumber === parseInt(dayNumber, 10)
+    );
+    if (!day) return res.status(404).json({ message: "Jour introuvable" });
+
+    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
+    if (!objective)
+      return res.status(404).json({ message: "Objectif introuvable" });
+
+    objective.isRunning = false;
+    objective.remainingSeconds = 0;
+    objective.lastStartTimestamp = null;
+    objective.isCompleted = true;
+
+    await user.save();
+
+    res.json({ message: "Objectif complété ✅", objective });
+  } catch (err) {
+    console.error("Erreur completeObjective :", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ------------------------------
+// CONTROLLERS DIFFICULTY
+// ------------------------------
+exports.updateObjectiveDifficulty = async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.userId;
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+    const { difficultyLevel } = req.body;
+
+    if (typeof difficultyLevel !== "number") {
+      return res.status(400).json({ message: "difficultyLevel invalide" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
+    const programData = module.programData;
+    const trainingDay = programData.trainingDays.find(
+      (d) => d.dayNumber === Number(dayNumber)
+    );
+
+    if (!trainingDay)
+      return res.status(404).json({ message: "Jour introuvable" });
+
+    const objective = trainingDay.objectives.find(
+      (o) => o.objectiveId === objectiveId
+    );
+
+    if (!objective)
+      return res.status(404).json({ message: "Objectif introuvable" });
+
+    // 🔹 Update difficulty
+    objective.difficultyLevel = difficultyLevel;
+
+    // 🔹 Recalcul du jour UNIQUEMENT
+    const updatedObjectives = recalculateDayObjectivesTime({
+      trainingDay,
+      timePerWeek: programData.timePerWeek,
+      totalDays: programData.trainingDays.length,
+    });
+
+    await user.save();
+
+    res.json({
+      day: trainingDay.dayNumber,
+      objectives: updatedObjectives.map((o) => ({
+        objectiveId: o.objectiveId,
+        difficultyLevel: o.difficultyLevel,
+        baseEstimatedSeconds: o.baseEstimatedSeconds,
+        estimatedSeconds: o.estimatedSeconds,
+        remainingSeconds: o.remainingSeconds,
+      })),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ------------------------------
+// CONTROLLER TEMPS / TIMER
+// ------------------------------
+exports.updateObjectiveTime = async (req, res) => {
+  try {
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+    const { totalTimeForWeek } = req.body;
+
+    const userId = req.user._id || req.user.userId;
+    const user = await User.findById(userId);
+
+    console.log("user trouvé :", user ? true : false);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
+    const day = module.programData.trainingDays.find(
+      (d) => d.dayNumber === parseInt(dayNumber)
+    );
+    if (!day) return res.status(404).json({ message: "Jour introuvable" });
+
+    const objectives = day.objectives;
+    if (!objectives || objectives.length === 0)
+      return res.status(404).json({ message: "Pas d'objectifs pour ce jour" });
+
+    const totalMinutes =
+      totalTimeForWeek !== undefined
+        ? totalTimeForWeek
+        : module.programData.timePerWeek;
+    const daysPerWeek =
+      module.programData.daysPerWeek || module.programData.trainingDays.length;
+    const minutesPerDay = totalMinutes / daysPerWeek;
+
+    const processedObjectives = objectives.map((o) => {
+      const difficultyFactor = 1 + ((difficulty - 1) / 6) * 2;
+
+      const weight = (o.coef || 1) * difficultyFactor;
+      return { ...o.toObject(), poidsFinal: weight };
+    });
+
+    const totalWeight = processedObjectives.reduce(
+      (sum, o) => sum + o.poidsFinal,
+      0
+    );
+
+    processedObjectives.forEach((o) => {
+      const obj = objectives.find((x) => x.objectiveId === o.objectiveId);
+      if (!obj) return;
+      const percent = o.poidsFinal / totalWeight;
+      const newTimeMinutes = Math.round(percent * minutesPerDay);
+      obj.plannedMinutes = newTimeMinutes;
+      obj.remainingSeconds = newTimeMinutes * 60;
+    });
+
+    await user.save();
+    res.json({ message: "Temps recalculé ✅", day });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// GET AFTER REFRESH // ------------------------------
+exports.getObjective = async (req, res) => {
+  try {
+    const { moduleKey, dayNumber, objectiveId } = req.params;
+    const userId = req.user._id || req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    const module = user.userCreatedModules.find(
+      (m) => m.moduleKey === moduleKey
+    );
+    if (!module) return res.status(404).json({ message: "Module introuvable" });
+
+    const day = module.programData.trainingDays.find(
+      (d) => d.dayNumber === parseInt(dayNumber, 10)
+    );
+    if (!day) return res.status(404).json({ message: "Jour introuvable" });
+
+    const objective = day.objectives.find((o) => o.objectiveId === objectiveId);
+    if (!objective)
+      return res.status(404).json({ message: "Objectif introuvable" });
+
+    // 🔹 Calcul du remaining réel si timer en cours
+    let remaining = objective.remainingSeconds || 0;
+    if (objective.isRunning && objective.lastStartTimestamp) {
+      const elapsed = Math.floor(
+        (Date.now() - new Date(objective.lastStartTimestamp).getTime()) / 1000
+      );
+      remaining = Math.max(remaining - elapsed, 0);
+    }
+
+    res.json({
+      objective: {
+        ...objective.toObject(),
+        remainingSeconds: remaining,
+      },
+    });
+  } catch (err) {
+    console.error("Erreur getObjective :", err);
+    res.status(500).json({ message: err.message });
   }
 };

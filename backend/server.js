@@ -59,7 +59,6 @@ app.use(express.static("public"));
 app.use("/api/auth", authRoutes);
 app.use("/api", routes);
 app.use("/api/user", userPreferenceRoutes);
-app.use("/api/programs", programRoutes);
 app.use("/api/me", programRoutes);
 
 
