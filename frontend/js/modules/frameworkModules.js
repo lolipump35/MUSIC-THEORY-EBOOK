@@ -371,7 +371,7 @@ window.addEventListener("DOMContentLoaded", () => {
       moduleKey: currentModuleId,
       type: "user",
       programData: {
-        name: `Module ${currentModuleId}`,
+        name: ` ${currentModuleId}`,
         trainingDays,
         timePerWeek: howTime,
         daysPerWeek: howDay,
