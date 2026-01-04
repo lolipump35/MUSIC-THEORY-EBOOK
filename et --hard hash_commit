@@ -1,0 +1,77 @@
+[33me57d7e9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m programme back presque fini manque gestion des id mongo
+[33md6cb79d[m update difficulty scale enregistrer dans le back mais avec un e err de logique par rapport au pivot
+[33m4674ca0[m update modulePrograms doublon module sur trainning programs
+[33madd2aa0[m update modulPrograms level difficultyconst currentModuleId
+[33m64c862b[m DIFFICULTY NOT FINISH
+[33m473a325[m clock fonctionnelle backend
+[33m86e227a[m update programme back not finish
+[33m6502b1c[m Update .gitignore to ignore MUSIC-THEORY-EBOOK-CLEAN
+[33m8b11488[m Merge branch 'main' of https://github.com/lolipump35/MUSIC-THEORY-EBOOK
+[33m8c33517[m changement localstorage to back cloche presque fini
+[33mdf5f4d2[m gestion eds programme perso section admin
+[33m8bef31c[m mini module html + js
+[33me6abd1f[m role admin controle bar  + module programme perso
+[33m43217c4[m Update guitarNeck.html
+[33m5c7ff8a[m Update guitarNeck.html
+[33m14e466c[m update google auth + tools guitarneck
+[33m331a68b[m Update authsignin.js
+[33m2143d23[m Remove old Google credentials from tracking and update .gitignore
+[33m592d767[m update gg auth finish + tools guitarneck
+[33m1efe441[m update programs training green for day completed
+[33m8cbe4d7[m update programs training err msg
+[33m6272b7e[m update trainniong programs objectiveitem green
+[33m3ead61a[m updateprograms ajout day
+[33m06e8f10[m programme  avec poid+coef
+[33m0837048[m update module programe index 06 /17
+[33m8771149[m update training programs syncro cr"eation + affichage dynamique
+[33m3fb6f23[m frameworks programs trainning front pas fini
+[33m103f15d[m update framework objectif  + game proposal
+[33m30226c0[m objectif
+[33m4bca71c[m objectif
+[33m8129f4c[m update framework a retenir + todo
+[33m80f9f0a[m uppdate undervideo
+[33mb102964[m update timecod container
+[33m1df3f51[m update .env
+[33m15012f2[m Recreate clean package.json without sensitive data
+[33m474e989[m Ignore .env file
+[33m28d3f0d[m Ignore .env file
+[33mdb245eb[m undervideeo time code + musicplatform
+[33mf24ee01[m mux + dashboardv1
+[33m87a3bcf[m Fix Stripe fetch backendUrl pour local + Render
+[33m2a806e4[m url strip render update
+[33mc139d4c[m stripe url update
+[33m6551a0f[m stripe update
+[33mb9f0f2c[m update env
+[33mdadd6b8[m SERVER JS UPDATE
+[33mdd34f6b[m Create remove-secrets.txt
+[33m0bcc0f6[m Update signIn.html
+[33m7b898a5[m env upodate
+[33m3a634ba[m cors option update
+[33me44d105[m cors option update
+[33mb356bc3[m stripe accessible
+[33m00f80b8[m startr integration stripe
+[33m28a6ad9[m offer3 js
+[33m53b9736[m offer 3 start
+[33m22dbe67[m offer2 css background color
+[33m3c92af0[m OFFER 2 DYNAMIQUE
+[33mac71198[m offer 2 plus clean sans js
+[33m8bb81e9[m offer2 desire
+[33mab5b8c0[m uppdate front offer 2
+[33mea4fcf6[m uppdate landing offer2
+[33m5f865b8[m Réinitialisation du repo avec le bon projet
+[33ma4daaad[m update front offer
+[33m72822c1[m UPPDATE FRONT CSS HTML ...
+[33m5ba8460[m uppdate password ok
+[33maabddd3[m uppdate mot depasse
+[33m8f584e0[m uppdate hashage password
+[33md013cfa[m uppdate mot de passe incorrect
+[33m8a72eb3[m uppdate problemes de connexion err400
+[33m0966307[m update connexion cors
+[33m82d37b5[m gdfgdfg
+[33m4eef00f[m update sign in page
+[33m05594b8[m update route sign in page
+[33m398195d[m update url dynamique
+[33m20f7100[m update const { registerUser } = require('../controllers/authController');
+[33maada0d4[m Ajout du script de démarrage
+[33m12ea9c6[m Ajout du script de démarrage
+[33m3026244[m Initial commit

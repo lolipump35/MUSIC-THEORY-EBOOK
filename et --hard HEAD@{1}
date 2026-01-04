@@ -1,0 +1,28 @@
+[33md6cb79d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to d6cb79
+[33me57d7e9[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: programme back presque fini manque gestion des id mongo
+[33md6cb79d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{2}: reset: moving to HEAD
+[33md6cb79d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{3}: commit: update difficulty scale enregistrer dans le back mais avec un e err de logique par rapport au pivot
+[33m4674ca0[m HEAD@{4}: commit: update modulePrograms doublon module sur trainning programs
+[33madd2aa0[m HEAD@{5}: commit: update modulPrograms level difficultyconst currentModuleId
+[33m64c862b[m HEAD@{6}: commit: DIFFICULTY NOT FINISH
+[33m473a325[m HEAD@{7}: commit: clock fonctionnelle backend
+[33m86e227a[m HEAD@{8}: commit: update programme back not finish
+[33m6502b1c[m HEAD@{9}: commit: Update .gitignore to ignore MUSIC-THEORY-EBOOK-CLEAN
+[33m8b11488[m HEAD@{10}: reset: moving to origin/main
+[33mde63e5c[m HEAD@{11}: commit: Remove secret from tracking
+[33m5c5583f[m HEAD@{12}: commit: Update modulePrograms.js
+[33m14f468e[m HEAD@{13}: commit (merge): help
+[33m320119c[m HEAD@{14}: commit: update programme back not finish
+[33m26f4e6f[m HEAD@{15}: reset: moving to 26f4e6fe0397b1e382a5ab0fb6f8f2a2c4519998
+[33ma820d05[m HEAD@{16}: commit: aled
+[33m26f4e6f[m HEAD@{17}: commit (merge): Merge branch 'main' of https://github.com/lolipump35/MUSIC-THEORY-EBOOK
+[33m8ec64e2[m HEAD@{18}: commit: changement localstorage to back cloche presque fini
+[33m592d767[m HEAD@{19}: reset: moving to 592d767314066e3bc298b4057e3212c967502ca9
+[33m470db0f[m HEAD@{20}: commit: changement localstorage to back cloche presque fini
+[33m592d767[m HEAD@{21}: reset: moving to 592d767
+[33mdf5f4d2[m HEAD@{22}: checkout: moving from main to main
+[33mdf5f4d2[m HEAD@{23}: commit: gestion eds programme perso section admin
+[33m8bef31c[m HEAD@{24}: commit: mini module html + js
+[33me6abd1f[m HEAD@{25}: commit: role admin controle bar + module programme perso
+[33m43217c4[m HEAD@{26}: commit: Update guitarNeck.html
+[33m5c7ff8a[m HEAD@{27}: commit: Update guitarNeck.html

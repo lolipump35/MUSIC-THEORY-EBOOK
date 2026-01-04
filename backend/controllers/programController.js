@@ -17,28 +17,44 @@ exports.getPrograms = async (req, res) => {
   }
 };
 
-// 🔹 Créer un programme utilisateur
 exports.createUserProgram = async (req, res) => {
   try {
-    const user = req.user;
+    console.log("🔥 createUserProgram CALLED 🔥");
+
     const { moduleKey, programData } = req.body;
+    const userId = req.user.userId || req.user._id;
 
-    if (!programData || !programData.trainingDays)
-      return res
-        .status(400)
-        .json({ message: "Données du programme manquantes" });
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    const newProgram = {
-      moduleKey,
+    console.log("👤 USER MONGOOSE OK :", user._id);
+
+    // Création du sous-document
+    const createdModule = user.userCreatedModules.create({
+      moduleKey, // temporaire
       programData,
       type: "user",
-    };
+    });
 
-    user.userCreatedModules.push(newProgram);
+    // ⚡ Mettre à jour moduleKey avec l'ID Mongo généré
+    createdModule.moduleKey = createdModule._id.toString();
+
+    console.log("🧱 SOUS-DOC AVANT PUSH :", createdModule._id);
+    console.log("🔹 moduleKey mis à jour :", createdModule.moduleKey);
+
+    user.userCreatedModules.push(createdModule);
     await user.save();
 
-    res.status(201).json(newProgram);
+    console.log("💾 USER SAUVÉ");
+    console.log("🆔 MODULE ID FINAL :", createdModule._id);
+
+    return res.status(201).json({
+      message: "Programme créé ✅",
+      moduleId: createdModule._id.toString(), // ID Mongo
+    });
   } catch (err) {
+    console.error("❌ createUserProgram ERROR :", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -294,7 +310,8 @@ exports.updateObjectiveDifficulty = async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
 
     const module = user.userCreatedModules.find(
       (m) => m.moduleKey === moduleKey

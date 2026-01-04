@@ -379,8 +379,8 @@ window.addEventListener("DOMContentLoaded", () => {
     };
     console.log("ModuleData envoyé au backend :", moduleData);
 
-    // Envoi au backend
-    fetch("http://localhost:5000/api/me/user-created-modules", {
+    // Envoi du module au backend
+    fetch("http://localhost:5000/api/me/user-created", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -392,10 +392,18 @@ window.addEventListener("DOMContentLoaded", () => {
       .then(async (data) => {
         console.log("Module envoyé avec succès :", data);
 
-        // 🔹 Initialiser les temps de référence pour chaque objectif
-        await commitModuleTimes(currentModuleId);
-        console.log("🔥 Token envoyé pour commitTimes :", token);
+        // 🔹 Stocker l'ID Mongo dans localStorage
+        const mongoId = data.moduleId; // ← renvoyé par le backend
+        localStorage.setItem("currentModule", mongoId);
 
+        // 🔹 Initialiser les temps de référence pour chaque objectif
+        await commitModuleTimes(mongoId);
+        console.log(
+          "🔥 ModuleKey/ID Mongo utilisé pour commitTimes :",
+          mongoId
+        );
+
+        // Redirection après tout est OK
         window.location.href = "/frontend/pages/programmsTrainning.html";
       })
       .catch((err) => {
