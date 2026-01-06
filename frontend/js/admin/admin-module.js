@@ -16,7 +16,7 @@ addObjectiveBtn.addEventListener("click", () => {
     <input type="text" class="objectiveTitle" placeholder="Titre de l'objectif" />
 
     <label>Coefficient :</label>
-    <input type="number" class="objectiveCoef" placeholder="Coef" />
+    <input type="text" class="objectiveCoef" placeholder="Coef" />
 
     <label>Infos supplémentaires :</label>
     <input type="text" class="objectiveExtra" placeholder="Texte ou remarque..." />
@@ -33,9 +33,11 @@ addObjectiveBtn.addEventListener("click", () => {
   objectivesContainer.appendChild(objectiveDiv);
 
   // 🔥 Bouton de suppression
-  objectiveDiv.querySelector(".removeObjectiveBtn").addEventListener("click", () => {
-    objectiveDiv.remove();
-  });
+  objectiveDiv
+    .querySelector(".removeObjectiveBtn")
+    .addEventListener("click", () => {
+      objectiveDiv.remove();
+    });
 });
 
 // 💾 Sauvegarde du module complet via le backend
@@ -50,12 +52,12 @@ saveModuleBtn.addEventListener("click", async () => {
 
   // 🧠 Récupération de tous les objectifs
   const objectiveBlocks = document.querySelectorAll(".objective-block");
-  const objectives = Array.from(objectiveBlocks).map(block => ({
+  const objectives = Array.from(objectiveBlocks).map((block) => ({
     title: block.querySelector(".objectiveTitle").value.trim(),
-    coef: parseInt(block.querySelector(".objectiveCoef").value, 10),
+    coef: block.querySelector(".objectiveCoef").value,
     extra: block.querySelector(".objectiveExtra").value.trim(),
     imageUrl: block.querySelector(".objectiveImageUrl").value.trim(),
-    muxPlaybackId: block.querySelector(".objectivePlaybackId").value.trim()
+    muxPlaybackId: block.querySelector(".objectivePlaybackId").value.trim(),
   }));
 
   if (objectives.length === 0) {
@@ -66,13 +68,13 @@ saveModuleBtn.addEventListener("click", async () => {
   const body = { title, objectives };
 
   try {
-    const res = await fetch("/admin/modules", {
+    const res = await fetch("http://localhost:5000/admin/modules", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     const data = await res.json();
@@ -82,9 +84,9 @@ saveModuleBtn.addEventListener("click", async () => {
       document.getElementById("moduleTitle").value = "";
       objectivesContainer.innerHTML = "";
     } else {
-      statusMsg.textContent = data.message || "Erreur lors de l'enregistrement.";
+      statusMsg.textContent =
+        data.message || "Erreur lors de l'enregistrement.";
     }
-
   } catch (err) {
     console.error(err);
     statusMsg.textContent = "Erreur lors de l'enregistrement.";

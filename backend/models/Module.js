@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 
 const ObjectiveSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  coef: { type: Number, required: true },
+  coef: { type: String, required: true }, // <--- STRING maintenant
   extra: { type: String, default: "" },
   imageUrl: { type: String, default: "" },
   muxPlaybackId: { type: String, default: "" },
 });
+
 
 const ModuleSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -14,4 +15,5 @@ const ModuleSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Module", ModuleSchema);
+module.exports =
+  mongoose.models.Module || mongoose.model("Module", ModuleSchema);

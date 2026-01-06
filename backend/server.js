@@ -15,6 +15,8 @@ const routes = require("./routes/index"); // index.js global pour /videos et aut
 const userPreferenceRoutes = require("./routes/userPreferenceRoutes"); // route préférence plateforme
 const programRoutes = require("./routes/programRoutes"); // <-- notre route programmes
 const authMiddleware = require("./middleware/authMiddleware");
+const adminRoutes = require("./routes/adminroutes");
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -60,6 +62,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api", routes);
 app.use("/api/user", userPreferenceRoutes);
 app.use("/api/me", programRoutes);
+app.use("/admin", adminRoutes);
 
 
 // ----------------------------
