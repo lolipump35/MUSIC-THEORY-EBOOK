@@ -15,7 +15,7 @@ const routes = require("./routes/index"); // index.js global pour /videos et aut
 const userPreferenceRoutes = require("./routes/userPreferenceRoutes"); // route préférence plateforme
 const programRoutes = require("./routes/programRoutes"); // <-- notre route programmes
 const authMiddleware = require("./middleware/authMiddleware");
-const adminRoutes = require("./routes/adminroutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 
 const app = express();
