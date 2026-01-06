@@ -15,7 +15,9 @@ router.post("/modules", authMiddleware, async (req, res) => {
     const { title, objectives } = req.body;
 
     if (!title || !Array.isArray(objectives)) {
-      return res.status(400).json({ message: "Titre et liste d’objectifs requis." });
+      return res
+        .status(400)
+        .json({ message: "Titre et liste d’objectifs requis." });
     }
 
     const newModule = new Module({
@@ -25,7 +27,9 @@ router.post("/modules", authMiddleware, async (req, res) => {
 
     await newModule.save();
 
-    res.status(201).json({ message: "Module créé avec succès", module: newModule });
+    res
+      .status(201)
+      .json({ message: "Module créé avec succès", module: newModule });
   } catch (error) {
     console.error("Erreur création module :", error);
     res.status(500).json({ message: "Erreur serveur", error });
@@ -49,7 +53,9 @@ router.post("/assign-module", authMiddleware, async (req, res) => {
     const { moduleId, userIds } = req.body; // userIds = array d'IDs utilisateurs
 
     if (!moduleId || !Array.isArray(userIds) || userIds.length === 0) {
-      return res.status(400).json({ message: "Module et liste d'utilisateurs requis." });
+      return res
+        .status(400)
+        .json({ message: "Module et liste d'utilisateurs requis." });
     }
 
     const moduleToAssign = await Module.findById(moduleId);
@@ -71,10 +77,23 @@ router.post("/assign-module", authMiddleware, async (req, res) => {
       }
     }
 
-    res.status(200).json({ message: "Module attribué avec succès", users: updatedUsers });
+    res
+      .status(200)
+      .json({ message: "Module attribué avec succès", users: updatedUsers });
   } catch (error) {
     console.error("Erreur attribution module :", error);
     res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+// --- Route pour récupérer tous les utilisateurs (admin)
+router.get("/users", authMiddleware, async (req, res) => {
+  try {
+    const users = await User.find().select("firstName name email");
+    res.json(users);
+  } catch (error) {
+    console.error("Erreur récupération utilisateurs :", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 

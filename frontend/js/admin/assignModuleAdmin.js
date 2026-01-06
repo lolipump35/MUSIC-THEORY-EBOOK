@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Récupérer les modules depuis le backend ---
   try {
-    const resModules = await fetch("/api/admin/modules", {
+    const resModules = await fetch("http://localhost:5000/admin/modules", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     });
     const modules = await resModules.json();
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Récupérer les utilisateurs ---
   try {
-    const resUsers = await fetch("/api/admin/users", {
+    const resUsers = await fetch("http://localhost:5000/admin/users", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     });
     const users = await resUsers.json();
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const res = await fetch("/api/admin/assign-module", {
+      const res = await fetch("http://localhost:5000/admin/assign-module", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
