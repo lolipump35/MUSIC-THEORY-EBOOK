@@ -54,7 +54,6 @@ const userCreatedModuleSchema = new mongoose.Schema({
 const assignedModuleSchema = new mongoose.Schema({
   moduleId: { type: mongoose.Schema.Types.ObjectId, ref: "Module" },
   assignedAt: { type: Date, default: Date.now },
-  programData: { type: Object, default: {} },
 });
 
 // --- Utilisateur ---
