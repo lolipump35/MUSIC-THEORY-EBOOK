@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const ModuleModel = require("../models/module"); // Module.js qui stocke les modules admin
+const ModuleModel = require("../models/Module"); // Module.js qui stocke les modules admin
 
 // Mise à jour du PlaybackID Mux
 exports.updateModuleMuxPlayback = async (req, res) => {
@@ -7,7 +7,9 @@ exports.updateModuleMuxPlayback = async (req, res) => {
     const { moduleId, playbackId } = req.body;
 
     if (!moduleId || !playbackId) {
-      return res.status(400).json({ message: "moduleId et playbackId requis." });
+      return res
+        .status(400)
+        .json({ message: "moduleId et playbackId requis." });
     }
 
     const module = await ModuleModel.findById(moduleId);
@@ -55,13 +57,14 @@ exports.assignModuleToUsers = async (req, res) => {
       updatedUsers.push(userId);
     }
 
-    res.status(200).json({ message: "Module assigné avec succès", users: updatedUsers });
+    res
+      .status(200)
+      .json({ message: "Module assigné avec succès", users: updatedUsers });
   } catch (error) {
     console.error("Erreur assignation module :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
 
 // Création d’un module admin
 exports.createModule = async (req, res) => {
@@ -74,7 +77,9 @@ exports.createModule = async (req, res) => {
     const newModule = new ModuleModel({ title, objectives });
     await newModule.save();
 
-    res.status(201).json({ message: "Module créé avec succès", module: newModule });
+    res
+      .status(201)
+      .json({ message: "Module créé avec succès", module: newModule });
   } catch (error) {
     console.error("Erreur création module :", error);
     res.status(500).json({ message: "Erreur serveur" });
@@ -91,3 +96,43 @@ exports.getModules = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+// recupere un module admin 
+exports.getAssignedModules = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate(
+      "assignedModules.moduleId",
+      "title type"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
+
+    const modules = user.assignedModules
+      .filter((am) => am.moduleId)
+      .map((am) => ({
+        moduleId: am.moduleId._id,
+        title: am.moduleId.title,
+        type: am.moduleId.type, // 🔥 vient du Module
+      }));
+
+    res.json(modules);
+  } catch (error) {
+    console.error("Erreur récupération modules assignés :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+exports.getModuleById = async (req, res) => {
+  try {
+    const module = await ModuleModel.findById(req.params.id);
+    if (!module) {
+      return res.status(404).json({ message: "Module introuvable" });
+    }
+    res.json(module);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+

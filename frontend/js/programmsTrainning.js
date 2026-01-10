@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   console.clear();
 
   const container = document.getElementById("trainingResult");
@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  container.innerHTML = ""; // nettoyage
+  container.innerHTML = ""; // nettoyage UNE SEULE FOIS
 
   const token = localStorage.getItem("token");
   if (!token) {
@@ -16,58 +16,95 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Fetch des modules depuis le backend
-  fetch("http://localhost:5000/api/me/user-created-modules", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((modules) => {
-      if (!modules || modules.length === 0) {
-        container.innerHTML = "<p>Aucun module créé pour l'instant.</p>";
-        return;
+  try {
+    // ===============================
+    // 1️⃣ FETCH DES MODULES USER
+    // ===============================
+    const resUser = await fetch(
+      "http://localhost:5000/api/me/user-created-modules",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
       }
+    );
 
-      modules.forEach((mod) => {
+    if (!resUser.ok) throw new Error(`HTTP error ${resUser.status}`);
+
+    const userModules = await resUser.json();
+
+    if (Array.isArray(userModules) && userModules.length > 0) {
+      userModules.forEach((mod) => {
         const moduleCard = document.createElement("div");
         moduleCard.classList.add("moduleCard");
-
-        // ⚡ ID Mongo pour la logique
         moduleCard.dataset.moduleId = mod.moduleKey;
+        moduleCard.dataset.type = "user";
 
-        // Nom lisible pour l'utilisateur
-        const displayName = mod.programData.name || "Module sans nom";
-
-        // Calcul du nombre total d'objectifs
+        const displayName = mod.programData?.name || "Module sans nom";
         const totalObjectives =
-          mod.programData.trainingDays?.reduce(
+          mod.programData?.trainingDays?.reduce(
             (sum, day) => sum + (day.objectives?.length || 0),
             0
           ) || 0;
 
         moduleCard.innerHTML = `
-    <h2>${displayName}</h2>
-    <p>${totalObjectives} objectif(s) dans ce module</p>
-  `;
+          <h2>${displayName}</h2>
+          <p>${totalObjectives} objectif(s)</p>
+        `;
 
         moduleCard.addEventListener("click", () => {
-          // 🔹 stocker l'ID Mongo pour les fetchs
           localStorage.setItem("currentModule", mod.moduleKey);
-          console.log(`✅ Module sélectionné : ${mod.moduleKey}`);
-
           window.location.href =
             "/frontend/pages/programsTrainingModule/modulePrograms.html";
         });
 
         container.appendChild(moduleCard);
       });
-    })
-    .catch((err) => {
-      console.error("Erreur lors de la récupération des modules :", err);
-      container.innerHTML =
-        "<p>Erreur lors de la récupération des modules.</p>";
-    });
+    }
+
+    // ===============================
+    // 2️⃣ FETCH DES MODULES ADMIN ASSIGNÉS
+    // ===============================
+    const resAdmin = await fetch(
+      "http://localhost:5000/admin/assigned-modules",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!resAdmin.ok) throw new Error(`HTTP error ${resAdmin.status}`);
+
+    const adminModules = await resAdmin.json();
+    console.log("📥 Modules reçus côté frontend :", adminModules);
+
+    if (Array.isArray(adminModules) && adminModules.length > 0) {
+      adminModules.forEach((mod) => {
+        const moduleCard = document.createElement("div");
+        moduleCard.classList.add("moduleCard", "adminModule");
+        moduleCard.dataset.moduleId = mod.moduleId; // ID Mongo
+        moduleCard.dataset.type = mod.type;
+
+        moduleCard.innerHTML = `
+          <h2>${mod.title}</h2>
+          <span class="badge admin">Admin</span>
+        `;
+
+        moduleCard.addEventListener("click", () => {
+          localStorage.setItem("currentAdminModule", mod.moduleId);
+          window.location.href =
+            "/frontend/pages/modules/frameworkAdmin.html";
+        });
+
+        container.appendChild(moduleCard);
+      });
+    }
+  } catch (err) {
+    console.error("Erreur récupération modules :", err);
+  }
 });

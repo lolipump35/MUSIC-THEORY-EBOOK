@@ -8,9 +8,15 @@ const ObjectiveSchema = new mongoose.Schema({
   muxPlaybackId: { type: String, default: "" },
 });
 
-
 const ModuleSchema = new mongoose.Schema({
   title: { type: String, required: true },
+
+  type: {
+    type: String,
+    enum: ["admin", "user"],
+    default: "admin", // 🔥 module créé par admin
+  },
+
   objectives: [ObjectiveSchema],
   createdAt: { type: Date, default: Date.now },
 });

@@ -11,15 +11,31 @@ router.get("/dashboard", authMiddleware, (req, res) => {
 });
 
 // Création d’un module
-router.post("/modules", authMiddleware, AdminController.createModule); 
+router.post("/modules", authMiddleware, AdminController.createModule);
 // 👈 tu devras créer `createModule` dans le controller
 
 // Récupérer tous les modules
-router.get("/modules", authMiddleware, AdminController.getModules); 
+router.get("/modules", authMiddleware, AdminController.getModules);
 // 👈 tu devras créer `getModules` dans le controller
 
 // Assignation d’un module à des users
-router.post("/assign-module", authMiddleware, AdminController.assignModuleToUsers);
+router.post(
+  "/assign-module",
+  authMiddleware,
+  AdminController.assignModuleToUsers
+);
+
+router.get(
+  "/assigned-modules",
+  (req, res, next) => {
+    next();
+  },
+  authMiddleware,
+  (req, res, next) => {
+    next();
+  },
+  AdminController.getAssignedModules
+);
 
 // Récupérer tous les users
 router.get("/users", authMiddleware, async (req, res) => {
@@ -31,5 +47,13 @@ router.get("/users", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
+
+// recupere un module admin par id 
+router.get(
+  "/modules/:id",
+  authMiddleware,
+  AdminController.getModuleById
+);
+
 
 module.exports = router;

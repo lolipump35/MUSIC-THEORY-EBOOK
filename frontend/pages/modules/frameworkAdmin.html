@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Framework Admin</title>
+  <link rel="stylesheet" href="../../css/modules/frameworkAdmin.css">
+
+</head>
+
+<body>
+  <section class="programsZone">
+    <div class="programsContainer">
+
+      <div class="tittle">
+        <h2>Créer mon programme</h2>
+      </div>
+
+      <p class="intro">
+        Ajuste la difficulté de chaque objectif et définis ton rythme
+        d’entraînement.
+      </p>
+
+      <!-- OBJECTIFS / DIFFICULTÉ -->
+      <div class="infoContainer" id="infoContainer">
+        <!-- Injecté par JS -->
+      </div>
+
+      <!-- TEMPS / JOURS -->
+      <div class="howtime">
+        <label for="trainingTime">Temps par semaine (min)</label>
+        <input type="number" id="trainingTime" min="1" />
+      </div>
+
+      <div class="howday">
+        <label for="trainingDays">Jours par semaine</label>
+        <input type="number" id="trainingDays" min="1" max="7" />
+      </div>
+
+      <!-- VALIDATION -->
+      <button id="validPrograms">Créer le programme</button>
+
+    </div>
+  </section>
+
+  <script src="../../js/modules/frameworkAdmin.js"></script>
+</body>
+</html>
