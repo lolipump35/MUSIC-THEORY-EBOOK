@@ -2,6 +2,34 @@
    FRAMEWORK ADMIN — VERSION FINALE (TIMERS INIT)
 ===================================================== */
 
+async function commitModuleTimes(moduleKey) {
+  const token = localStorage.getItem("token");
+  if (!token) return console.error("Pas de token trouvé");
+
+  try {
+    const res = await fetch(
+      `http://localhost:5000/api/me/user-created-modules/${moduleKey}/commit-times`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Erreur commit times: ${errorText}`);
+    }
+
+    const data = await res.json();
+    console.log("✅ Temps initialisés :", data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   console.clear();
 
@@ -283,51 +311,35 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log("🧱 ModuleData prêt :", moduleData);
 
     try {
-      // 1️⃣ Création du module
-      const res = await fetch("http://localhost:5000/api/me/user-created", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(moduleData),
-      });
-      const data = await res.json();
-      console.log("✅ Module créé :", data);
+  const res = await fetch("http://localhost:5000/api/me/user-created", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(moduleData),
+  });
 
-      const mongoId = data.moduleId;
-      localStorage.setItem("currentModule", mongoId);
+  if (!res.ok) {
+    throw new Error("Erreur lors de la création du module");
+  }
 
-      // 2️⃣ Initialisation des timers
-      if (typeof commitModuleTimes === "function") {
-        await commitModuleTimes(mongoId);
-      }
+  const data = await res.json();
+  console.log("✅ Module créé :", data);
 
-      // 3️⃣ Refetch du module pour récupérer les timers
-      const moduleRes = await fetch(
-        `http://localhost:5000/api/me/user-created-modules/${mongoId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const refreshedModule = await moduleRes.json();
-      console.log("🔄 Module refetché avec timers :", refreshedModule);
+  // 1️⃣ Stocker l’ID Mongo
+  const mongoId = data.moduleId;
+  localStorage.setItem("currentModule", mongoId);
 
-      // 4️⃣ Re-render des objectifs avec timers initiaux
-      if (refreshedModule && refreshedModule.programData) {
-        renderObjectives(
-          refreshedModule.programData.trainingDays.flatMap((d) => d.objectives)
-        );
-      }
+  // 2️⃣ Commit timers (OBLIGATOIRE avant redirection)
+  await commitModuleTimes(mongoId);
 
-      // 5️⃣ Redirection finale
-      window.location.href = "/frontend/pages/programmsTrainning.html";
-    } catch (err) {
-      console.error("❌ Erreur création module :", err);
-    }
+  // 3️⃣ Redirection directe (sans aucun re-render)
+  window.location.href = "/frontend/pages/programmsTrainning.html";
+
+} catch (err) {
+  console.error("❌ Erreur création module :", err);
+}
+
   });
 });
