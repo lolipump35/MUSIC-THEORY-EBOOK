@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const ModuleModel = require("../models/Module"); // Module.js qui stocke les modules admin
+const mongoose = require("mongoose");
 
 // Mise à jour du PlaybackID Mux
 exports.updateModuleMuxPlayback = async (req, res) => {
@@ -97,7 +98,7 @@ exports.getModules = async (req, res) => {
   }
 };
 
-// recupere un module admin 
+// récupère les modules admin assignés
 exports.getAssignedModules = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate(
@@ -112,9 +113,10 @@ exports.getAssignedModules = async (req, res) => {
     const modules = user.assignedModules
       .filter((am) => am.moduleId)
       .map((am) => ({
-        moduleId: am.moduleId._id,
+        assignedId: am._id, // 🔥 ID de l'objet assigné
+        moduleId: am.moduleId._id, // ID du module admin
         title: am.moduleId.title,
-        type: am.moduleId.type, // 🔥 vient du Module
+        type: am.moduleId.type,
       }));
 
     res.json(modules);
@@ -136,3 +138,48 @@ exports.getModuleById = async (req, res) => {
   }
 };
 
+// DELETE /api/me/assigned-modules/:assignedModuleId
+exports.deleteAssignedModule = async (req, res) => {
+  try {
+    // 1️⃣ Vérification des infos reçues
+    console.log("🧪 req.user =", req.user); // doit contenir l'id du user connecté
+    console.log("🧪 assignedModuleId =", req.params.assignedModuleId);
+
+    const userId = req.user.id; // ou req.user._id selon ton JWT
+    const { assignedModuleId } = req.params;
+
+    // 2️⃣ Conversion en ObjectId pour matcher Mongo
+    const assignedObjectId = new mongoose.Types.ObjectId(assignedModuleId);
+
+    // 3️⃣ Suppression de l'objet dans le tableau assignedModules
+    const result = await User.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          assignedModules: { _id: assignedObjectId },
+        },
+      }
+    );
+
+    // 4️⃣ Logs pour vérifier le résultat
+    console.log("🧪 Résultat du pull :", result);
+    /*
+      Exemple de résultat :
+      {
+        acknowledged: true,
+        matchedCount: 1,    // 1 si le user a été trouvé
+        modifiedCount: 1    // 1 si l'objet du tableau a été supprimé
+      }
+    */
+
+    // 5️⃣ Réponse côté frontend
+    res.json({
+      success: true,
+      message: "Module assigné supprimé avec succès",
+      result,
+    });
+  } catch (err) {
+    console.error("❌ Erreur suppression module assigné :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};

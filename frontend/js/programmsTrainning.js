@@ -97,8 +97,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         moduleCard.addEventListener("click", () => {
           localStorage.setItem("currentAdminModule", mod.moduleId);
-          window.location.href =
-            "/frontend/pages/modules/frameworkAdmin.html";
+          localStorage.setItem("currentAssignedModule", mod.assignedId); // 🔥
+          window.location.href = "/frontend/pages/modules/frameworkAdmin.html";
         });
 
         container.appendChild(moduleCard);

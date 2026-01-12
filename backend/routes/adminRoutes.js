@@ -48,12 +48,13 @@ router.get("/users", authMiddleware, async (req, res) => {
   }
 });
 
-// recupere un module admin par id 
-router.get(
-  "/modules/:id",
-  authMiddleware,
-  AdminController.getModuleById
-);
+// recupere un module admin par id
+router.get("/modules/:id", authMiddleware, AdminController.getModuleById);
 
+router.delete(
+  "/api/me/assigned-modules/:assignedModuleId",
+  authMiddleware,
+  AdminController.deleteAssignedModule
+);
 
 module.exports = router;

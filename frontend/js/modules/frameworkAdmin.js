@@ -44,6 +44,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const adminModuleId = localStorage.getItem("currentAdminModule");
   if (!adminModuleId) return console.error("❌ Aucun module admin sélectionné");
 
+  const assignedModuleId = localStorage.getItem("currentAssignedModule");
+
+  if (assignedModuleId) {
+    console.log(
+      "🗑️ Module assigné à supprimer après création :",
+      assignedModuleId
+    );
+  } else {
+    console.log("ℹ️ Aucun module assigné (création libre)");
+  }
+
   const infoContainer = document.querySelector(".infoContainer");
   const validBtn = document.getElementById("validPrograms");
   const howTimeInput = document.getElementById("trainingTime");
@@ -311,35 +322,61 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log("🧱 ModuleData prêt :", moduleData);
 
     try {
-  const res = await fetch("http://localhost:5000/api/me/user-created", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(moduleData),
-  });
+      const res = await fetch("http://localhost:5000/api/me/user-created", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(moduleData),
+      });
 
-  if (!res.ok) {
-    throw new Error("Erreur lors de la création du module");
-  }
+      if (!res.ok) {
+        throw new Error("Erreur lors de la création du module");
+      }
 
-  const data = await res.json();
-  console.log("✅ Module créé :", data);
+      const data = await res.json();
+      console.log("✅ Module créé :", data);
 
-  // 1️⃣ Stocker l’ID Mongo
-  const mongoId = data.moduleId;
-  localStorage.setItem("currentModule", mongoId);
+      // 1️⃣ Stocker l’ID Mongo
+      const mongoId = data.moduleId;
+      localStorage.setItem("currentModule", mongoId);
 
-  // 2️⃣ Commit timers (OBLIGATOIRE avant redirection)
-  await commitModuleTimes(mongoId);
+      // 2️⃣ Commit timers (OBLIGATOIRE avant redirection)
+      await commitModuleTimes(mongoId);
 
-  // 3️⃣ Redirection directe (sans aucun re-render)
-  window.location.href = "/frontend/pages/programmsTrainning.html";
+      if (assignedModuleId) {
+        try {
+          const deleteRes = await fetch(
+            `http://localhost:5000/admin/api/me/assigned-modules/${assignedModuleId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-} catch (err) {
-  console.error("❌ Erreur création module :", err);
-}
+          if (!deleteRes.ok) {
+            console.error("❌ Échec suppression du module assigné");
+          } else {
+            console.log("🗑️ Module assigné supprimé avec succès");
+            localStorage.removeItem("currentAssignedModule");
+          }
+        } catch (err) {
+          console.error(
+            "❌ Erreur lors de la suppression du module assigné :",
+            err
+          );
+        }
+      }
 
+      localStorage.removeItem("currentAdminModule");
+
+      // 3️⃣ Redirection directe (sans aucun re-render)
+      // window.location.href = "/frontend/pages/programmsTrainning.html";
+    } catch (err) {
+      console.error("❌ Erreur création module :", err);
+    }
   });
 });
