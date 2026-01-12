@@ -45,6 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!adminModuleId) return console.error("❌ Aucun module admin sélectionné");
 
   const assignedModuleId = localStorage.getItem("currentAssignedModule");
+  console.log("🧪 FRONT assignedModuleId (localStorage) =", assignedModuleId);
 
   if (assignedModuleId) {
     console.log(
@@ -374,7 +375,7 @@ window.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("currentAdminModule");
 
       // 3️⃣ Redirection directe (sans aucun re-render)
-      // window.location.href = "/frontend/pages/programmsTrainning.html";
+      window.location.href = "/frontend/pages/programmsTrainning.html";
     } catch (err) {
       console.error("❌ Erreur création module :", err);
     }

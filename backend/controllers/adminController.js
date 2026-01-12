@@ -138,46 +138,48 @@ exports.getModuleById = async (req, res) => {
   }
 };
 
-// DELETE /api/me/assigned-modules/:assignedModuleId
 exports.deleteAssignedModule = async (req, res) => {
   try {
-    // 1️⃣ Vérification des infos reçues
-    console.log("🧪 req.user =", req.user); // doit contenir l'id du user connecté
+    console.log("🧪 req.user.userId =", req.user.userId);
     console.log("🧪 assignedModuleId =", req.params.assignedModuleId);
 
-    const userId = req.user.id; // ou req.user._id selon ton JWT
+    const userId = req.user.userId;
     const { assignedModuleId } = req.params;
 
-    // 2️⃣ Conversion en ObjectId pour matcher Mongo
-    const assignedObjectId = new mongoose.Types.ObjectId(assignedModuleId);
+    // 🔹 POINT 3
+    const user = await User.findById(userId);
 
-    // 3️⃣ Suppression de l'objet dans le tableau assignedModules
+    console.log(
+      "📌 AssignedModules AVANT pull :",
+      user.assignedModules.map((am) => ({
+        _id: am._id.toString(),
+        moduleId: am.moduleId.toString(),
+      }))
+    );
+
+    // 🔹 POINT 4
+    const exists = user.assignedModules.some(
+      (am) => am._id.toString() === assignedModuleId
+    );
+
+    console.log("🧪 AssignedModule existe ?", exists);
+
+    // 🔹 $pull
     const result = await User.updateOne(
       { _id: userId },
       {
         $pull: {
-          assignedModules: { _id: assignedObjectId },
+          assignedModules: {
+            _id: new mongoose.Types.ObjectId(assignedModuleId),
+          },
         },
       }
     );
 
-    // 4️⃣ Logs pour vérifier le résultat
+    // 🔹 POINT 5
     console.log("🧪 Résultat du pull :", result);
-    /*
-      Exemple de résultat :
-      {
-        acknowledged: true,
-        matchedCount: 1,    // 1 si le user a été trouvé
-        modifiedCount: 1    // 1 si l'objet du tableau a été supprimé
-      }
-    */
 
-    // 5️⃣ Réponse côté frontend
-    res.json({
-      success: true,
-      message: "Module assigné supprimé avec succès",
-      result,
-    });
+    res.json({ success: true });
   } catch (err) {
     console.error("❌ Erreur suppression module assigné :", err);
     res.status(500).json({ message: "Erreur serveur" });
