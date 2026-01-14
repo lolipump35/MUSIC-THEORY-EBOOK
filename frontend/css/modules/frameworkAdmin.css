@@ -31,9 +31,12 @@
   border-radius: 6px;
 }
 
-.objective-video iframe {
-  width: 100%;
-  height: 220px;
-  border-radius: 6px;
-  border: none;
+.objective-video mux-player {
+  display: block;
+  width: 100%;       /* prend toute la largeur du conteneur */
+  max-width: 640px;  /* largeur max si tu veux limiter */
+  height: 360px;     /* hauteur standard 16:9 */
+  margin: 10px 0;
+  background-color: #000; /* facultatif, pour voir le player avant le chargement */
 }
+

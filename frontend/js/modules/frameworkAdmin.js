@@ -155,27 +155,38 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function attachPreviewToggle(block) {
-    const btn = block.querySelector(".preview-toggle");
+    const toggleBtn = block.querySelector(".preview-toggle");
     const preview = block.querySelector(".objective-preview");
 
-    if (!btn || !preview) return;
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = preview.classList.contains("hidden");
 
-    btn.addEventListener("click", () => {
-      preview.classList.toggle("hidden");
+      if (isHidden) {
+        // Ouverture → montrer le preview
+        preview.classList.remove("hidden");
+        toggleBtn.textContent = "Masquer le contenu de l’objectif";
+      } else {
+        // Fermeture → cacher le preview
+        // et mettre en pause tous les mux-players
+        preview.querySelectorAll("mux-player").forEach((player) => {
+          player.pause();
+        });
 
-      btn.textContent = preview.classList.contains("hidden")
-        ? "Voir le contenu de l’objectif"
-        : "Masquer le contenu";
+        preview.classList.add("hidden");
+        toggleBtn.textContent = "Voir le contenu de l’objectif";
+      }
     });
   }
 
   function renderObjectivePreview(objective) {
     let html = "";
 
+    // Texte additionnel
     if (objective.extra) {
       html += `<p class="objective-extra">${objective.extra}</p>`;
     }
 
+    // Image
     if (objective.imageUrl) {
       html += `
       <div class="objective-image">
@@ -184,18 +195,20 @@ window.addEventListener("DOMContentLoaded", () => {
     `;
     }
 
+    // Vidéo Mux avec <mux-player>
     if (objective.muxPlaybackId) {
       html += `
       <div class="objective-video">
-        <iframe
-          src="https://stream.mux.com/${objective.muxPlaybackId}.m3u8"
-          allow="autoplay; fullscreen"
-          allowfullscreen
-        ></iframe>
+        <mux-player
+          playback-id="${objective.muxPlaybackId}"
+          controls
+          preload="metadata"
+        ></mux-player>
       </div>
     `;
     }
 
+    // Aucun contenu
     if (!html) {
       html = `<p class="objective-empty">Aucun contenu pour cet objectif.</p>`;
     }
@@ -226,28 +239,27 @@ window.addEventListener("DOMContentLoaded", () => {
      6️⃣ Logique de sélection des boutons
   ===================================================== */
   function attachScaleLogic(block) {
-  const buttons = block.querySelectorAll(".scale-button");
+    const buttons = block.querySelectorAll(".scale-button");
 
-  // 🔹 SÉLECTION PAR DÉFAUT → difficulté 4
-  const defaultBtn = block.querySelector('.scale-button[data-value="4"]');
-  if (defaultBtn) {
-    defaultBtn.classList.add("selected");
-    block.dataset.selectedDifficulty = "4";
-  }
+    // 🔹 SÉLECTION PAR DÉFAUT → difficulté 4
+    const defaultBtn = block.querySelector('.scale-button[data-value="4"]');
+    if (defaultBtn) {
+      defaultBtn.classList.add("selected");
+      block.dataset.selectedDifficulty = "4";
+    }
 
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      buttons.forEach((b) => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      block.dataset.selectedDifficulty = btn.dataset.value;
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        block.dataset.selectedDifficulty = btn.dataset.value;
 
-      console.log(
-        `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`
-      );
+        console.log(
+          `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`
+        );
+      });
     });
-  });
-}
-
+  }
 
   /* =====================================================
      7️⃣ ValidButton — Création du module admin
