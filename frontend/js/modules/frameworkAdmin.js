@@ -226,19 +226,28 @@ window.addEventListener("DOMContentLoaded", () => {
      6️⃣ Logique de sélection des boutons
   ===================================================== */
   function attachScaleLogic(block) {
-    const buttons = block.querySelectorAll(".scale-button");
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        buttons.forEach((b) => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        block.dataset.selectedDifficulty = btn.dataset.value;
+  const buttons = block.querySelectorAll(".scale-button");
 
-        console.log(
-          `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`
-        );
-      });
-    });
+  // 🔹 SÉLECTION PAR DÉFAUT → difficulté 4
+  const defaultBtn = block.querySelector('.scale-button[data-value="4"]');
+  if (defaultBtn) {
+    defaultBtn.classList.add("selected");
+    block.dataset.selectedDifficulty = "4";
   }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buttons.forEach((b) => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      block.dataset.selectedDifficulty = btn.dataset.value;
+
+      console.log(
+        `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`
+      );
+    });
+  });
+}
+
 
   /* =====================================================
      7️⃣ ValidButton — Création du module admin
@@ -273,18 +282,9 @@ window.addEventListener("DOMContentLoaded", () => {
       const objectiveId = `objective-${objectiveIndex}`;
       const title = block.dataset.title;
       const coef = parseFloat(block.dataset.coef) || 1;
-      const selectedDifficulty = block.dataset.selectedDifficulty;
 
-      if (!selectedDifficulty) {
-        block.querySelector("h3").classList.add("error-highlight");
-        allSelected.push(false);
-        return;
-      } else {
-        block.querySelector("h3").classList.remove("error-highlight");
-        allSelected.push(true);
-      }
+      const difficultyLevel = parseInt(block.dataset.selectedDifficulty || "4");
 
-      const difficultyLevel = parseInt(selectedDifficulty);
       const assignedDays = Array.from({ length: howDay }, (_, i) => i + 1);
 
       assignedDays.forEach((day) => {
@@ -301,8 +301,6 @@ window.addEventListener("DOMContentLoaded", () => {
         });
       });
     });
-
-    if (!allSelected.every(Boolean)) return;
 
     const trainingDays = Object.keys(objectivesByDay).map((dayNum) => ({
       dayNumber: parseInt(dayNum),

@@ -271,7 +271,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  function createScaleButtons(selectedLevel) {
+  function createScaleButtons(selectedLevel = 3) {
     const buttons = [
       "big orange",
       "orange",
@@ -330,16 +330,8 @@ window.addEventListener("DOMContentLoaded", () => {
         parseFloat(document.getElementById(objectiveId)?.dataset.coef) || 1;
       const difficultyLevel = selected
         ? Array.from(selected.parentNode.children).indexOf(selected)
-        : 0;
+        : 3; // sécurité fallback
       const assignedDays = Array.from({ length: howDay }, (_, i) => i + 1);
-
-      if (!selected) {
-        block.querySelector("h3").classList.add("error-highlight");
-        allSelected.push(false);
-      } else {
-        block.querySelector("h3").classList.remove("error-highlight");
-        allSelected.push(true);
-      }
 
       assignedDays.forEach((day) => {
         if (!objectivesByDay[day]) objectivesByDay[day] = [];
@@ -358,8 +350,6 @@ window.addEventListener("DOMContentLoaded", () => {
         });
       });
     });
-
-    if (!allSelected.every((v) => v)) return;
 
     // Création de l'objet module complet
     const trainingDays = Object.keys(objectivesByDay).map((dayNum) => ({

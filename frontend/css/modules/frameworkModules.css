@@ -825,7 +825,11 @@ padding: 10px;
 .scale-button.big { width: 36px; height: 36px; }
 .scale-button.small { width: 20px; height: 20px; }
 
-
+.scale-button.selected {
+  border: 2px solid #0000007a;
+  transform: scale(1.25);
+  opacity: 1;
+}
 
 /* ===== Inputs temps / jours ===== */
 .howtime, .howday {
