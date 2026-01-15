@@ -11,7 +11,12 @@ const objectiveSchema = new mongoose.Schema({
   difficultyLevel: { type: Number, default: 4 },
   coef: { type: Number, default: 1 },
   completedDays: { type: [Number], default: [] },
-  exercises: { type: [String], default: [] },
+  exercises: [
+    {
+      type: { type: String, enum: ["text","image","video","html"], required: true },
+      value: { type: String, required: true }
+    }
+  ],
 
   // --- Pivots pour le calcul ---
   baseEstimatedSeconds: { type: Number, default: 0 },

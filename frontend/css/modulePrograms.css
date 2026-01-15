@@ -352,3 +352,13 @@
   background-color: #90ce92b6 !important;
   transition: background-color 0.3s ease;
 }
+
+
+
+.exercise-video mux-player {
+  width: 100%;
+  max-width: 600px; /* optionnel */
+  height: 360px; /* obligatoire sinon invisible */
+  display: block;
+  margin: 1rem 0;
+}

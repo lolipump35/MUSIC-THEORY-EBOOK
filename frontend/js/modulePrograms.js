@@ -285,27 +285,21 @@ window.addEventListener("DOMContentLoaded", () => {
       const scaleDiv = document.createElement("div");
       scaleDiv.classList.add("scale");
       const difficultyIndex = (item.difficultyLevel || 4) - 1;
-
       scaleDiv.innerHTML = `<span>Difficile</span>${createScaleButtons(
         difficultyIndex
       )}<span>Facile</span>`;
 
       scaleDiv.querySelectorAll(".scale-button").forEach((btn, index) => {
         btn.addEventListener("click", async () => {
-          // Visuel
           scaleDiv
             .querySelectorAll(".scale-button")
             .forEach((b) => b.classList.remove("selected"));
           btn.classList.add("selected");
-
-          // Mise à jour locale
           item.difficultyLevel = index + 1;
 
-          // Mise à jour du timer affiché
           const timerDiv = objectiveDiv.querySelector(".objectiveTimer");
           const timeDiv = objectiveDiv.querySelector(".timeDisplay");
 
-          // PATCH backend
           try {
             const res = await fetch(
               `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${day}/objectives/${item.id}/difficulty`,
@@ -315,36 +309,25 @@ window.addEventListener("DOMContentLoaded", () => {
                   "Content-Type": "application/json",
                   Authorization: "Bearer " + localStorage.getItem("token"),
                 },
-                body: JSON.stringify({
-                  difficultyLevel: Number(index + 1),
-                }),
+                body: JSON.stringify({ difficultyLevel: Number(index + 1) }),
               }
             );
 
             if (!res.ok) throw new Error(await res.text());
-
             const data = await res.json();
 
-            /**
-             * 1️⃣ On met à jour la SOURCE DE VÉRITÉ
-             */
+            // 🔹 Mise à jour de la source de vérité
             const dayToUpdate = programData.trainingDays.find(
               (d) => d.dayNumber === day
             );
-
-            if (!dayToUpdate) {
-              console.error("Jour introuvable dans programData");
-              return;
-            }
+            if (!dayToUpdate)
+              return console.error("Jour introuvable dans programData");
 
             data.objectives.forEach((updatedObj) => {
               const localObj = dayToUpdate.objectives.find(
                 (o) => o.id === updatedObj.objectiveId
               );
-
               if (!localObj) return;
-
-              // 🔥 On ne met à jour QUE ce que le backend recalcule
               localObj.estimatedSeconds = updatedObj.estimatedSeconds;
               localObj.baseEstimatedSeconds = updatedObj.baseEstimatedSeconds;
               localObj.remainingSeconds = updatedObj.remainingSeconds;
@@ -352,9 +335,6 @@ window.addEventListener("DOMContentLoaded", () => {
               localObj.baseDifficultyLevel = updatedObj.baseDifficultyLevel;
             });
 
-            /**
-             * 2️⃣ On rerender complètement le jour
-             */
             renderObjectivesForDay(
               programDiv,
               dayToUpdate.objectives,
@@ -401,6 +381,7 @@ window.addEventListener("DOMContentLoaded", () => {
       objectiveDiv.appendChild(timerDiv);
 
       // ===== Toggle exercices =====
+      // ===== Toggle exercices =====
       const toggleBtn = document.createElement("button");
       toggleBtn.classList.add("exerciseToggleBtn");
       toggleBtn.type = "button";
@@ -408,20 +389,51 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const exerciseContainer = document.createElement("div");
       exerciseContainer.classList.add("exerciseContainer", "collapsed");
+
+      // Vérification si des exercices existent
       if (Array.isArray(item.exercises) && item.exercises.length > 0) {
         exerciseContainer.innerHTML = item.exercises
-          .map((ex) => `<div class="exerciseItem">${ex}</div>`)
+          .map((ex) => {
+            switch (ex.type) {
+              case "text":
+                return `<p class="exercise-text">${ex.value}</p>`;
+              case "image":
+                return `<div class="exercise-image"><img src="${ex.value}" alt="Image exercice"></div>`;
+              case "video":
+                return `
+            <div class="exercise-video">
+              <mux-player
+                playback-id="${ex.value}"
+                controls
+                preload="metadata"
+              ></mux-player>
+            </div>
+          `;
+              case "html":
+                return `<div class="exercise-html">${ex.value}</div>`;
+              default:
+                return "";
+            }
+          })
           .join("");
       } else {
         exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
       }
 
+      // Bouton toggle pour afficher / masquer
       toggleBtn.addEventListener("click", () => {
         const isCollapsed = exerciseContainer.classList.contains("collapsed");
         exerciseContainer.classList.toggle("collapsed");
         toggleBtn.textContent = isCollapsed
           ? "Masquer l'exercice"
           : "Afficher l'exercice";
+
+        // Mettre en pause tous les mux-players si on masque
+        if (!isCollapsed) {
+          exerciseContainer
+            .querySelectorAll("mux-player")
+            .forEach((player) => player.pause());
+        }
       });
 
       objectiveDiv.appendChild(toggleBtn);
@@ -519,12 +531,29 @@ window.addEventListener("DOMContentLoaded", () => {
     .then((res) => res.json())
     .then((modules) => {
       const moduleData = modules.find((m) => m.moduleKey === currentModuleId);
+      console.log("📦 Module complet récupéré :", moduleData);
 
       if (!moduleData) {
         container.innerHTML = "<p>Module introuvable.</p>";
         console.warn("⚠️ Aucun module correspondant trouvé dans le backend.");
         return;
       }
+
+      const programData = moduleData.programData;
+      programData.trainingDays.forEach((dayObj) => {
+        console.log(`Jour ${dayObj.dayNumber}`, dayObj.objectives);
+        dayObj.objectives.forEach((obj) => {
+          console.log(
+            "Objectif :",
+            obj.id,
+            obj.exercises,
+            obj.extra,
+            obj.imageUrl,
+            obj.muxPlaybackId,
+            obj.htmlExo
+          );
+        });
+      });
 
       storedModules[currentModuleId] = moduleData;
       renderModuleData(storedModules, currentModuleId);

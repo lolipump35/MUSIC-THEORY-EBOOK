@@ -301,6 +301,30 @@ window.addEventListener("DOMContentLoaded", () => {
 
       assignedDays.forEach((day) => {
         if (!objectivesByDay[day]) objectivesByDay[day] = [];
+
+        // 🔹 Récupérer tout le contenu lié à l'objectif
+        const exercises = [];
+
+        // Texte additionnel
+        if (block.dataset.extra) {
+          exercises.push({ type: "text", value: block.dataset.extra });
+        }
+
+        // Image
+        if (block.dataset.imageUrl) {
+          exercises.push({ type: "image", value: block.dataset.imageUrl });
+        }
+
+        // Vidéo Mux
+        if (block.dataset.muxPlaybackId) {
+          exercises.push({ type: "video", value: block.dataset.muxPlaybackId });
+        }
+
+        // HTML complet (optionnel)
+        if (block.dataset.htmlExo) {
+          exercises.push({ type: "html", value: block.dataset.htmlExo });
+        }
+
         objectivesByDay[day].push({
           objectiveId,
           objectiveTitle: title,
@@ -309,7 +333,7 @@ window.addEventListener("DOMContentLoaded", () => {
           coef,
           isCompleted: false,
           timerProgress: 0,
-          exercises: [],
+          exercises, // <- maintenant rempli correctement
         });
       });
     });
