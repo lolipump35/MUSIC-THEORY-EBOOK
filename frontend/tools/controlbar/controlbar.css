@@ -1,0 +1,156 @@
+/* #region controlleBar  */
+
+.controllBarContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #d7d9d2;
+  width: 60px;
+  height: 100%;
+  position: fixed;
+  top: 70px;
+  z-index: 3;
+  transition: ease-in-out 0.8s;
+}
+
+.controllBarContainer:hover {
+  width: 220px;
+  transition: ease-in-out 0.3s;
+}
+
+.controllBarContainerText {
+  opacity: 0;
+  display: flex;
+  transition: opacity 0.7s ease;
+}
+
+.controllBarContainer:hover .controllBarContainerText {
+  opacity: 1;
+}
+
+.itemContainer {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: ease-in-out 0.1s;
+}
+.itemContainer:hover {
+  background-color: #c4c5c0;
+  transition: ease-in-out 0.1s;
+}
+
+.itemContainer img {
+  scale: 0.08;
+  position: fixed;
+  left: -220px;
+}
+
+.itemContainer p {
+  display: flex;
+}
+
+/* SETTING  */
+
+/* PROGRAMMS TRAINNING  */
+
+#programsTrainning img{
+   scale:0.17;
+  position: fixed;
+  left: -125px;
+}
+
+/* #endregion controlleBar  */
+
+/* #region SETTING  */
+
+.settings {
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
+  height: 70%;
+  width: 800px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  background-color: #bdbdbd;
+}
+
+.closeButtonControllBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 5px;
+  top: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: rgb(253, 132, 132);
+  border: none;
+}
+.closeButtonControllBar p {
+  color: white;
+}
+
+/* userPreference */
+#userPreference {
+  height: auto;
+  width: 85%;
+  background: #dcdcdc;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+}
+#userPreference h2{
+  width: 40%;
+}
+
+.platformContainer{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 60%;
+}
+
+.platform-btn {
+  background-color: #f3f3f3;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.platform-btn:hover {
+  background-color: #bdbdbd;
+}
+
+#tracksList .trackItem {
+  cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+#tracksList .trackItem:hover {
+  background-color: #f3f3f3;
+}
+
+/* #endregion SETTING  */
+
+
+#adminControl {
+  display: none; /* caché par défaut */
+}
+
+#adminControl img{
+   scale:0.15;
+  position: fixed;
+  left: -150px;
+}
+
+/* #region admin */

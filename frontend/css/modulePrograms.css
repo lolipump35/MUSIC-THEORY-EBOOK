@@ -39,6 +39,35 @@
   padding-bottom: 8px;
 }
 
+#trainingResult {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 30px;
+  max-width: 70%;
+  margin: 0 auto;
+  font-family: "Poppins", sans-serif;
+}
+
+.moduleTitle {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.programBlock:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+}
+
+.programBlock h3 {
+  margin-bottom: 14px;
+  color: #34495e;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
 /* ===== OBJECTIFS ===== */
 .objectiveItem {
   margin-bottom: 15px;
@@ -46,12 +75,13 @@
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   background: #fafafa;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-    flex-wrap: wrap;   
-}
 
+  display: flex;
+  align-items: center;  /* alignement vertical de la ligne principale */
+  gap: 20px;
+  flex-wrap: wrap;       /* permet aux éléments à 100% comme exerciseContainer de passer à la ligne */
+  overflow: visible;
+}
 /* Conteneur texte objectif */
 .objectiveText {
   width: 25%;
@@ -238,7 +268,6 @@
   transform: rotate(-90deg) scale(1.15);
 }
 
-
 /* Cercles */
 .circle-bg {
   fill: none;
@@ -254,11 +283,9 @@
   transition: stroke-dasharray 0.3s ease;
 }
 
-
-
 /* Pour que le bouton se place tout à droite de la ligne principale */
 .exerciseToggleBtn {
-  margin-left: auto;      /* pousse le bouton à l'extrémité droite */
+  margin-left: auto; /* pousse le bouton à l'extrémité droite */
   align-self: center;
   padding: 8px 12px;
   border-radius: 8px;
@@ -269,16 +296,15 @@
 
 /* Tiroir : on le force à occuper la ligne complète sous la row principale */
 .exerciseContainer {
-  flex-basis: 100%;       /* prend 100% de la largeur (force nouvelle ligne grâce à flex-wrap) */
-  order: 100;             /* s'assure d'être tout en bas (après les éléments ligne) */
+  flex-basis: 100%;
+  order: 100;
   display: flex;
-  flex-direction: column; /* ici, le contenu de l'exercice est en colonne */
+  flex-direction: column;
   gap: 12px;
   background: #fafafa;
   border-radius: 8px;
-  max-height: 500px;
-  opacity: 1;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
   transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
 }
 
@@ -298,12 +324,6 @@
   border: 1px solid #eee;
   border-radius: 6px;
 }
-
-
-
-
-
-
 
 .dayButtonsContainer {
   display: flex;
@@ -346,19 +366,296 @@
   transform: scale(1.03); /* Petite animation */
 }
 
+.objectiveItem.completed {
+  background-color: #90ce92b6 !important;
+  transition: background-color 0.3s ease;
+}
 
+/* Échelle de difficulté */
+.scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 30%;
+  margin-right: 5%;
+}
+
+.scale span {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.scale-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.scale-button:hover {
+  transform: scale(1.15);
+}
+
+/* Palette difficulté */
+.scale-button.big.orange {
+  background-color: #ff9800;
+}
+.scale-button.orange {
+  background-color: #ffa726;
+}
+.scale-button.small.orange {
+  background-color: #ffcc80;
+}
+.scale-button.grey {
+  background-color: #e0e0e0;
+}
+.scale-button.small.green {
+  background-color: #a5d6a7;
+}
+.scale-button.green {
+  background-color: #66bb6a;
+}
+.scale-button.big.green {
+  background-color: #43a047;
+}
+
+.scale-button.selected {
+  border: 2px solid #0000007a;
+  transform: scale(1.25);
+  opacity: 1;
+}
+
+/* ===== TEMPS ASSOCIÉ ===== */
+.timeDisplay {
+  display: none;
+  color: #888;
+  font-size: 0.9rem;
+  width: 12%;
+  text-align: left;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  margin-left: 20px;
+}
+
+.timeDisplay.updated {
+  color: #2c3e50;
+}
+
+/* ===== HEADER & ACTIONS ===== */
+.programHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.programActions button {
+  margin-left: 8px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.programActions button:hover {
+  background: #d6d6d6;
+}
+
+.objectiveItem p[contenteditable="true"] {
+  border: 1px dashed #999;
+  padding: 4px;
+  background: #fff8e1;
+}
+
+.deleteProgramBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.deleteProgramBtn:hover {
+  background: #ff5555ce; /* Rouge vif à l'hover */
+  color: white;
+  transform: scale(1.05);
+}
+
+.objectiveTimer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.cloche {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+
+/* Le wrapper qui ZOOME (uniquement le SVG) */
+.zoomWrapper {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Le texte reste entièrement fixe, jamais transformé */
+.timerDisplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* pas de scale ici */
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2c3e50;
+  user-select: none;
+  z-index: 10;
+}
+
+/* SVG */
+.cloche svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  transition: transform 0.4s ease-in-out;
+}
+
+.cloche:hover svg {
+  transform: rotate(-90deg) scale(1.15);
+}
+
+/* Cercles */
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 4;
+}
+
+.circle {
+  fill: none;
+  stroke: #f0b3b3;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+/* Pour que le bouton se place tout à droite de la ligne principale */
+.exerciseToggleBtn {
+  margin-left: auto; /* pousse le bouton à l'extrémité droite */
+  align-self: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  cursor: pointer;
+}
+
+/* Tiroir : on le force à occuper la ligne complète sous la row principale */
+.exerciseContainer {
+  flex-basis: 100%; /* prend 100% de la largeur (force nouvelle ligne grâce à flex-wrap) */
+  order: 100; /* s'assure d'être tout en bas (après les éléments ligne) */
+  display: flex;
+  flex-direction: column; /* ici, le contenu de l'exercice est en colonne */
+  gap: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  max-height: 500px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+}
+
+/* items internes */
+.exerciseItem {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+.dayButtonsContainer {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+  margin-bottom: 12px;
+}
+
+/* Conteneur des boutons */
+.programDays {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px; /* espace plus large sous les boutons */
+  flex-wrap: wrap;
+}
+
+/* Bouton de jour */
+.dayProgramBtn {
+  padding: 10px 18px; /* Taille augmentée */
+  font-size: 15px;
+  border-radius: 10px;
+  background: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: 0.25s ease;
+  min-width: 85px; /* Plus long */
+  text-align: center;
+}
+
+/* Hover */
+.dayProgramBtn:hover {
+  background: #ddd;
+}
+
+/* Jour sélectionné */
+.dayProgramBtn.selected {
+  background: #c4c4c4;
+  color: white;
+  transform: scale(1.03); /* Petite animation */
+}
 
 .objectiveItem.completed {
   background-color: #90ce92b6 !important;
   transition: background-color 0.3s ease;
 }
 
-
-
+/* VIDEO */
 .exercise-video mux-player {
-  width: 100%;
-  max-width: 600px; /* optionnel */
-  height: 360px; /* obligatoire sinon invisible */
+  width: 100%; /* prend toute la largeur du parent */
+  max-width: 100%; /* jamais dépasser le bloc */
+  aspect-ratio: 16 / 9; /* conserve le ratio standard vidéo */
+  height: auto; /* ajuste la hauteur automatiquement */
   display: block;
-  margin: 1rem 0;
+  margin: 0.8rem 0;
+  object-fit: cover; /* 🔥 supprime les bandes noires */
+  border-radius: 6px;
+}
+
+/* EXERCICES */
+.exerciseContainer {
+  flex-basis: 100%;
+  order: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  max-height: none; /* suppression de la limite fixe */
+  overflow: visible; /* permet aux vidéos de ne pas être coupées */
+  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
 }
