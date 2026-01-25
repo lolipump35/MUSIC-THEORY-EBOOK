@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const Module = require("../models/module");
+const Module = require("../models/Module");
 
 // 🔹 Récupérer tous les programmes de l'utilisateur
 exports.getPrograms = async (req, res) => {
