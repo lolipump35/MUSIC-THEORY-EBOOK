@@ -12,7 +12,7 @@
     <!-- NAVBAR  -->
     <div id="navbar-placeholder"></div>
     <script type="module">
-      import { initNavbar } from "/frontend/tools/navbar/navbar.js";
+      import { initNavbar } from "./frontend/tools/navbar/navbar.js";
 
       fetch("/frontend/tools/navbar/navbar.html")
         .then((res) => res.text())
@@ -28,7 +28,7 @@
     <div id="controlbar-placeholder"></div>
 
     <script type="module">
-      import { initControlBar } from "/frontend/tools/controlbar/controlbar.js";
+      import { initControlBar } from "./frontend/tools/controlbar/controlbar.js";
 
       fetch("/frontend/tools/controlbar/controlbar.html")
         .then((res) => res.text())

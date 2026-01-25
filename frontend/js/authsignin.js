@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showMessage("Connexion réussie !", "success");
 
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          window.location.href = "/pages/dashboard.html";
         }, 1000);
       } else {
         showMessage(data.message || "Erreur de connexion.");
@@ -127,7 +127,7 @@ async function handleGoogleCredentialResponse(response) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
       showMessage("Connexion réussie !", "success");
-      setTimeout(() => (window.location.href = "dashboard.html"), 1000);
+      setTimeout(() => (window.location.href = "/pages/dashboard.html"), 1000);
     } else {
       showMessage(data.message || "Erreur Google");
     }

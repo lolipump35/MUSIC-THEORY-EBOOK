@@ -66,6 +66,7 @@ app.get("/config.js", (req, res) => {
 // 3. Static (frontend)
 app.use(express.static("public"));
 
+
 // 4. Routes API
 app.use("/api/auth", authRoutes);
 app.use("/api", routes);
