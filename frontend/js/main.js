@@ -1,4 +1,4 @@
 console.log("main.js fonctionne !");
 
 // Exemple : redirection vers login
-window.location.href = "/frontend/pages/register.html";
+window.location.href = "/pages/register.html";
