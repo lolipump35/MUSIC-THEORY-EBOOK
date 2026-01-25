@@ -4,7 +4,9 @@ const fs = require("fs");
 const path = require("path");
 
 // Chargement des variables d'environnement
-const privateKeyPath = path.resolve(process.env.MUX_PRIVATE_KEY_PATH);
+const privateKeyPath = path.resolve(
+  process.env.MUX_PRIVATE_KEY_PATH || "./keys/mux_private_key.pem"
+);
 const privateKey = fs.readFileSync(privateKeyPath, "utf8");
 const signingKeyId = process.env.MUX_SIGNING_KEY_ID;
 
@@ -40,7 +42,10 @@ exports.getVideoToken = (req, res) => {
 
     console.log("✅ Token généré avec succès !");
     console.log("▶️ Playback ID :", playbackId);
-    console.log("🕒 Expiration :", new Date(payload.exp * 1000).toLocaleString());
+    console.log(
+      "🕒 Expiration :",
+      new Date(payload.exp * 1000).toLocaleString()
+    );
     console.log("🔑 Token (début) :", token.substring(0, 50) + "...");
 
     res.json({ playbackId, token });
