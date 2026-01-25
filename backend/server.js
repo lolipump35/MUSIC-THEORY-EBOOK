@@ -17,7 +17,6 @@ const programRoutes = require("./routes/programRoutes"); // <-- notre route prog
 const authMiddleware = require("./middleware/authMiddleware");
 const adminRoutes = require("./routes/adminRoutes");
 
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -45,7 +44,7 @@ const corsOptions = {
     return callback(null, true);
   },
   credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
 
 // 1. Middleware CORS : doit être avant toutes les routes API
@@ -53,6 +52,15 @@ app.use(cors(corsOptions));
 
 // 2. Middleware JSON
 app.use(express.json());
+
+// BASE URL DYNAMIQUE
+
+app.get("/config.js", (req, res) => {
+  res.type("application/javascript");
+  res.send(`
+    window.API_BASE_URL = "${process.env.API_BASE_URL}";
+  `);
+});
 
 // 3. Static (frontend)
 app.use(express.static("public"));
@@ -64,7 +72,6 @@ app.use("/api/user", userPreferenceRoutes);
 app.use("/api/me", programRoutes);
 app.use("/admin", adminRoutes);
 
-
 // ----------------------------
 // Connexion à MongoDB
 // ----------------------------
@@ -75,7 +82,6 @@ mongoose
   })
   .then(() => console.log("✅ Database connected"))
   .catch((err) => console.error("❌ Database connection error:", err));
-
 
 // ----------------------------
 // Route par défaut

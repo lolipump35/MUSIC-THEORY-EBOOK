@@ -1,10 +1,11 @@
-  // Fonction pour afficher les messages
-  function showMessage(text, type = "error") {
-    const messageEl = document.getElementById("message");
-    messageEl.textContent = text;
-    messageEl.className = `message ${type}`;
-  }
-const BASE_URL = "http://127.0.0.1:5000";
+import { BASE_URL } from "./config.js";
+
+// Fonction pour afficher les messages
+function showMessage(text, type = "error") {
+  const messageEl = document.getElementById("message");
+  messageEl.textContent = text;
+  messageEl.className = `message ${type}`;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // Récupère les éléments, PAS leurs valeurs tout de suite
@@ -13,16 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const signInButton = document.getElementById("signInPageButton");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  //  const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-  //   ? "http://localhost:5000"
-  //   : "https://music-theory-ebook.onrender.com";
-
-
-
-
-   
-  console.log("BASE_URL =", BASE_URL);
 
   signInButton.addEventListener("click", async () => {
     // Récupère la valeur au moment du clic (trim)
@@ -51,40 +42,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const requestBody = { email: emailValue, password: passwordValue };
 
-   try {
-  const response = await fetch(`${BASE_URL}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestBody),
-    credentials: "include",
-  });
+    try {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+        credentials: "include",
+      });
 
-  const data = await response.json();
+      const data = await response.json();
 
-  if (response.ok) {
-    // ✅ Stockage du token dans localStorage
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
-      console.log("✅ Token enregistré :", data.token);
-      console.log("✅ userId enregistré :", data.userId);
+      if (response.ok) {
+        // ✅ Stockage du token dans localStorage
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userId", data.userId);
+          console.log("✅ Token enregistré :", data.token);
+          console.log("✅ userId enregistré :", data.userId);
+        }
+
+        showMessage("Connexion réussie !", "success");
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      } else {
+        showMessage(data.message || "Erreur de connexion.");
+      }
+    } catch (err) {
+      console.error("Erreur réseau : ", err);
+      showMessage("Erreur de connexion au serveur.");
+    } finally {
+      signInButton.disabled = false;
     }
-
-    showMessage("Connexion réussie !", "success");
-
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1000);
-  } else {
-    showMessage(data.message || "Erreur de connexion.");
-  }
-} catch (err) {
-  console.error("Erreur réseau : ", err);
-  showMessage("Erreur de connexion au serveur.");
-} finally {
-  signInButton.disabled = false;
-}
-
   });
 
   // Réinitialise styles & placeholder au focus
@@ -99,18 +89,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
- const creeUnCompte = document.getElementById("créeUnCompte");
+const creeUnCompte = document.getElementById("créeUnCompte");
 
-  creeUnCompte.addEventListener("click", () => {
-    window.location.href = "/frontend/pages/register.html";
-  });
+creeUnCompte.addEventListener("click", () => {
+  window.location.href = "/frontend/pages/register.html";
+});
 
-  console.log("button cliquer",creeUnCompte);
+console.log("button cliquer", creeUnCompte);
 
-  window.onload = function () {
+window.onload = function () {
   google.accounts.id.initialize({
-    client_id: "747548011522-a9bo6j62ikokdocnbld33fiseqge8rgu.apps.googleusercontent.com",
-    callback: handleGoogleCredentialResponse
+    client_id:
+      "747548011522-a9bo6j62ikokdocnbld33fiseqge8rgu.apps.googleusercontent.com",
+    callback: handleGoogleCredentialResponse,
   });
 
   google.accounts.id.renderButton(
@@ -127,7 +118,7 @@ async function handleGoogleCredentialResponse(response) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ credential: googleToken }),
-      credentials: "include"
+      credentials: "include",
     });
 
     const data = await res.json();
@@ -136,14 +127,12 @@ async function handleGoogleCredentialResponse(response) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
       showMessage("Connexion réussie !", "success");
-      setTimeout(() => window.location.href="dashboard.html", 1000);
+      setTimeout(() => (window.location.href = "dashboard.html"), 1000);
     } else {
       showMessage(data.message || "Erreur Google");
     }
-
   } catch (err) {
     console.error(err);
     showMessage("Erreur serveur Google");
   }
 }
-
