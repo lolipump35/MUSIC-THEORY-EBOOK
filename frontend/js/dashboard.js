@@ -1,4 +1,6 @@
 // #region BACK
+import { BASE_URL } from "./config.js";
+
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
@@ -11,7 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // Appel sécurisé vers le backend
-  fetch("http://localhost:5000/api/dashboard", {
+  fetch(`${BASE_URL}/api/dashboard`, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
