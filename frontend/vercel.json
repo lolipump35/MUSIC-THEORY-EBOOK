@@ -8,6 +8,7 @@
     { "src": "pages/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
