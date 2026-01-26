@@ -59,17 +59,7 @@ app.use(express.json());
    ✅ SERVING DES FICHIERS STATIQUES (OPTION A)
    ====================================================== */
 
-// frontend (navbar, controlbar, pages, img, html, js internes)
-app.use("/frontend", express.static(path.join(__dirname, "frontend")));
 
-// css
-app.use("/css", express.static(path.join(__dirname, "css")));
-
-// js
-app.use("/js", express.static(path.join(__dirname, "js")));
-
-// fichiers à la racine (ex: config.js)
-app.use(express.static(path.join(__dirname)));
 
 /* ======================================================
    CONFIG DYNAMIQUE

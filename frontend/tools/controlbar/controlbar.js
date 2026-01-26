@@ -1,3 +1,6 @@
+import { BASE_URL } from "../../js/config.js";
+
+
 export function initControlBar() {
   /* ===============================
      ELEMENTS DOM
@@ -35,7 +38,7 @@ export function initControlBar() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch("http://localhost:5000/api/user/platform", {
+      const res = await fetch(`${BASE_URL}/api/user/platform`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +64,7 @@ export function initControlBar() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch("http://localhost:5000/api/user/platform", {
+      const res = await fetch(`${BASE_URL}/api/user/platform`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -99,7 +102,7 @@ export function initControlBar() {
       const token = localStorage.getItem("token");
       if (!token || !adminControl) return;
 
-      const res = await fetch("http://localhost:5000/api/dashboard", {
+      const res = await fetch(`${BASE_URL}/api/dashboard`, {
         headers: {
           Authorization: "Bearer " + token,
         },
