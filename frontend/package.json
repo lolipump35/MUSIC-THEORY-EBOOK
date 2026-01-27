@@ -1,0 +1,7 @@
+{
+  "name": "music-theory-ebook-front",
+  "private": true,
+  "scripts": {
+    "dev": "npx http-server . -p 8081 -c-1"
+  }
+}

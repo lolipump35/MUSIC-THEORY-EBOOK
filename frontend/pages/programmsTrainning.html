@@ -1,57 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/dashboard.css" />
-    <link rel="stylesheet" href="/frontend/css/programmsTrainning.css" />
-    <title>programms</title>
-</head>
-<body>
-    
- <!-- NAVBAR -->
-    <section class="navbar">
-      <button id="homeButton" class="navbarButton">
-        <img src="../img/navbar/logo png (1).png" alt="" />
-      </button>
-      <button id="signInButton" class="navbarButton">
-        <img
-          src="../img/navbar/png-clipart-computer-icons-google-account-icon-design-login-others-miscellaneous-desktop-wallpaper-thumbnail-removebg-preview.png"
-          alt=""
-        />
-      </button>
-      <button id="menuButton" class="navbarButton">
-        <img src="../img/navbar/menu-modified.png" alt="" />
-      </button>
-    </section>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/programmsTrainning.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <title>programmsTrainning</title>
+  </head>
+  <body>
+    <!-- ===================================================================== -->
+    <!-- NAVBAR  -->
+    <div id="navbar-placeholder"></div>
+    <script type="module">
+      import { initNavbar } from "/tools/navbar/navbar.js";
 
-    <section class="menuNavbar">
-      <button class="menu-item item1">item</button>
-      <button class="menu-item item2">item</button>
-      <button class="menu-item item3">item</button>
-      <button class="menu-item item4">item</button>
-      <button class="menu-item item5">item</button>
-    </section>
+      fetch("/tools/navbar/navbar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("navbar-placeholder").innerHTML = html;
+
+          initNavbar();
+        });
+    </script>
+    <!-- ====================================================================== -->
 
     <!-- CONTROLLEBAR  -->
-    <div class="controllBarContainer">
-      <div class="itemContainer"  id="setting">
-        <img
-          src="/frontend/img/logo/reglages.png"
-          alt=""
-        />
-        <p class="controllBarContainerText">Setting</p>
-      </div>
-      <div class="itemContainer" id="framework">
-        <img src="/frontend/img/logo/reglages.png" alt="" />
-        <p class="controllBarContainerText">framework</p>
-      </div>
-      <div class="itemContainer" id="programsTrainning">
-        <img src="/frontend/img/logo/logo entrainnement.png" alt="" />
-        <p class="controllBarContainerText">Programmes</p>
-      </div>
+    <div id="controlbar-placeholder"></div>
 
-    </div>
+    <script type="module">
+      import { initControlBar } from "/tools/controlbar/controlbar.js";
+
+      fetch("/tools/controlbar/controlbar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("controlbar-placeholder").innerHTML = html;
+
+          initControlBar();
+        });
+    </script>
+    <!-- ====================================================================== -->
 
     <!-- SETTING  -->
     <div class="settings">
@@ -69,14 +57,12 @@
     </div>
 
     <!-- PROGRAMS TRAINNING  -->
-<section class="trainingLobby">
-  <h1>Mes programmes d’entraînement</h1>
-  <div id="trainingResult" class="modulesGrid"></div>
-</section>
+    <section class="trainingLobby">
+      <h1>Mes programmes d’entraînement</h1>
+      <div id="trainingResult" class="modulesGrid"></div>
+    </section>
 
-
-    <script src="/frontend/js/dashboard.js"></script>
-    <script src="/frontend/js/programmsTrainning.js"></script>
-
-</body>
+    <script type="module" src="/js/dashboard.js"></script>
+    <script type="module" src="/js/programmsTrainning.js"></script>
+  </body>
 </html>

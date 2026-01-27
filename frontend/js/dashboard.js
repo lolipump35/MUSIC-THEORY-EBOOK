@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => {
       console.error("❌ Erreur :", err);
-      alert("Impossible de charger le dashboard");
+      // alert("Impossible de charger le dashboard");
     });
 });
 // #endregion BACK

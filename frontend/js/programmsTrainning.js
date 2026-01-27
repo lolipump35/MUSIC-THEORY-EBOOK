@@ -1,3 +1,5 @@
+import { BASE_URL } from "/config.js";
+
 window.addEventListener("DOMContentLoaded", async () => {
   console.clear();
 
@@ -20,16 +22,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     // ===============================
     // 1️⃣ FETCH DES MODULES USER
     // ===============================
-    const resUser = await fetch(
-      "http://localhost:5000/api/me/user-created-modules",
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const resUser = await fetch(`${BASE_URL}/api/me/user-created-modules`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!resUser.ok) throw new Error(`HTTP error ${resUser.status}`);
 
@@ -46,7 +45,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         const totalObjectives =
           mod.programData?.trainingDays?.reduce(
             (sum, day) => sum + (day.objectives?.length || 0),
-            0
+            0,
           ) || 0;
 
         moduleCard.innerHTML = `
@@ -57,7 +56,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         moduleCard.addEventListener("click", () => {
           localStorage.setItem("currentModule", mod.moduleKey);
           window.location.href =
-            "/frontend/pages/programsTrainingModule/modulePrograms.html";
+            "/pages/programsTrainingModule/modulePrograms.html";
         });
 
         container.appendChild(moduleCard);
@@ -67,15 +66,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     // ===============================
     // 2️⃣ FETCH DES MODULES ADMIN ASSIGNÉS
     // ===============================
-    const resAdmin = await fetch(
-      "http://localhost:5000/admin/assigned-modules",
+    const resAdmin = await fetch(`${BASE_URL}/admin/assigned-modules`, 
       {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!resAdmin.ok) throw new Error(`HTTP error ${resAdmin.status}`);
@@ -98,7 +96,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         moduleCard.addEventListener("click", () => {
           localStorage.setItem("currentAdminModule", mod.moduleId);
           localStorage.setItem("currentAssignedModule", mod.assignedId); // 🔥
-          window.location.href = "/frontend/pages/modules/frameworkAdmin.html";
+          window.location.href = "/pages/modules/frameworkAdmin.html";
         });
 
         container.appendChild(moduleCard);
