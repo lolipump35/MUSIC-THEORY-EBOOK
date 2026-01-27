@@ -1,3 +1,8 @@
+body {
+  display: block !important;
+  width: 100%;
+}
+
 #trainingResult {
   display: flex;
   flex-direction: column;
@@ -23,7 +28,9 @@
   width: 95%; /* ⬆️ élargi légèrement (10–15%) */
   margin: 0 auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
 }
 
@@ -77,9 +84,9 @@
   background: #fafafa;
 
   display: flex;
-  align-items: center;  /* alignement vertical de la ligne principale */
+  align-items: center; /* alignement vertical de la ligne principale */
   gap: 20px;
-  flex-wrap: wrap;       /* permet aux éléments à 100% comme exerciseContainer de passer à la ligne */
+  flex-wrap: wrap; /* permet aux éléments à 100% comme exerciseContainer de passer à la ligne */
   overflow: visible;
 }
 /* Conteneur texte objectif */
@@ -118,7 +125,10 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    opacity 0.2s;
   cursor: pointer;
   opacity: 0.9;
 }
@@ -305,7 +315,10 @@
   border-radius: 8px;
   max-height: none;
   overflow: visible;
-  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease,
+    padding 0.25s ease;
 }
 
 /* Version fermée : tiroir caché sans impacter la row principale */
@@ -390,7 +403,10 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    opacity 0.2s;
   cursor: pointer;
   opacity: 0.9;
 }
@@ -578,7 +594,10 @@
   max-height: 500px;
   opacity: 1;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease,
+    padding 0.25s ease;
 }
 
 /* items internes */
@@ -657,5 +676,8 @@
   border-radius: 8px;
   max-height: none; /* suppression de la limite fixe */
   overflow: visible; /* permet aux vidéos de ne pas être coupées */
-  transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease,
+    padding 0.25s ease;
 }
