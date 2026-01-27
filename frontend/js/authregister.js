@@ -1,3 +1,5 @@
+import { BASE_URL } from "/config.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   // #region FIRST NAME et NAME
 
@@ -7,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fonction pour réinitialiser un champ
   function resetInput(input, defaultPlaceholder) {
     input.classList.remove("input-error");
-    input.placeholder = defaultPlaceholder; 
+    input.placeholder = defaultPlaceholder;
   }
 
   // Au clic sur le bouton Register
@@ -47,14 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   } else {
     console.warn(
-      'Le bouton avec l’ID "registerMe" n’a pas été trouvé dans le DOM.'
+      'Le bouton avec l’ID "registerMe" n’a pas été trouvé dans le DOM.',
     );
   }
 
   // Écouteurs de focus pour réinitialiser si l'utilisateur clique dans un champ
   nameInput.addEventListener("focus", () => resetInput(nameInput, "Name"));
   firstNameInput.addEventListener("focus", () =>
-    resetInput(firstNameInput, "First Name")
+    resetInput(firstNameInput, "First Name"),
   );
 
   // #endregion FIRST NAME et NAME
@@ -83,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   phoneInput.addEventListener("focus", () =>
-    resetInput(phoneInput, "Phone Number")
+    resetInput(phoneInput, "Phone Number"),
   );
 
   // #endregion PHONE NUMBER
@@ -267,13 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // #region SEND TO BACKEND
 
-  const BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
-    ? "http://localhost:5000"
-    : "https://music-theory-ebook.onrender.com";
-
-
-  console.log("BASE_URL =", BASE_URL);
-
   // UTILITY FUNCTION
   function showMessage(text, type = "error") {
     const messageEl = document.getElementById("message");
@@ -282,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // REGISTER PAGE
-  
+
   if (registerBtn) {
     registerBtn.addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
@@ -290,7 +285,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const phone = document.getElementById("phoneNumber").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const confirmPassword = document.getElementById("confirmPassword").value.trim();
+      const confirmPassword = document
+        .getElementById("confirmPassword")
+        .value.trim();
       const termsAccepted = document.getElementById("termsCheckbox").checked;
 
       if (
@@ -321,11 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       registerBtn.disabled = true;
 
-       const requestBody = { name,
-            firstName,
-            phone,
-            email,
-            password };
+      const requestBody = { name, firstName, phone, email, password };
 
       console.log("Request body register:", requestBody);
 
@@ -337,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           body: JSON.stringify(requestBody),
           credentials: "include",
-          
         });
 
         const data = await response.json();

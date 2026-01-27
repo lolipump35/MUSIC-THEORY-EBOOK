@@ -1,5 +1,7 @@
 import { BASE_URL } from "/config.js";
 
+console.log("authsignin.js chargé");
+
 // Fonction pour afficher les messages
 function showMessage(text, type = "error") {
   const messageEl = document.getElementById("message");
@@ -87,15 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
     passwordInput.classList.remove("input-error");
     passwordInput.placeholder = "Password";
   });
+
+  const creeUnCompte = document.getElementById("crerUnCompte");
+
+  creeUnCompte.addEventListener("click", () => {
+    window.location.href = "/pages/register.html";
+  });
+
+  console.log("button cliquer", creeUnCompte);
 });
-
-const creeUnCompte = document.getElementById("créeUnCompte");
-
-creeUnCompte.addEventListener("click", () => {
-  window.location.href = "/frontend/pages/register.html";
-});
-
-console.log("button cliquer", creeUnCompte);
 
 window.onload = function () {
   google.accounts.id.initialize({
@@ -106,7 +108,7 @@ window.onload = function () {
 
   google.accounts.id.renderButton(
     document.getElementById("googleSignInButton"),
-    { theme: "outline", size: "large" }
+    { theme: "outline", size: "large" },
   );
 };
 

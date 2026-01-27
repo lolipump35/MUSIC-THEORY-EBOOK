@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/register.css" />
+    <link rel="stylesheet" href="/css/register.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.min.css"
@@ -14,7 +14,6 @@
   </head>
   <body>
     <section class="registerContainer">
-
       <input type="text" placeholder="Name" id="name" />
       <input type="text" placeholder="First Name" id="firstName" />
 
@@ -23,30 +22,40 @@
       <input type="mail" placeholder="Email" id="email" />
 
       <div class="input-wrapper">
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" placeholder="Password" id="password" />
         <span class="toggle-password" data-target="password">&#128065;</span>
       </div>
-      
+
       <div class="input-wrapper">
-        <input type="password" placeholder="Confirm Password" id="confirmPassword">
-        <span class="toggle-password" data-target="confirmPassword">&#128065;</span>
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          id="confirmPassword"
+        />
+        <span class="toggle-password" data-target="confirmPassword"
+          >&#128065;</span
+        >
       </div>
-      
-      
+
       <div id="passwordCriteria" class="password-criteria">
-          <ul>
-              <li id="minLength" class="invalid"><pre>.  At least 8 characters</pre></li>
-              <li id="lowercase" class="invalid"><pre>.  1 lowercase letter</pre></li>
-              <li id="uppercase" class="invalid"><pre>.  1 uppercase letter</pre></li>
-              <li id="digit" class="invalid"><pre>.  1 digit</pre></li>
-          </ul>
+        <ul>
+          <li id="minLength" class="invalid">
+            <pre>.  At least 8 characters</pre>
+          </li>
+          <li id="lowercase" class="invalid">
+            <pre>.  1 lowercase letter</pre>
+          </li>
+          <li id="uppercase" class="invalid">
+            <pre>.  1 uppercase letter</pre>
+          </li>
+          <li id="digit" class="invalid"><pre>.  1 digit</pre></li>
+        </ul>
       </div>
-      
+
       <div id="passwordStrengthBar" class="password-strength-bar">
         <div class="bar"></div>
       </div>
-      
-      
+
       <div class="CGU" id="termsContainer">
         <label>
           <input type="checkbox" id="termsCheckbox" required />
@@ -57,13 +66,12 @@
           </span>
         </label>
       </div>
-      
 
       <button id="registerMe">M'enregister</button>
       <div id="message" class="message"></div>
-
     </section>
 
-    <script src="../js/authregister.js"></script>
+    <script type="module" src="/config.js"></script>
+    <script type="module" src="/js/authregister.js"></script>
   </body>
 </html>
