@@ -1,3 +1,5 @@
+import { BASE_URL } from "/config.js";
+
 window.addEventListener("DOMContentLoaded", () => {
   console.clear();
 
@@ -83,8 +85,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // 🔹 Hydrater le timer depuis le backend après un refresh
     (async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}`,
+        const res = await fetch(`${BASE_URL}/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}`,
           {
             headers: { Authorization: "Bearer " + token },
           }
@@ -184,7 +185,7 @@ window.addEventListener("DOMContentLoaded", () => {
           );
           console.log("TOKEN :", token); // vérifie qu’il n’est pas vide
           await fetch(
-            `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/start`,
+            `${BASE_URL}/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/start`,
             {
               method: "PATCH",
               headers: { Authorization: "Bearer " + token },
@@ -213,8 +214,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 markObjectiveAsCompleted(objectiveItem, dayNumber);
 
               // PATCH COMPLETE
-              fetch(
-                `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/complete`,
+              fetch(`${BASE_URL}/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/complete`,
                 {
                   method: "PATCH",
                   headers: { Authorization: "Bearer " + token },
@@ -233,7 +233,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         try {
           await fetch(
-            `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/pause`,
+            `${BASE_URL}/api/me/user-created-modules/${moduleKey}/training-days/${dayNumber}/objectives/${objectiveId}/pause`,
             { method: "PATCH", headers: { Authorization: "Bearer " + token } }
           );
           console.log("📤 PAUSE envoyé");
@@ -302,7 +302,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
           try {
             const res = await fetch(
-              `http://localhost:5000/api/me/user-created-modules/${moduleKey}/training-days/${day}/objectives/${item.id}/difficulty`,
+              `${BASE_URL}/api/me/user-created-modules/${moduleKey}/training-days/${day}/objectives/${item.id}/difficulty`,
               {
                 method: "PATCH",
                 headers: {
@@ -521,7 +521,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================== 🔹 Fetch backend ==================
-  fetch("http://localhost:5000/api/me/user-created-modules", {
+  fetch(`${BASE_URL}/api/me/user-created-modules`, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
