@@ -4,11 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Redirection vers la page de création de module
   createModuleBtn.addEventListener("click", () => {
-    window.location.href = "/frontend/pages/admin/admin-module.html";
+    window.location.href = "/pages/admin/admin-module.html";
   });
 
   // Redirection vers la page de gestion / attribution de modules
   manageModuleBtn.addEventListener("click", () => {
-    window.location.href = "/frontend/pages/admin/assignModuleAdmin.html";
+    window.location.href = "/pages/admin/assignModuleAdmin.html";
   });
 });

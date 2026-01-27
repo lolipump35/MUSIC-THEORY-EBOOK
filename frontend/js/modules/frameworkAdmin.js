@@ -1,3 +1,4 @@
+import { BASE_URL } from "/config.js";
 /* =====================================================
    FRAMEWORK ADMIN — VERSION FINALE (TIMERS INIT)
 ===================================================== */
@@ -15,7 +16,7 @@ async function commitModuleTimes(moduleKey) {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -50,7 +51,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (assignedModuleId) {
     console.log(
       "🗑️ Module assigné à supprimer après création :",
-      assignedModuleId
+      assignedModuleId,
     );
   } else {
     console.log("ℹ️ Aucun module assigné (création libre)");
@@ -97,7 +98,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderObjectives(adminModule.objectives);
     })
     .catch((err) =>
-      console.error("❌ Erreur récupération module admin :", err)
+      console.error("❌ Erreur récupération module admin :", err),
     );
 
   /* =====================================================
@@ -255,7 +256,7 @@ window.addEventListener("DOMContentLoaded", () => {
         block.dataset.selectedDifficulty = btn.dataset.value;
 
         console.log(
-          `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`
+          `🎯 Objectif ${block.dataset.objectiveIndex} → difficulté ${btn.dataset.value}`,
         );
       });
     });
@@ -282,7 +283,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     if (!inputsValid) {
       afficherMessageErreur(
-        "Merci de renseigner un temps et un nombre de jours valides."
+        "Merci de renseigner un temps et un nombre de jours valides.",
       );
       return;
     }
@@ -389,7 +390,7 @@ window.addEventListener("DOMContentLoaded", () => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
 
           if (!deleteRes.ok) {
@@ -401,7 +402,7 @@ window.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
           console.error(
             "❌ Erreur lors de la suppression du module assigné :",
-            err
+            err,
           );
         }
       }

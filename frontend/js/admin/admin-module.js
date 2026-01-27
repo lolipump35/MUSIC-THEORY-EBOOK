@@ -1,3 +1,5 @@
+import { BASE_URL } from "/config.js";
+
 const objectivesContainer = document.getElementById("objectivesContainer");
 const addObjectiveBtn = document.getElementById("addObjectiveBtn");
 const saveModuleBtn = document.getElementById("saveModuleBtn");
@@ -68,7 +70,7 @@ saveModuleBtn.addEventListener("click", async () => {
   const body = { title, objectives };
 
   try {
-    const res = await fetch("http://localhost:5000/admin/modules", {
+    const res = await fetch(`${BASE_URL}/admin/modules`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

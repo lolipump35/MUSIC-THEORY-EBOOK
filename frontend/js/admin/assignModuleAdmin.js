@@ -1,3 +1,5 @@
+import { BASE_URL } from "/config.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const moduleSelect = document.getElementById("moduleSelect");
   const usersContainer = document.getElementById("usersContainer");
@@ -6,12 +8,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Récupérer les modules depuis le backend ---
   try {
-    const resModules = await fetch("http://localhost:5000/admin/modules", {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    const resModules = await fetch(`${BASE_URL}/admin/modules`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const modules = await resModules.json();
 
-    modules.forEach(mod => {
+    modules.forEach((mod) => {
       const option = document.createElement("option");
       option.value = mod._id;
       option.textContent = mod.title;
@@ -24,12 +26,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Récupérer les utilisateurs ---
   try {
-    const resUsers = await fetch("http://localhost:5000/admin/users", {
-      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    const resUsers = await fetch(`${BASE_URL}/admin/users`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const users = await resUsers.json();
 
-    users.forEach(user => {
+    users.forEach((user) => {
       const div = document.createElement("div");
       div.classList.add("userItem");
       div.innerHTML = `
@@ -47,27 +49,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   assignBtn.addEventListener("click", async () => {
     const moduleId = moduleSelect.value;
     const selectedUsers = Array.from(
-      usersContainer.querySelectorAll("input[type=checkbox]:checked")
-    ).map(input => input.value);
+      usersContainer.querySelectorAll("input[type=checkbox]:checked"),
+    ).map((input) => input.value);
 
     if (!moduleId || selectedUsers.length === 0) {
-      statusMsg.textContent = "Veuillez sélectionner un module et au moins un utilisateur.";
+      statusMsg.textContent =
+        "Veuillez sélectionner un module et au moins un utilisateur.";
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5000/admin/assign-module", {
+      const res = await fetch(`${BASE_URL}/admin/assign-module`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ moduleId, userIds: selectedUsers })
+        body: JSON.stringify({ moduleId, userIds: selectedUsers }),
       });
 
       const data = await res.json();
       statusMsg.textContent = data.message || "Module attribué !";
-
     } catch (err) {
       console.error("Erreur attribution module :", err);
       statusMsg.textContent = "Erreur lors de l'attribution.";

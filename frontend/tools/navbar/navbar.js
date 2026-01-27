@@ -61,6 +61,6 @@ export function initNavbar() {
   const signInButton = document.getElementById("signInButton");
 
   signInButton.addEventListener("click", () => {
-    window.location.href = "/frontend/pages/signIn.html";
+    window.location.href = "/pages/signIn.html";
   });
 }
