@@ -1,4 +1,4 @@
-import { BASE_URL } from "./config.js";
+import { BASE_URL } from "/config.js";
 
 // Fonction pour afficher les messages
 function showMessage(text, type = "error") {
