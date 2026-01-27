@@ -9,7 +9,7 @@ async function commitModuleTimes(moduleKey) {
 
   try {
     const res = await fetch(
-      `http://localhost:5000/api/me/user-created-modules/${moduleKey}/commit-times`,
+      `${BASE_URL}/api/me/user-created-modules/${moduleKey}/commit-times`,
       {
         method: "POST",
         headers: {
@@ -75,7 +75,7 @@ window.addEventListener("DOMContentLoaded", () => {
   /* ==========================
      2️⃣ Fetch du module admin
   ========================== */
-  fetch(`http://localhost:5000/admin/modules/${adminModuleId}`, {
+  fetch(`${BASE_URL}/admin/modules/${adminModuleId}`, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token,
@@ -358,7 +358,7 @@ window.addEventListener("DOMContentLoaded", () => {
     console.log("🧱 ModuleData prêt :", moduleData);
 
     try {
-      const res = await fetch("http://localhost:5000/api/me/user-created", {
+      const res = await fetch(`${BASE_URL}/api/me/user-created`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -383,8 +383,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (assignedModuleId) {
         try {
-          const deleteRes = await fetch(
-            `http://localhost:5000/admin/api/me/assigned-modules/${assignedModuleId}`,
+          const deleteRes = await fetch(`${BASE_URL}/admin/api/me/assigned-modules/${assignedModuleId}`,
             {
               method: "DELETE",
               headers: {
