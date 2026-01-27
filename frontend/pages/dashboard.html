@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
     <title>dashboard</title>
   </head>
   <body>
@@ -11,9 +12,9 @@
     <!-- NAVBAR  -->
     <div id="navbar-placeholder"></div>
     <script type="module">
-      import { initNavbar } from "/frontend/tools/navbar/navbar.js";
+      import { initNavbar } from "/tools/navbar/navbar.js";
 
-      fetch("/frontend/tools/navbar/navbar.html")
+      fetch("/tools/navbar/navbar.html")
         .then((res) => res.text())
         .then((html) => {
           document.getElementById("navbar-placeholder").innerHTML = html;
@@ -27,9 +28,9 @@
     <div id="controlbar-placeholder"></div>
 
     <script type="module">
-      import { initControlBar } from "/frontend/tools/controlbar/controlbar.js";
+      import { initControlBar } from "/tools/controlbar/controlbar.js";
 
-      fetch("/frontend/tools/controlbar/controlbar.html")
+      fetch("/tools/controlbar/controlbar.html")
         .then((res) => res.text())
         .then((html) => {
           document.getElementById("controlbar-placeholder").innerHTML = html;
@@ -45,107 +46,107 @@
       <div class="modulescontainer">
         <!-- MODULES 1 À 20 -->
         <div class="modules" id="moduleTEST">
-          <img src="/frontend/img/logo/logo spotify.png" alt="" />
+          <img src="/img/logo/logo spotify.png" alt="" />
           <h1 class="titleModule">moduleTEST</h1>
         </div>
 
         <div class="modules" id="module1">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 1</h1>
         </div>
 
         <div class="modules" id="module2">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 2</h1>
         </div>
 
         <div class="modules" id="module3">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 3</h1>
         </div>
 
         <div class="modules" id="module4">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 4</h1>
         </div>
 
         <div class="modules" id="module5">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 5</h1>
         </div>
 
         <div class="modules" id="module6">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 6</h1>
         </div>
 
         <div class="modules" id="module7">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 7</h1>
         </div>
 
         <div class="modules" id="module8">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 8</h1>
         </div>
 
         <div class="modules" id="module9">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 9</h1>
         </div>
 
         <div class="modules" id="module10">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 10</h1>
         </div>
 
         <div class="modules" id="module11">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 11</h1>
         </div>
 
         <div class="modules" id="module12">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 12</h1>
         </div>
 
         <div class="modules" id="module13">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 13</h1>
         </div>
 
         <div class="modules" id="module14">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 14</h1>
         </div>
 
         <div class="modules" id="module15">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 15</h1>
         </div>
 
         <div class="modules" id="module16">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 16</h1>
         </div>
 
         <div class="modules" id="module17">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 17</h1>
         </div>
 
         <div class="modules" id="module18">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 18</h1>
         </div>
 
         <div class="modules" id="module19">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 19</h1>
         </div>
 
         <div class="modules" id="module20">
-          <img src="/frontend/img/landingPage/cours.png" alt="" />
+          <img src="/img/landingPage/cours.png" alt="" />
           <h1 class="titleModule">module 20</h1>
         </div>
       </div>
@@ -154,7 +155,7 @@
     <div id="overlay"></div>
     <div id="teaser1" class="allContainer">
       <div class="cover">
-        <img src="/frontend/img/landingPage/morceau3.jpg" alt="" />
+        <img src="/img/landingPage/morceau3.jpg" alt="" />
       </div>
       <div class="rightTeaser">
         <div class="tittle"><h1>Titre du module</h1></div>

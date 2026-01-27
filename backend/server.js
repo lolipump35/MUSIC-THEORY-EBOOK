@@ -32,6 +32,8 @@ app.use("/webhook", stripeWebhook);
 const allowedOrigins = [
   "http://127.0.0.1:5501",
   "http://localhost:5501",
+  "http://127.0.0.1:8081",
+  "http://localhost:8081",
   "https://music-theory-ebook.onrender.com",
   "https://musictheoryebookfrontvercel.vercel.app",
 ];

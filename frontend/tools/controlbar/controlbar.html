@@ -1,44 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/tools/controlbar/controlbar.css">
-    <title>ControlBar</title>
-</head>
-<body>
-    <!-- CONTROLLEBAR  -->
-    <div class="controllBarContainer">
-      <div class="itemContainer" id="setting">
-        <img src="/frontend/img/logo/reglages.png" alt="" />
-        <p class="controllBarContainerText">Setting</p>
-      </div>
+<!-- CONTROLLEBAR  -->
+<div class="controllBarContainer">
+  <div class="itemContainer" id="setting">
+    <img src="/img/logo/reglages.png" alt="" />
+    <p class="controllBarContainerText">Setting</p>
+  </div>
 
-      <div class="itemContainer" id="programsTrainning">
-        <img src="/frontend/img/logo/logo entrainnement.png" alt="" />
-        <p class="controllBarContainerText">Programmes</p>
-      </div>
+  <div class="itemContainer" id="programsTrainning">
+    <img src="/img/logo/logo-entrainement.png" alt="" />
+    <p class="controllBarContainerText">Programmes</p>
+  </div>
 
-      <div class="itemContainer" id="adminControl">
-        <img src="/frontend/img/logo/admin logo.png" alt="" />
-        <p class="controllBarContainerText">Admin</p>
-      </div>
+  <div class="itemContainer" id="adminControl">
+    <img src="/img/logo/admin-logo.png" alt="" />
+    <p class="controllBarContainerText">Admin</p>
+  </div>
+</div>
+
+<!-- SETTING  -->
+<div class="settings">
+  <button id="closeSeting" class="closeButtonControllBar"><p>x</p></button>
+  <div id="userPreference">
+    <h2>Plateforme de streaming:</h2>
+    <div class="platformContainer">
+      <button class="platform-btn" data-platform="spotify">Spotify</button>
+      <button class="platform-btn" data-platform="deezer">Deezer</button>
+      <button class="platform-btn" data-platform="applemusic">
+        Apple Music
+      </button>
     </div>
-
-    <!-- SETTING  -->
-    <div class="settings">
-      <button id="closeSeting" class="closeButtonControllBar"><p>x</p></button>
-      <div id="userPreference">
-        <h2>Plateforme de streaming:</h2>
-        <div class="platformContainer">
-          <button class="platform-btn" data-platform="spotify">Spotify</button>
-          <button class="platform-btn" data-platform="deezer">Deezer</button>
-          <button class="platform-btn" data-platform="applemusic">
-            Apple Music
-          </button>
-        </div>
-      </div>
-    </div>
-
-</body>
-</html>
+  </div>
+</div>

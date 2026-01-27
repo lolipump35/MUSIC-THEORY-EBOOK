@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../js/config.js";
+import { BASE_URL } from "/config.js";
 
 
 export function initControlBar() {

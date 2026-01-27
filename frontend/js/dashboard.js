@@ -1,5 +1,5 @@
 // #region BACK
-import { BASE_URL } from "./config.js";
+import { BASE_URL } from "/config.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
