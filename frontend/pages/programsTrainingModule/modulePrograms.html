@@ -5,9 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/modulePrograms.css" />
     <link rel="stylesheet" href="/css/modules/frameworkModules.css " />
+    <link rel="stylesheet" href="/css/layout.css" />
+
     <title>Document</title>
   </head>
   <body>
+    <!-- ===================================================================== -->
+    <!-- NAVBAR  -->
+    <div id="navbar-placeholder"></div>
+    <script type="module">
+      import { initNavbar } from "/tools/navbar/navbar.js";
+
+      fetch("/tools/navbar/navbar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("navbar-placeholder").innerHTML = html;
+
+          initNavbar();
+        });
+    </script>
+    <!-- ====================================================================== -->
+
+    <!-- CONTROLLEBAR  -->
+    <div id="controlbar-placeholder"></div>
+
+    <script type="module">
+      import { initControlBar } from "/tools/controlbar/controlbar.js";
+
+      fetch("/tools/controlbar/controlbar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("controlbar-placeholder").innerHTML = html;
+
+          initControlBar();
+        });
+    </script>
+    <!-- ====================================================================== -->
+
     <div id="trainingResult"></div>
 
     <script type="module" src="/js/modulePrograms.js"></script>
