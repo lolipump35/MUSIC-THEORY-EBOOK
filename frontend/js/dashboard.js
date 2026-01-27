@@ -8,7 +8,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (!token) {
     // Si pas de token → redirige vers la page de connexion
-    window.location.href = "signin.html";
+    window.location.href = "/pages/signin.html";
     return;
   }
 
