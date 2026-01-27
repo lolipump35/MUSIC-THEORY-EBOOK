@@ -27,7 +27,7 @@ export function initControlBar() {
      PROGRAMMES
   =============================== */
   programsButton?.addEventListener("click", () => {
-    window.location.href = "/frontend/pages/programmsTrainning.html";
+    window.location.href = "/pages/programmsTrainning.html";
   });
 
   /* ===============================
@@ -117,7 +117,7 @@ export function initControlBar() {
 
         adminControl.addEventListener("click", () => {
           window.location.href =
-            "/frontend/pages/admin/dashboardAdmin.html";
+            "/pages/admin/dashboardAdmin.html";
         });
       }
     } catch (err) {
