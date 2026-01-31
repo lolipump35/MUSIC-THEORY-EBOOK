@@ -381,7 +381,6 @@ window.addEventListener("DOMContentLoaded", () => {
       objectiveDiv.appendChild(timerDiv);
 
       // ===== Toggle exercices =====
-      // ===== Toggle exercices =====
       const toggleBtn = document.createElement("button");
       toggleBtn.classList.add("exerciseToggleBtn");
       toggleBtn.type = "button";

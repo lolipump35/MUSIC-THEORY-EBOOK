@@ -308,7 +308,7 @@ body {
 .exerciseContainer {
   flex-basis: 100%;
   order: 100;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 12px;
   background: #fafafa;
@@ -323,6 +323,7 @@ body {
 
 /* Version fermée : tiroir caché sans impacter la row principale */
 .exerciseContainer.collapsed {
+  display: flex;
   max-height: 0;
   opacity: 0;
   padding-top: 0;
