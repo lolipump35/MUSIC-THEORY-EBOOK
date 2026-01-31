@@ -409,7 +409,7 @@ window.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("currentAdminModule");
 
       // 3️⃣ Redirection directe (sans aucun re-render)
-      window.location.href = "/frontend/pages/programmsTrainning.html";
+      window.location.href = "/pages/programmsTrainning.html";
     } catch (err) {
       console.error("❌ Erreur création module :", err);
     }
