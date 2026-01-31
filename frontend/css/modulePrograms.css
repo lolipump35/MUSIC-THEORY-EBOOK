@@ -319,22 +319,47 @@ body {
 
 /* Tous les conteneurs sont fermés par défaut */
 /* Fermé par défaut */
+/* Conteneur de l'exercice */
 .exerciseContainer {
-  display: none !important;   /* forcer à être caché */
+  display: none !important;        /* fermé par défaut */
   flex-direction: column;
   gap: 12px;
   background: #fafafa;
   border-radius: 8px;
   overflow: hidden;
   padding: 0;
-  margin-top: 0;
+  margin: 12px auto 0 auto;       /* centré horizontalement et petit margin-top */
+  max-width: 800px;                /* largeur standard */
+  width: 100%;                     /* prendre toute la largeur dispo jusqu'à max-width */
+  box-sizing: border-box;          /* inclut le padding dans la largeur */
+  max-height: 80vw;                /* limite verticale si besoin */
 }
 
 /* Conteneur ouvert */
 .exerciseContainer.open {
-  display: flex !important;   /* affiché */
+  display: flex !important;        /* affiché */
   padding-top: 12px;
   padding-bottom: 12px;
+}
+
+/* Images à l'intérieur du conteneur */
+.exerciseContainer img {
+  max-width: 100%;                 /* ne dépasse jamais le conteneur */
+  height: auto;                    /* garder les proportions */
+  display: block;
+  margin-left: auto;               /* centrer horizontalement */
+  margin-right: auto;
+}
+
+/* Vidéos / mux-player responsive */
+.exerciseContainer .exercise-video {
+  width: 100%;                     /* prendre toute la largeur du conteneur */
+}
+
+.exerciseContainer .exercise-video mux-player {
+  width: 100%;
+  height: auto;                    /* garder le ratio vidéo */
+  display: block;
 }
 
 
