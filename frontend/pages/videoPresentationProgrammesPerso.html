@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/videoPresentationProgrammesPerso.css">
+    <link rel="stylesheet" href="/css/layout.css" />
+
+    <title>videoPresentationProgrammesPerso</title>
+</head>
+
+<body>
+    <!-- ===================================================================== -->
+    <!-- NAVBAR  -->
+    <div id="navbar-placeholder"></div>
+    <script type="module">
+        import { initNavbar } from "/tools/navbar/navbar.js";
+
+        fetch("/tools/navbar/navbar.html")
+            .then((res) => res.text())
+            .then((html) => {
+                document.getElementById("navbar-placeholder").innerHTML = html;
+
+                initNavbar();
+            });
+    </script>
+    <!-- ====================================================================== -->
+
+    <!-- CONTROLLEBAR  -->
+    <div id="controlbar-placeholder"></div>
+
+    <script type="module">
+        import { initControlBar } from "/tools/controlbar/controlbar.js";
+
+        fetch("/tools/controlbar/controlbar.html")
+            .then((res) => res.text())
+            .then((html) => {
+                document.getElementById("controlbar-placeholder").innerHTML = html;
+
+                initControlBar();
+            });
+    </script>
+    <!-- ====================================================================== -->
+
+    <div class="videoWrapper">
+        <mux-player id="muxPlayer1" class="video" playback-id="w500r2K02wpyc3am4LJNUgyiM7sCmkgcqYH8pgxw3I500U"
+            stream-type="on-demand" controls autoplay></mux-player>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script src="/js/videoPresentationProgrammesPerso.js"></script>
+</body>
+
+</html>
