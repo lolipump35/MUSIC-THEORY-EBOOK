@@ -83,7 +83,7 @@ body {
   border: 1px solid #e2e2e2;
   border-radius: 8px;
   background: #fafafa;
-
+  height: 100px;
   display: flex;
   align-items: center;
   /* alignement vertical de la ligne principale */
@@ -114,11 +114,14 @@ body {
 .scale {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  width: 30%;
-  margin-right: 5%;
+  width: 35%;
+  height: 100%;
+  margin-inline: 3%;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
+
 
 .scale span {
   font-size: 0.85rem;
@@ -321,44 +324,56 @@ body {
 /* Fermé par défaut */
 /* Conteneur de l'exercice */
 .exerciseContainer {
-  display: none !important;        /* fermé par défaut */
+  display: none !important;
+  /* fermé par défaut */
   flex-direction: column;
   gap: 12px;
   background: #fafafa;
   border-radius: 8px;
   overflow: hidden;
   padding: 0;
-  margin: 12px auto 0 auto;       /* centré horizontalement et petit margin-top */
-  max-width: 800px;                /* largeur standard */
-  width: 100%;                     /* prendre toute la largeur dispo jusqu'à max-width */
-  box-sizing: border-box;          /* inclut le padding dans la largeur */
-  max-height: 80vw;                /* limite verticale si besoin */
+  margin: 12px auto 0 auto;
+  /* centré horizontalement et petit margin-top */
+  max-width: 800px;
+  /* largeur standard */
+  width: 100%;
+  /* prendre toute la largeur dispo jusqu'à max-width */
+  box-sizing: border-box;
+  /* inclut le padding dans la largeur */
+  max-height: 80vw;
+  /* limite verticale si besoin */
 }
 
 /* Conteneur ouvert */
 .exerciseContainer.open {
-  display: flex !important;        /* affiché */
+  display: flex !important;
+  /* affiché */
   padding-top: 12px;
   padding-bottom: 12px;
 }
 
 /* Images à l'intérieur du conteneur */
 .exerciseContainer img {
-  max-width: 100%;                 /* ne dépasse jamais le conteneur */
-  height: auto;                    /* garder les proportions */
+  max-width: 100%;
+  /* ne dépasse jamais le conteneur */
+  height: auto;
+  /* garder les proportions */
   display: block;
-  margin-left: auto;               /* centrer horizontalement */
+  margin-left: auto;
+  /* centrer horizontalement */
   margin-right: auto;
 }
 
 /* Vidéos / mux-player responsive */
 .exerciseContainer .exercise-video {
-  width: 100%;                     /* prendre toute la largeur du conteneur */
+  width: 100%;
+  /* prendre toute la largeur du conteneur */
 }
 
 .exerciseContainer .exercise-video mux-player {
   width: 100%;
-  height: auto;                    /* garder le ratio vidéo */
+  height: auto;
+  /* garder le ratio vidéo */
   display: block;
 }
 
@@ -420,37 +435,6 @@ body {
 .objectiveItem.completed {
   background-color: #90ce92b6 !important;
   transition: background-color 0.3s ease;
-}
-
-/* Échelle de difficulté */
-.scale {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 30%;
-  margin-right: 5%;
-}
-
-.scale span {
-  font-size: 0.85rem;
-  color: #777;
-}
-
-.scale-button {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    opacity 0.2s;
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-.scale-button:hover {
-  transform: scale(1.15);
 }
 
 /* Palette difficulté */

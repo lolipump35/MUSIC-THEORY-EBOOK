@@ -379,106 +379,68 @@ window.addEventListener("DOMContentLoaded", () => {
       });
       objectiveDiv.appendChild(timerDiv);
 
+      // Création du conteneur
+      const exerciseContainer = document.createElement("div");
+      exerciseContainer.classList.add("exerciseContainer");  // pas de 'open' au départ
 
+      // Création du bouton
+      const toggleBtn = document.createElement("button");
+      toggleBtn.classList.add("exerciseToggleBtn");
+      toggleBtn.type = "button";
+      toggleBtn.textContent = "Afficher l'exercice";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     // Création du conteneur
-const exerciseContainer = document.createElement("div");
-exerciseContainer.classList.add("exerciseContainer");  // pas de 'open' au départ
-
-// Création du bouton
-const toggleBtn = document.createElement("button");
-toggleBtn.classList.add("exerciseToggleBtn");
-toggleBtn.type = "button";
-toggleBtn.textContent = "Afficher l'exercice";
-
-// Remplissage dynamique
-if (Array.isArray(item.exercises) && item.exercises.length > 0) {
-  exerciseContainer.innerHTML = item.exercises
-    .map((ex) => {
-      switch (ex.type) {
-        case "text":
-          return `<p class="exercise-text">${ex.value}</p>`;
-        case "image":
-          return `<div class="exercise-image"><img src="${ex.value}" alt="Image exercice"></div>`;
-        case "video":
-          return `<div class="exercise-video"><mux-player playback-id="${ex.value}" controls preload="metadata"></mux-player></div>`;
-        case "html":
-          return `<div class="exercise-html">${ex.value}</div>`;
-        default:
-          return "";
+      // Remplissage dynamique
+      if (Array.isArray(item.exercises) && item.exercises.length > 0) {
+        exerciseContainer.innerHTML = item.exercises
+          .map((ex) => {
+            switch (ex.type) {
+              case "text":
+                return `<p class="exercise-text">${ex.value}</p>`;
+              case "image":
+                return `<div class="exercise-image"><img src="${ex.value}" alt="Image exercice"></div>`;
+              case "video":
+                return `<div class="exercise-video"><mux-player playback-id="${ex.value}" controls preload="metadata"></mux-player></div>`;
+              case "html":
+                return `<div class="exercise-html">${ex.value}</div>`;
+              default:
+                return "";
+            }
+          }).join("");
+      } else {
+        exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
       }
-    }).join("");
-} else {
-  exerciseContainer.innerHTML = `<p class="noExercise">Aucun exercice associé.</p>`;
-}
 
-// Event listener pour le toggle
-toggleBtn.addEventListener("click", () => {
-  const isOpen = exerciseContainer.classList.contains("open");
+      // Event listener pour le toggle
+      toggleBtn.addEventListener("click", () => {
+        const isOpen = exerciseContainer.classList.contains("open");
 
-  // Accordéon : fermer tous les autres
-  document.querySelectorAll(".exerciseContainer.open").forEach((other) => {
-    if (other !== exerciseContainer) {
-      other.classList.remove("open");
-      const otherBtn = other.parentElement.querySelector(".exerciseToggleBtn");
-      if (otherBtn) otherBtn.textContent = "Afficher l'exercice";
-      other.querySelectorAll("mux-player").forEach((player) => player.pause());
-    }
-  });
+        // Accordéon : fermer tous les autres
+        document.querySelectorAll(".exerciseContainer.open").forEach((other) => {
+          if (other !== exerciseContainer) {
+            other.classList.remove("open");
+            const otherBtn = other.parentElement.querySelector(".exerciseToggleBtn");
+            if (otherBtn) otherBtn.textContent = "Afficher l'exercice";
+            other.querySelectorAll("mux-player").forEach((player) => player.pause());
+          }
+        });
 
-  // Ouvrir/fermer le conteneur actuel
-  if (isOpen) {
-    exerciseContainer.classList.remove("open");
-    toggleBtn.textContent = "Afficher l'exercice";
-    exerciseContainer.querySelectorAll("mux-player").forEach((player) => player.pause());
-  } else {
-    exerciseContainer.classList.add("open");
-    toggleBtn.textContent = "Masquer l'exercice";
-  }
-});
+        // Ouvrir/fermer le conteneur actuel
+        if (isOpen) {
+          exerciseContainer.classList.remove("open");
+          toggleBtn.textContent = "Afficher l'exercice";
+          exerciseContainer.querySelectorAll("mux-player").forEach((player) => player.pause());
+        } else {
+          exerciseContainer.classList.add("open");
+          toggleBtn.textContent = "Masquer l'exercice";
+        }
+      });
 
-// Ajouter au DOM
-objectiveDiv.appendChild(toggleBtn);
-objectiveDiv.appendChild(exerciseContainer);
-list.appendChild(objectiveDiv);
-
-
-
+      // Ajouter au DOM
+      objectiveDiv.appendChild(toggleBtn);
+      objectiveDiv.appendChild(exerciseContainer);
+      list.appendChild(objectiveDiv);
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   function renderModuleData(storedModules, currentModuleId) {
     const container = document.getElementById("trainingResult");
