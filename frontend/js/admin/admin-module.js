@@ -23,8 +23,13 @@ addObjectiveBtn.addEventListener("click", () => {
     <label>Infos supplémentaires :</label>
     <input type="text" class="objectiveExtra" placeholder="Texte ou remarque..." />
 
-    <label>Image (URL) :</label>
-    <input type="text" class="objectiveImageUrl" placeholder="https://..." />
+<label>Image (URL) :</label>
+<input
+  type="text"
+  class="objectiveImageUrl"
+  value="/img/exo/"
+/>
+
 
     <label>Playback ID (vidéo MUX) :</label>
     <input type="text" class="objectivePlaybackId" placeholder="Playback ID" />
